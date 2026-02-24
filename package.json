@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "deploy": "node deploy/deploy.mjs",
+    "update": "node deploy/update.mjs",
     "dev:perf": "node scripts/dev-perf.mjs",
     "ssl": "node deploy/ssl-remote.mjs"
   },

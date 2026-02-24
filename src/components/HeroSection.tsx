@@ -113,7 +113,7 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
             </div>
           ))}
         </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/80 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/90 pointer-events-none" />
       </div>
 
       {/* Content */}
@@ -157,7 +157,7 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
           whileTap={{ scale: 0.98 }}
         >
           <TransitionLink
-            href="/events/bloom-of-energy#tickets"
+            href="/events/bloom-of-energy"
             prefetch
             className="inline-block px-10 py-4 border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all duration-300 animate-glow-pulse"
           >

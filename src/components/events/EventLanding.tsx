@@ -253,40 +253,6 @@ export default function EventLanding() {
         </div>
       </section>
 
-      {/* Галерея — фотографии мероприятия (доступны при переходе по «Купить билет») */}
-      <section id="gallery" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-4xl mx-auto">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-display text-2xl md:text-3xl font-bold uppercase mb-8"
-          >
-            Фотографии
-          </motion.h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-            {["/avisha/IMG_2657.PNG", "/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"].map((src, i) => (
-              <motion.div
-                key={src}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.08 * i }}
-                className="relative aspect-[4/3] overflow-hidden border border-white/10"
-              >
-                <Image
-                  src={src}
-                  alt=""
-                  fill
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  className="object-cover hover:scale-[1.02] transition-transform duration-500"
-                />
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Tickets */}
       <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
         <div className="max-w-2xl mx-auto">

@@ -14,7 +14,7 @@ export default function UpcomingBanner() {
           viewport={{ once: true }}
           className="overflow-hidden group"
         >
-          <TransitionLink href="/events/bloom-of-energy#tickets" className="block w-full max-w-[280px] md:max-w-[320px] rounded-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black">
+          <TransitionLink href="/events/bloom-of-energy" className="block w-full max-w-[280px] md:max-w-[320px] rounded-none overflow-hidden focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-black">
             {/* Картинка 1:1 */}
             <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
               <Image

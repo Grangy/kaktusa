@@ -16,7 +16,7 @@ const UPCOMING = {
   image: "/avisha/IMG_2657.PNG",
   tag: "Ближайшее",
   tagStyle: "bg-[var(--accent)]/90 text-black font-semibold",
-  link: "/events/bloom-of-energy#tickets",
+  link: "/events/bloom-of-energy",
   linkText: "Купить билет",
 };
 
