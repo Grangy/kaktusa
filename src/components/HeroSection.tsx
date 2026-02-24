@@ -115,7 +115,7 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
         <motion.div
           initial={{ opacity: 0, scale: 0.96 }}
           animate={isReady ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-center text-white mb-2"
         >
           {TITLE}
