@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "kaktusa",
       script: "server.js",
-      cwd: "/var/www/kaktusa",
+      cwd: "/var/www/kaktusa/.next/standalone",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,

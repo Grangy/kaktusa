@@ -17,20 +17,19 @@ scp -i ~/.ssh/shared_server_key deploy/nginx-tusa.conf root@89.125.37.62:/etc/ng
 ssh -i ~/.ssh/shared_server_key root@89.125.37.62 "ln -sf /etc/nginx/sites-available/tusa.grangy.ru /etc/nginx/sites-enabled/ && nginx -t && systemctl reload nginx"
 ```
 
-## 3. Деплой приложения
+## 3. Деплой через Git (https://github.com/Grangy/kaktusa)
 
-**Рекомендуемый порядок:** проверка в dev (`npm run dev`), при необходимости замер перформанса (`npm run dev:perf`), затем деплой. Подробнее — [DEPLOY.md](DEPLOY.md).
-
-**Деплой (всегда с билдом):**
+**Первый раз на сервере** — клонировать репозиторий и собрать проект:
 ```bash
+ssh -i ~/.ssh/shared_server_key root@89.125.37.62 'bash -s' < deploy/setup-server-git.sh
+```
+
+**Далее деплой:** пушим в GitHub, затем на сервере делаем pull и пересборку:
+```bash
+git add -A && git commit -m "..." && git push
 npm run deploy
 ```
-Скрипт сам выполняет билд, выгружает только изменённые файлы (rsync), перезапускает PM2 и обновляет nginx.
-
-**Классический (Bash):**
-```bash
-./deploy/deploy.sh
-```
+`npm run deploy` подключается по SSH, в каталоге `/var/www/kaktusa` выполняет `git pull`, `npm ci`, `npm run build`, перезапуск PM2 и обновление nginx.
 
 ## 4. DNS для kaktusa.ru
 
