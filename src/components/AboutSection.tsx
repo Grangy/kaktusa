@@ -59,7 +59,7 @@ export default function AboutSection() {
             className="pt-10 flex justify-center"
           >
             <TransitionLink
-              href="/events/bloom-of-energy"
+              href="/events/bloom-of-energy#tickets"
               className="inline-flex items-center gap-2 px-8 py-4 min-h-[44px] bg-[var(--accent)]/20 border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-1 focus:ring-offset-black"
             >
               <Ticket size={16} /> Купить билет

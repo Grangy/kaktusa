@@ -65,45 +65,48 @@ export default function EventsCarousel() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto mb-16 md:mb-20"
+        className="max-w-4xl mx-auto mb-16 md:mb-20 overflow-hidden border-2 border-white/20 hover:border-[var(--accent)]/60 transition-colors duration-300 bg-black"
       >
-        <TransitionLink
-          href={UPCOMING.link}
-          className="group block overflow-hidden border-2 border-white/20 hover:border-[var(--accent)]/60 transition-colors duration-300 bg-black"
-        >
-          <div className="grid md:grid-cols-5 gap-0">
-            <div className="relative aspect-[4/3] md:aspect-auto md:col-span-3 md:min-h-[320px]">
-              <Image
-                src={UPCOMING.image}
-                alt={UPCOMING.title}
-                fill
-                sizes="(max-width: 768px) 100vw, 60vw"
-                className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent md:from-transparent md:via-transparent md:to-black/80" />
-              <div className="absolute top-4 left-4 flex flex-col gap-2">
-                <span className={`inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider ${UPCOMING.tagStyle}`}>
-                  {UPCOMING.tag}
-                </span>
-                <span className="inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider bg-white/20 text-white">
-                  {UPCOMING.date}
-                </span>
-              </div>
+        <div className="grid md:grid-cols-5 gap-0">
+          <TransitionLink
+            href={UPCOMING.link}
+            className="group block relative aspect-[4/3] md:aspect-auto md:col-span-3 md:min-h-[320px]"
+          >
+            <Image
+              src={UPCOMING.image}
+              alt={UPCOMING.title}
+              fill
+              sizes="(max-width: 768px) 100vw, 60vw"
+              className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-700"
+            />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent md:from-transparent md:via-transparent md:to-black/80" />
+            <div className="absolute top-4 left-4 flex flex-col gap-2">
+              <span className={`inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider ${UPCOMING.tagStyle}`}>
+                {UPCOMING.tag}
+              </span>
+              <span className="inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider bg-white/20 text-white">
+                {UPCOMING.date}
+              </span>
             </div>
-            <div className="p-6 md:p-8 flex flex-col justify-center md:col-span-2 bg-black/80">
-              <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-3">
+          </TransitionLink>
+          <div className="p-6 md:p-8 flex flex-col justify-center md:col-span-2 bg-black/80">
+            <TransitionLink href={UPCOMING.link} className="block mb-6">
+              <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-3 hover:text-[var(--accent)] transition-colors">
                 {UPCOMING.title}
               </h3>
               <p className="text-white/80 text-sm flex items-center gap-1.5 mb-2">
                 <MapPin size={14} className="opacity-70 shrink-0" /> {UPCOMING.location}
               </p>
-              <p className="text-[var(--accent)] font-semibold mb-6">{UPCOMING.price}</p>
-              <span className="inline-flex items-center justify-center w-full py-3.5 px-6 text-sm font-semibold uppercase tracking-wider bg-white text-black group-hover:bg-[var(--accent)] group-hover:text-black transition-colors">
-                {UPCOMING.linkText}
-              </span>
-            </div>
+              <p className="text-[var(--accent)] font-semibold">{UPCOMING.price}</p>
+            </TransitionLink>
+            <TransitionLink
+              href={`${UPCOMING.link}#tickets`}
+              className="inline-flex items-center justify-center w-full py-3.5 px-6 text-sm font-semibold uppercase tracking-wider bg-white text-black hover:bg-[var(--accent)] hover:text-black transition-colors"
+            >
+              {UPCOMING.linkText}
+            </TransitionLink>
           </div>
-        </TransitionLink>
+        </div>
       </motion.div>
 
       {/* Прошедшие — отдельный подзаголовок и карусель */}

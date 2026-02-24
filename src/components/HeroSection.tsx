@@ -144,7 +144,7 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
           whileTap={{ scale: 0.98 }}
         >
           <TransitionLink
-            href="/events/bloom-of-energy"
+            href="/events/bloom-of-energy#tickets"
             prefetch
             className="inline-block px-10 py-4 border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all duration-300 animate-glow-pulse"
           >
