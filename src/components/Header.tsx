@@ -1,11 +1,36 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 
+const MENU_ITEMS: { label: string; path: string }[] = [
+  { label: "Мероприятия", path: "/events/bloom-of-energy" },
+  { label: "Прошедшие", path: "/#past" },
+  { label: "Что такое ?КАКТУСА", path: "/#about-us" },
+  { label: "Галерея", path: "/#gallery" },
+  { label: "Отзывы", path: "/#reviews" },
+];
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const handleMenuLink = (path: string) => {
+    setMenuOpen(false);
+    if (path.startsWith("/#")) {
+      const [base, hash] = path.split("#");
+      if (pathname !== "/") {
+        router.push(path);
+      } else if (hash) {
+        document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      }
+    } else {
+      router.push(path);
+    }
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 px-6 py-4 md:px-8 md:py-6">
@@ -49,41 +74,20 @@ export default function Header() {
             className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 pt-20"
             onClick={() => setMenuOpen(false)}
           >
-            <TransitionLink
-              href="/events/bloom-of-energy"
-              className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Мероприятия
-            </TransitionLink>
-            <TransitionLink
-              href="/#past"
-              className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Прошедшие
-            </TransitionLink>
-            <TransitionLink
-              href="/#about-us"
-              className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Что такое ?КАКТУСА
-            </TransitionLink>
-            <TransitionLink
-              href="/#gallery"
-              className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Галерея
-            </TransitionLink>
-            <TransitionLink
-              href="/#reviews"
-              className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors"
-              onClick={() => setMenuOpen(false)}
-            >
-              Отзывы
-            </TransitionLink>
+            {MENU_ITEMS.map(({ label, path }) => (
+              <button
+                key={path}
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleMenuLink(path);
+                }}
+                className="font-display text-2xl md:text-4xl tracking-wide text-white hover:text-[var(--accent)] transition-colors text-left"
+              >
+                {label}
+              </button>
+            ))}
           </motion.nav>
         )}
       </AnimatePresence>

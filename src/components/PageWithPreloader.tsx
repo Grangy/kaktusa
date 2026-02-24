@@ -50,6 +50,16 @@ export default function PageWithPreloader() {
     return () => clearTimeout(t);
   }, [skipPreloader]);
 
+  useEffect(() => {
+    if (!isReady) return;
+    const hash = typeof window !== "undefined" ? window.location.hash.slice(1) : "";
+    if (!hash) return;
+    const t = setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 100);
+    return () => clearTimeout(t);
+  }, [isReady]);
+
   return (
     <>
       <Preloader isVisible={!isReady} />
