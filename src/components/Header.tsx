@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
+import { X } from "lucide-react";
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
@@ -74,6 +75,17 @@ export default function Header() {
             className="fixed inset-0 top-0 left-0 right-0 bottom-0 z-[100] bg-black/95 backdrop-blur-xl flex flex-col items-center justify-center gap-8 pt-20"
             onClick={() => setMenuOpen(false)}
           >
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setMenuOpen(false);
+              }}
+              className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center text-white hover:text-[var(--accent)] transition-colors"
+              aria-label="Закрыть меню"
+            >
+              <X size={28} strokeWidth={2} />
+            </button>
             {MENU_ITEMS.map(({ label, path }) => (
               <button
                 key={path}
