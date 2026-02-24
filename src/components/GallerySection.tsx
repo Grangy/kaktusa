@@ -11,7 +11,6 @@ const photos = [
   "/photos/DSCF4640.jpg",
   "/photos/0123-20-55DSCF2560.jpg",
   "/photos/DSCF4409.jpg",
-  "/photos/DSCF4409%20(1).jpg",
   "/photos/DSCF4670.jpg",
   "/photos/0200-07-09DSCF3579.jpg",
   "/photos/0203-09-00DSCF6271.jpg",
