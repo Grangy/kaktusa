@@ -8,6 +8,16 @@ import { motion, useScroll, useTransform } from "framer-motion";
 const TITLE = "BLOOM OF ENERGY";
 const PC_IMAGES = ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"];
 const SWITCH_INTERVAL = 20000;
+const VIDEO_FULL = "/intro.mp4";
+const VIDEO_LITE = "/intro-lite.mp4";
+
+function getVideoSrc(): string {
+  if (typeof navigator === "undefined") return VIDEO_FULL;
+  const conn = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
+  if (conn?.saveData) return VIDEO_LITE;
+  if (conn?.effectiveType === "2g" || conn?.effectiveType === "slow-2g") return VIDEO_LITE;
+  return VIDEO_FULL;
+}
 
 interface HeroSectionProps {
   onVideoLoaded?: () => void;
@@ -16,6 +26,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const [videoSrc] = useState(() => getVideoSrc());
   const [typedText, setTypedText] = useState("");
   const [showCursor, setShowCursor] = useState(true);
   const [pcImageIndex, setPcImageIndex] = useState(0);
@@ -87,7 +98,8 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
         <motion.div style={{ y: yVideo }} className="absolute inset-0 -top-[30%] -bottom-[30%] scale-110">
           <video
             ref={videoRef}
-            src="/intro.mp4"
+            src={videoSrc}
+            poster="/intro-poster.jpg"
             playsInline
             muted
             loop
