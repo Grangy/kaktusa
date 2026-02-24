@@ -292,7 +292,7 @@ export default function EventLanding() {
                   <p className="text-[var(--accent)] font-semibold mt-1">{ticket.price}</p>
                 </div>
                 <a
-                  href="https://t.me/sanya_viju"
+                  href="https://llava.ru/e/73a93efa2e7b750ff16a2cedc1c69c56"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-white/90 transition-colors shrink-0"
