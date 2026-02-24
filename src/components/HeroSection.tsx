@@ -27,8 +27,6 @@ interface HeroSectionProps {
 export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [videoSrc] = useState(() => getVideoSrc());
-  const [typedText, setTypedText] = useState("");
-  const [showCursor, setShowCursor] = useState(true);
   const [pcImageIndex, setPcImageIndex] = useState(0);
 
   useEffect(() => {
@@ -60,22 +58,6 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
       video.currentTime = 15;
       video.play().catch(() => {});
     }
-  }, [isReady]);
-
-  useEffect(() => {
-    if (!isReady) return;
-    let i = 0;
-    const type = () => {
-      if (i <= TITLE.length) {
-        setTypedText(TITLE.slice(0, i));
-        i++;
-        setTimeout(type, 100);
-      } else {
-        setShowCursor(false);
-      }
-    };
-    const t = setTimeout(type, 0);
-    return () => clearTimeout(t);
   }, [isReady]);
 
   useEffect(() => {
@@ -131,19 +113,12 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-24 pb-16">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={isReady ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
-          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={isReady ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
+          transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
           className="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-center text-white mb-2"
         >
-          {typedText}
-          {showCursor && (
-            <motion.span
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
-              className="inline-block w-1 md:w-1.5 h-[0.85em] bg-white align-middle ml-0.5 md:ml-1"
-            />
-          )}
+          {TITLE}
         </motion.div>
         <motion.p
           initial={{ opacity: 0 }}
