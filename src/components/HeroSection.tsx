@@ -112,14 +112,17 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
 
       {/* Content */}
       <div className="relative z-10 flex-1 flex flex-col items-center justify-center px-6 pt-24 pb-16">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={isReady ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.96 }}
-          transition={{ duration: 2, ease: [0.22, 1, 0.36, 1] }}
-          className="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-center text-white mb-2"
-        >
-          {TITLE}
-        </motion.div>
+        {isReady && (
+          <motion.div
+            key="title"
+            initial={{ opacity: 0, scale: 0.97 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 6, ease: [0.16, 1, 0.3, 1] }}
+            className="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-center text-white mb-2"
+          >
+            {TITLE}
+          </motion.div>
+        )}
         <motion.p
           initial={{ opacity: 0 }}
           animate={isReady ? { opacity: 1 } : { opacity: 0 }}
