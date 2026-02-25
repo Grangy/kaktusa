@@ -9,15 +9,24 @@ function getProjectRoot(): string {
   return process.cwd();
 }
 
-/** Путь к БД по умолчанию на продакшене (PM2, standalone). */
+/** Путь к БД по умолчанию на продакшене (PM2, standalone). В production никогда не используем cwd — он может быть .next/standalone. */
 const PRODUCTION_DB_PATH = "/var/www/kaktusa/prisma/dev.db";
 
 /** Всегда возвращаем прямой file: URL для SQLite (абсолютный путь). Игнорируем prisma:// / Accelerate. */
 function getDatabaseUrl(): string {
   const env = process.env.DATABASE_URL;
   const root = getProjectRoot();
-  // При запуске из .next/standalone в cwd нет папки prisma — не используем path.join(root, "prisma", ...)
-  const isStandalone = root.includes(".next/standalone");
+
+  if (process.env.NODE_ENV === "production") {
+    const prodPath = env?.startsWith("file:")
+      ? env.replace(/^file:\/?/, "").replace(/\\/g, "/")
+      : env && !env.includes("://")
+        ? env.replace(/\\/g, "/")
+        : null;
+    if (prodPath && path.isAbsolute(prodPath)) return `file:${prodPath}`;
+    return `file:${PRODUCTION_DB_PATH}`;
+  }
+
   if (env && (env.startsWith("prisma://") || env.startsWith("prisma+"))) {
     // Не использовать Accelerate URL при наличии адаптера — используем fallback
   } else if (env && env.startsWith("file:")) {
@@ -27,9 +36,6 @@ function getDatabaseUrl(): string {
   } else if (env && !env.includes("://")) {
     const absolute = path.isAbsolute(env) ? env : path.join(root, env);
     return `file:${absolute.replace(/\\/g, "/")}`;
-  }
-  if (process.env.NODE_ENV === "production" && isStandalone) {
-    return `file:${PRODUCTION_DB_PATH}`;
   }
   const fallback = path.join(root, "prisma", "dev.db").replace(/\\/g, "/");
   return `file:${fallback}`;
