@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0a0b0a;
+  --background: #0a0a0a;
   --foreground: #fafafa;
   --accent: #4ade80;
   --accent-muted: #22c55e;
@@ -27,7 +27,7 @@ html {
 }
 
 body {
-  background: linear-gradient(180deg, #0c0e0c 0%, #080a08 25%, #070907 50%, #080b09 75%, #0a0d0a 100%);
+  background: linear-gradient(180deg, #0a0a0a 0%, #070807 20%, #060706 40%, #070807 60%, #080908 80%, #090a09 100%);
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;

@@ -20,7 +20,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
   const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
 
   return (
-    <section id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-transparent to-[#0c0e0c]">
+    <section id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-transparent to-[#0a0a0a]">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}

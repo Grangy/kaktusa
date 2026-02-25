@@ -100,7 +100,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
   return (
     <section
       id="upcoming"
-      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0c0e0c] via-[#080a08] to-[#0a0d0a] relative"
+      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0a0a0a] via-[#070807] to-[#090a09] relative"
     >
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
@@ -131,61 +131,64 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
               viewport={{ once: true }}
               className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
-              <TransitionLink
-                href={event.link}
-                className="group block w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_35px_-8px_rgba(74,222,128,0.2)] hover:border-white/20 hover:shadow-[0_4px_28px_-4px_rgba(0,0,0,0.5),0_0_50px_-5px_rgba(74,222,128,0.35)] transition-all duration-300"
-              >
-                <div className="relative aspect-[3/4] overflow-hidden">
-                  <Image
-                    src={event.image}
-                    alt={event.title}
-                    fill
-                    sizes="320px"
-                    className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
-                  />
-                  <div
-                    className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.35)_55%,transparent_90%)]"
-                    aria-hidden
-                  />
-                  <span
-                    className={`absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${event.tagStyle}`}
-                  >
-                    {event.tag}
-                  </span>
-                  <div className="absolute bottom-0 left-0 right-0 p-3 pb-4 pt-16 space-y-1.5">
-                    <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
-                      {event.title}
-                    </h3>
-                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-white/90 text-sm">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={12} className="shrink-0 opacity-70" />
-                        {event.date}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MapPin size={12} className="shrink-0 opacity-70" />
-                        {event.locationShort ?? event.location}
-                      </span>
-                    </div>
-                    <div className="flex items-center justify-between gap-2 pt-1.5">
-                      {"price" in event && event.price ? (
-                        <p className="text-white text-sm">
-                          От <span className="font-bold">{event.price.replace(/^От\s/, "")}</span>
-                        </p>
-                      ) : event.type === "past" ? (
-                        <span className="text-white/70 text-sm font-medium">[DONE]</span>
-                      ) : (
-                        <span />
-                      )}
-                      <TransitionLink
-                        href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
-                        className="inline-flex items-center justify-center py-2 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider border border-white/40 text-white hover:bg-white/10 transition-colors shrink-0"
-                      >
-                        {event.linkText}
-                      </TransitionLink>
+              <div className="group relative block w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_35px_-8px_rgba(74,222,128,0.2)] hover:border-white/20 hover:shadow-[0_4px_28px_-4px_rgba(0,0,0,0.5),0_0_50px_-5px_rgba(74,222,128,0.35)] transition-all duration-300">
+                <TransitionLink
+                  href={event.link}
+                  className="block"
+                >
+                  <div className="relative aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      sizes="320px"
+                      className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
+                    />
+                    <div
+                      className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.35)_55%,transparent_90%)]"
+                      aria-hidden
+                    />
+                    <span
+                      className={`absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${event.tagStyle}`}
+                    >
+                      {event.tag}
+                    </span>
+                    <div className="absolute bottom-0 left-0 right-0 p-3 pb-4 pt-16 space-y-1.5">
+                      <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
+                        {event.title}
+                      </h3>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-white/90 text-sm">
+                        <span className="flex items-center gap-1">
+                          <Calendar size={12} className="shrink-0 opacity-70" />
+                          {event.date}
+                        </span>
+                        <span className="flex items-center gap-1">
+                          <MapPin size={12} className="shrink-0 opacity-70" />
+                          {event.locationShort ?? event.location}
+                        </span>
+                      </div>
+                      <div className="flex items-center justify-between gap-2 pt-1.5">
+                        {"price" in event && event.price ? (
+                          <p className="text-white text-sm">
+                            От <span className="font-bold">{event.price.replace(/^От\s/, "")}</span>
+                          </p>
+                        ) : event.type === "past" ? (
+                          <span className="text-white/70 text-sm font-medium">[DONE]</span>
+                        ) : (
+                          <span />
+                        )}
+                        <span className="shrink-0 w-[110px]" />
+                      </div>
                     </div>
                   </div>
-                </div>
-              </TransitionLink>
+                </TransitionLink>
+                <TransitionLink
+                  href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
+                  className="absolute bottom-3 right-3 inline-flex items-center justify-center py-2 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider border border-white/40 text-white hover:bg-white/10 transition-colors z-10"
+                >
+                  {event.linkText}
+                </TransitionLink>
+              </div>
             </motion.article>
           ))}
         </div>
