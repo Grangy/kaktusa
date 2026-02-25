@@ -13,7 +13,10 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
+        HOSTNAME: "0.0.0.0", // слушать на всех интерфейсах, не только localhost
         DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
+        // Фиксированный ключ — ID Server Actions не меняются после деплоя (нет "Failed to find Server Action")
+        NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: "<REMOVED>",
       },
     },
   ],
