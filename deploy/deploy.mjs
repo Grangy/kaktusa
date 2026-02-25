@@ -64,7 +64,7 @@ async function main() {
 
   console.log("=== 4/5 PM2 restart ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && pm2 restart ecosystem.config.cjs 2>/dev/null || pm2 start ecosystem.config.cjs; pm2 save"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && pm2 delete kaktusa 2>/dev/null; pm2 start ecosystem.config.cjs && pm2 save"`
   );
 
   console.log("=== 5/5 Nginx (kaktusa.ru) ===");
