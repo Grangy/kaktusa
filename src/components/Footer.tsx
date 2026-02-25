@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
+import { Send, Camera } from "lucide-react";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -54,6 +55,31 @@ export default function Footer() {
             </h4>
             <p className="text-white/60 text-sm">kaktusa.ru</p>
             <p className="text-white/60 text-sm mt-1">Билеты у организаторов</p>
+            <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-3 mt-6">
+              Соцсети
+            </h4>
+            <div className="flex flex-wrap gap-4">
+              <a
+                href="https://t.me/kaktusa_project"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-[var(--accent)] transition-colors"
+                aria-label="Telegram"
+              >
+                <Send size={18} className="shrink-0" />
+                Telegram
+              </a>
+              <a
+                href="https://www.instagram.com/kaktusa.project"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-[var(--accent)] transition-colors"
+                aria-label="Instagram"
+              >
+                <Camera size={18} className="shrink-0" />
+                Instagram
+              </a>
+            </div>
           </motion.div>
         </div>
 
