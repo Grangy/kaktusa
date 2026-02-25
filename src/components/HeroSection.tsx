@@ -5,7 +5,8 @@ import TransitionLink from "./TransitionLink";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-const TITLE = "BLOOM OF ENERGY";
+const TITLE_TOP = "BLOOM";
+const TITLE_BOTTOM = "OF ENERGY";
 const PC_IMAGES = ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"];
 const SWITCH_INTERVAL = 20000;
 const VIDEO_FULL = "/intro.mp4";
@@ -118,27 +119,28 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
             initial={{ opacity: 0, scale: 0.97 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 6, ease: [0.16, 1, 0.3, 1] }}
-            className="font-display text-5xl md:text-7xl lg:text-8xl font-bold uppercase text-center text-white mb-2"
+            className="font-display font-bold uppercase text-center text-white mb-6"
           >
-            {TITLE}
+            <div className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-wide">
+              {TITLE_TOP}
+            </div>
+            <div className="text-3xl md:text-5xl lg:text-6xl mt-1 md:mt-2 tracking-widest text-white/95">
+              {TITLE_BOTTOM}
+            </div>
           </motion.div>
         )}
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isReady ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
-          className="text-white/60 text-sm md:text-base uppercase mb-4"
-        >
-          Mriya
-        </motion.p>
-        <motion.p
-          initial={{ opacity: 0 }}
-          animate={isReady ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.4, delay: 0.5 }}
-          className="text-white/90 text-lg md:text-xl mb-10"
-        >
-          Где энергия встречает весну
-        </motion.p>
+        {isReady && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6 }}
+            className="text-white/90 text-center text-base md:text-lg mb-10 space-y-1"
+          >
+            <p className="font-semibold">28 марта 2026</p>
+            <p className="text-white/80">Отель Мрия</p>
+            <p className="text-white/70 text-sm md:text-base">Night club Foster</p>
+          </motion.div>
+        )}
         <motion.div
           initial={{ opacity: 0 }}
           animate={isReady ? { opacity: 1 } : { opacity: 0 }}
