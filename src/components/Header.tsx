@@ -16,15 +16,26 @@ const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Отзывы", path: "/#reviews" },
 ];
 
-const SCROLL_THRESHOLD = 80;
+const SCROLL_THRESHOLD = 800;
+const SCROLL_PER_ROTATION = 2000;
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { scrollY } = useScroll();
-  const textOpacity = useTransform(scrollY, [0, SCROLL_THRESHOLD], [1, 0]);
-  const logoOpacity = useTransform(scrollY, [0, SCROLL_THRESHOLD], [0, 1]);
+  const smoothstep = (t: number) => t * t * (3 - 2 * t);
+  const textOpacity = useTransform(scrollY, (v) => {
+    const t = Math.max(0, Math.min(1, v / SCROLL_THRESHOLD));
+    return 1 - smoothstep(t);
+  });
+  const logoOpacity = useTransform(scrollY, (v) => {
+    const t = Math.max(0, Math.min(1, v / SCROLL_THRESHOLD));
+    return smoothstep(t);
+  });
+  const logoRotate = useTransform(scrollY, (v) =>
+    v > SCROLL_THRESHOLD ? ((v - SCROLL_THRESHOLD) / SCROLL_PER_ROTATION) * 360 : 0
+  );
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
@@ -46,22 +57,29 @@ export default function Header() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="flex items-center justify-between"
+        className="flex items-center justify-between h-10 md:h-12"
       >
-        <TransitionLink
-          href="/"
-          className="relative inline-flex items-center font-display text-xl md:text-2xl font-semibold uppercase text-white hover:text-[var(--accent)] transition-colors duration-300 min-h-[2rem] md:min-h-[2.25rem]"
-        >
-          <motion.span style={{ opacity: textOpacity }} className="relative z-10 whitespace-nowrap">
+        <div className="relative flex items-center justify-start h-full flex-shrink-0 min-w-[2.5rem] md:min-w-[3rem]">
+          <span className="invisible font-display text-xl md:text-2xl font-semibold uppercase whitespace-nowrap pointer-events-none" aria-hidden>
             ?КАКТУСА
-          </motion.span>
+          </span>
+          <TransitionLink
+            href="/"
+            className="absolute left-0 top-0 bottom-0 flex items-center z-10 font-display text-xl md:text-2xl font-semibold uppercase text-white hover:text-[var(--accent)] transition-colors duration-300"
+          >
+            <motion.span style={{ opacity: textOpacity }} className="whitespace-nowrap">
+              ?КАКТУСА
+            </motion.span>
+          </TransitionLink>
           <motion.div
             style={{ opacity: logoOpacity }}
-            className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none w-8 h-8 md:w-9 md:h-9 relative"
+            className="absolute inset-0 pointer-events-none z-20 flex items-center justify-start"
           >
-            <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain" sizes="36px" />
+            <motion.div style={{ rotate: logoRotate }} className="h-full aspect-square relative origin-center shrink-0">
+              <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain" sizes="48px" />
+            </motion.div>
           </motion.div>
-        </TransitionLink>
+        </div>
 
         <button
           onClick={() => setMenuOpen(!menuOpen)}
