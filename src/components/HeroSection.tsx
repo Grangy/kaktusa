@@ -32,38 +32,72 @@ interface HeroSectionProps {
     videoLite: string;
   } | null;
   onVideoLoaded?: () => void;
+  /** На мобилке вызывается, когда видео реально начало воспроизведение (событие playing). */
+  onVideoPlaying?: () => void;
   isReady?: boolean;
 }
 
-export default function HeroSection({ hero, onVideoLoaded, isReady }: HeroSectionProps) {
+export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isReady }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoFull = hero?.videoFull ?? DEFAULT_VIDEO_FULL;
   const videoLite = hero?.videoLite ?? DEFAULT_VIDEO_LITE;
   const [videoSrc] = useState(() => getVideoSrc(videoFull, videoLite));
   const pcImages = hero?.pcImages?.length ? hero.pcImages : DEFAULT_PC_IMAGES;
   const [pcImageIndex, setPcImageIndex] = useState(0);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mql.matches);
+    const handler = () => setIsMobile(mql.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
 
   useEffect(() => {
     const video = videoRef.current;
-    // На десктопе видео скрыто (md:hidden) — сразу считаем загруженным
+    console.log("[Hero] video effect", { isMobile, hasVideo: !!video, readyState: video?.readyState });
     if (!video) {
+      console.log("[Hero] no video ref, calling onVideoLoaded");
       onVideoLoaded?.();
       return;
     }
-    const handleLoaded = () => onVideoLoaded?.();
+    const handleLoaded = () => {
+      console.log("[Hero] handleLoaded readyState", video.readyState);
+      onVideoLoaded?.();
+      if (isMobile) video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
+    };
+    const handlePlaying = () => {
+      console.log("[Hero] playing");
+      onVideoPlaying?.();
+    };
+
     if (video.readyState >= 4) {
+      console.log("[Hero] readyState >= 4, handleLoaded");
       handleLoaded();
+      if (isMobile) video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
     } else {
       video.addEventListener("canplaythrough", handleLoaded, { once: true });
       video.addEventListener("canplay", handleLoaded, { once: true });
       video.addEventListener("error", handleLoaded, { once: true });
-      return () => {
-        video.removeEventListener("canplaythrough", handleLoaded);
-        video.removeEventListener("canplay", handleLoaded);
-        video.removeEventListener("error", handleLoaded);
-      };
     }
-  }, [onVideoLoaded]);
+    if (isMobile && video.readyState >= 2) {
+      if (!video.paused) {
+        console.log("[Hero] mobile, already playing, handlePlaying");
+        handlePlaying();
+      } else {
+        video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
+      }
+    }
+    video.addEventListener("playing", handlePlaying, { once: true });
+
+    return () => {
+      video.removeEventListener("canplaythrough", handleLoaded);
+      video.removeEventListener("canplay", handleLoaded);
+      video.removeEventListener("error", handleLoaded);
+      video.removeEventListener("playing", handlePlaying);
+    };
+  }, [onVideoLoaded, onVideoPlaying, isMobile]);
 
   useEffect(() => {
     if (!isReady) return;

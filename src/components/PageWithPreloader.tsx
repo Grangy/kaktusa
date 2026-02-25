@@ -14,24 +14,58 @@ import type { Event } from "@/types/data";
 
 const PRELOADER_DONE_KEY = "kaktusa-preloader-done";
 const MIN_PRELOADER_TIME = 800;
-const MAX_WAIT_TIME = 4000; // Защита: принудительно показать контент, если видео не загрузилось
+const MAX_WAIT_TIME = 4000; // Защита: принудительно показать контент, если видео так и не стартовало
 
 interface PageWithPreloaderProps {
   main?: MainContent | null;
   events?: Event[] | null;
 }
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const mql = window.matchMedia("(max-width: 767px)");
+    setIsMobile(mql.matches);
+    const handler = () => setIsMobile(mql.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
+  return isMobile;
+}
+
 export default function PageWithPreloader({ main, events }: PageWithPreloaderProps) {
   const [skipPreloader, setSkipPreloader] = useState(false);
   const [minTimeReached, setMinTimeReached] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
+  const [videoPlaying, setVideoPlaying] = useState(false);
   const [timedOut, setTimedOut] = useState(false);
+  const isMobile = useIsMobile();
 
   const handleVideoLoaded = useCallback(() => {
+    console.log("[Preloader] onVideoLoaded");
     setVideoLoaded(true);
   }, []);
+  const handleVideoPlaying = useCallback(() => {
+    console.log("[Preloader] onVideoPlaying");
+    setVideoPlaying(true);
+  }, []);
 
-  const isReady = skipPreloader || (videoLoaded && minTimeReached) || timedOut;
+  const videoReady = isMobile ? videoPlaying : videoLoaded;
+  const isReady = skipPreloader || (videoReady && minTimeReached) || timedOut;
+
+  useEffect(() => {
+    console.log("[Preloader] state", {
+      isMobile,
+      videoLoaded,
+      videoPlaying,
+      videoReady,
+      minTimeReached,
+      timedOut,
+      skipPreloader,
+      isReady,
+      reason: skipPreloader ? "skipPreloader" : timedOut ? "timedOut" : videoReady && minTimeReached ? "videoReady+minTime" : "waiting",
+    });
+  }, [isMobile, videoLoaded, videoPlaying, videoReady, minTimeReached, timedOut, skipPreloader, isReady]);
 
   useEffect(() => {
     queueMicrotask(() => {
@@ -72,7 +106,7 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
       <Preloader isVisible={!isReady} />
       <main className="min-h-screen">
         <Header />
-        <HeroSection hero={main?.hero} onVideoLoaded={handleVideoLoaded} isReady={isReady} />
+        <HeroSection hero={main?.hero} onVideoLoaded={handleVideoLoaded} onVideoPlaying={handleVideoPlaying} isReady={isReady} />
         <EventsCarousel events={events ?? undefined} />
         <AboutSection about={main?.about} />
         <GallerySection photos={main?.gallery?.photos} />

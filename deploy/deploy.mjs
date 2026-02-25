@@ -19,6 +19,8 @@ const SSH_OPTS = `-i ${KEY} -o StrictHostKeyChecking=no -o ConnectTimeout=30`;
 const DB_PATH = join(root, "prisma", "dev.db");
 const REMOTE_DB = `${REMOTE}/prisma/dev.db`;
 const DATABASE_URL = `file:${REMOTE}/prisma/dev.db`;
+// Один и тот же ключ при сборке и в runtime — избавляет от "Failed to find Server Action" после деплоя
+const SERVER_ACTIONS_KEY = "<REMOVED>";
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
@@ -59,7 +61,7 @@ async function main() {
     process.exit(1);
   }
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push && npm run build && npm prune --omit=dev"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push && npm run build && npm prune --omit=dev"`
   );
 
   console.log("=== 4/5 PM2 restart ===");
