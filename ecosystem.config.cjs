@@ -2,8 +2,9 @@ module.exports = {
   apps: [
     {
       name: "kaktusa",
-      script: "server.js",
-      cwd: "/var/www/kaktusa/.next/standalone",
+      // Запуск из корня проекта: process.cwd() = /var/www/kaktusa, БД и пути корректны
+      script: ".next/standalone/server.js",
+      cwd: "/var/www/kaktusa",
       instances: 1,
       exec_mode: "fork",
       autorestart: true,
@@ -12,7 +13,6 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
-        // БД в корне проекта (приложение крутится из .next/standalone)
         DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
       },
     },
