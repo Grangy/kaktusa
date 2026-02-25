@@ -12,11 +12,13 @@ type Props = { params: Promise<{ slug: string }> };
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const event = await getEventBySlug(slug);
-  if (!event) return { title: "Мероприятие | ?КАКТУСА" };
+  if (!event) return { title: "Мероприятие" };
   const url = `${SITE_URL}/events/${slug}`;
-  const title = event.metaTitle || event.title;
+  const rawTitle = event.metaTitle || event.title;
+  const title = rawTitle.replace(/\s*\|\s*\?КАКТУСА\s*$/i, "").trim() || rawTitle;
   const description = event.metaDescription || undefined;
   const ogImage = event.heroImage?.startsWith("http") ? event.heroImage : `${SITE_URL}${event.heroImage.startsWith("/") ? "" : "/"}${event.heroImage}`;
+  const fullTitle = `${title} | ?КАКТУСА`;
   return {
     title,
     description,
@@ -26,13 +28,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       locale: "ru_RU",
       url,
       siteName: "?КАКТУСА",
-      title,
+      title: fullTitle,
       description,
       images: [{ url: ogImage, width: 1200, height: 630, alt: event.title }],
     },
     twitter: {
       card: "summary_large_image",
-      title,
+      title: fullTitle,
       description,
       images: [ogImage],
     },
