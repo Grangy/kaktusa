@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { X } from "lucide-react";
+import Image from "next/image";
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
@@ -15,10 +16,15 @@ const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Отзывы", path: "/#reviews" },
 ];
 
+const SCROLL_THRESHOLD = 80;
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+  const { scrollY } = useScroll();
+  const textOpacity = useTransform(scrollY, [0, SCROLL_THRESHOLD], [1, 0]);
+  const logoOpacity = useTransform(scrollY, [0, SCROLL_THRESHOLD], [0, 1]);
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
@@ -42,8 +48,19 @@ export default function Header() {
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
         className="flex items-center justify-between"
       >
-        <TransitionLink href="/" className="font-display text-xl md:text-2xl font-semibold uppercase text-white hover:text-[var(--accent)] transition-colors duration-300">
-          ?КАКТУСА
+        <TransitionLink
+          href="/"
+          className="relative inline-flex items-center font-display text-xl md:text-2xl font-semibold uppercase text-white hover:text-[var(--accent)] transition-colors duration-300 min-h-[2rem] md:min-h-[2.25rem]"
+        >
+          <motion.span style={{ opacity: textOpacity }} className="relative z-10 whitespace-nowrap">
+            ?КАКТУСА
+          </motion.span>
+          <motion.div
+            style={{ opacity: logoOpacity }}
+            className="absolute left-0 top-1/2 -translate-y-1/2 pointer-events-none w-8 h-8 md:w-9 md:h-9 relative"
+          >
+            <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain" sizes="36px" />
+          </motion.div>
         </TransitionLink>
 
         <button
