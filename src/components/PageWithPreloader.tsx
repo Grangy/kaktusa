@@ -41,31 +41,11 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
   const [timedOut, setTimedOut] = useState(false);
   const isMobile = useIsMobile();
 
-  const handleVideoLoaded = useCallback(() => {
-    console.log("[Preloader] onVideoLoaded");
-    setVideoLoaded(true);
-  }, []);
-  const handleVideoPlaying = useCallback(() => {
-    console.log("[Preloader] onVideoPlaying");
-    setVideoPlaying(true);
-  }, []);
+  const handleVideoLoaded = useCallback(() => setVideoLoaded(true), []);
+  const handleVideoPlaying = useCallback(() => setVideoPlaying(true), []);
 
   const videoReady = isMobile ? videoPlaying : videoLoaded;
   const isReady = skipPreloader || (videoReady && minTimeReached) || timedOut;
-
-  useEffect(() => {
-    console.log("[Preloader] state", {
-      isMobile,
-      videoLoaded,
-      videoPlaying,
-      videoReady,
-      minTimeReached,
-      timedOut,
-      skipPreloader,
-      isReady,
-      reason: skipPreloader ? "skipPreloader" : timedOut ? "timedOut" : videoReady && minTimeReached ? "videoReady+minTime" : "waiting",
-    });
-  }, [isMobile, videoLoaded, videoPlaying, videoReady, minTimeReached, timedOut, skipPreloader, isReady]);
 
   useEffect(() => {
     queueMicrotask(() => {

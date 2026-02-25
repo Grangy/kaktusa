@@ -23,11 +23,7 @@ export default function Preloader({ isVisible }: PreloaderProps) {
             transition={{ duration: 0.4 }}
             className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center"
           >
-            <motion.div
-              animate={{ rotate: [0, 360] }}
-              transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-              className="relative w-full h-full"
-            >
+            <div className="relative w-full h-full animate-preloader-spin">
               <Image
                 src="/logo.png"
                 alt="?КАКТУСА"
@@ -36,7 +32,7 @@ export default function Preloader({ isVisible }: PreloaderProps) {
                 className="object-contain"
                 priority
               />
-            </motion.div>
+            </div>
           </motion.div>
         </motion.div>
       )}

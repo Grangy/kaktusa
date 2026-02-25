@@ -56,38 +56,30 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
 
   useEffect(() => {
     const video = videoRef.current;
-    console.log("[Hero] video effect", { isMobile, hasVideo: !!video, readyState: video?.readyState });
     if (!video) {
-      console.log("[Hero] no video ref, calling onVideoLoaded");
       onVideoLoaded?.();
       return;
     }
+    let loadedFired = false;
     const handleLoaded = () => {
-      console.log("[Hero] handleLoaded readyState", video.readyState);
+      if (loadedFired) return;
+      loadedFired = true;
       onVideoLoaded?.();
-      if (isMobile) video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
+      if (isMobile) video.play().catch(() => {});
     };
-    const handlePlaying = () => {
-      console.log("[Hero] playing");
-      onVideoPlaying?.();
-    };
+    const handlePlaying = () => onVideoPlaying?.();
 
     if (video.readyState >= 4) {
-      console.log("[Hero] readyState >= 4, handleLoaded");
       handleLoaded();
-      if (isMobile) video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
+      if (isMobile) video.play().catch(() => {});
     } else {
       video.addEventListener("canplaythrough", handleLoaded, { once: true });
       video.addEventListener("canplay", handleLoaded, { once: true });
       video.addEventListener("error", handleLoaded, { once: true });
     }
     if (isMobile && video.readyState >= 2) {
-      if (!video.paused) {
-        console.log("[Hero] mobile, already playing, handlePlaying");
-        handlePlaying();
-      } else {
-        video.play().catch((err: unknown) => console.log("[Hero] play() catch", err));
-      }
+      if (!video.paused) handlePlaying();
+      else video.play().catch(() => {});
     }
     video.addEventListener("playing", handlePlaying, { once: true });
 
