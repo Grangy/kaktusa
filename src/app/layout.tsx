@@ -4,6 +4,7 @@ import "@fontsource/libre-franklin/600.css";
 import "@fontsource/libre-franklin/700.css";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
+import PolygonBackground from "@/components/PolygonBackground";
 
 const SITE_URL = "https://kaktusa.ru";
 const defaultTitle = "?КАКТУСА — Электронные ивенты с особым смыслом в Крыму";
@@ -60,7 +61,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
+      <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative">
+        <PolygonBackground />
+        <div className="relative z-10">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -75,6 +78,7 @@ export default function RootLayout({
           }}
         />
         <Providers>{children}</Providers>
+        </div>
       </body>
     </html>
   );

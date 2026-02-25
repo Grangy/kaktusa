@@ -110,22 +110,22 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
         `,
       }}
     >
-      {/* Полигональный декор фона */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+      {/* Локальные полигоны поверх глобальных (усиленный акцент секции) */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           <defs>
-            <linearGradient id="polygon-fill-1" x1="0%" y1="0%" x2="100%" y2="100%">
+            <linearGradient id="events-poly-1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(74,222,128,0.14)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+            <linearGradient id="events-poly-2" x1="100%" y1="100%" x2="0%" y2="0%">
               <stop offset="0%" stopColor="rgba(74,222,128,0.1)" />
               <stop offset="100%" stopColor="transparent" />
             </linearGradient>
-            <linearGradient id="polygon-fill-2" x1="100%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="rgba(74,222,128,0.06)" />
-              <stop offset="100%" stopColor="transparent" />
-            </linearGradient>
           </defs>
-          <polygon points="0,0 500,0 300,200 0,150" fill="url(#polygon-fill-1)" />
-          <polygon points="1200,800 700,800 900,500 1200,600" fill="url(#polygon-fill-2)" />
-          <polygon points="600,250 1050,180 1000,450 550,520 200,400" fill="none" stroke="rgba(74,222,128,0.08)" strokeWidth="1" />
+          <polygon points="0,0 500,0 300,200 0,150" fill="url(#events-poly-1)" />
+          <polygon points="1200,800 700,800 900,500 1200,600" fill="url(#events-poly-2)" />
+          <polygon points="600,250 1050,180 1000,450 550,520 200,400" fill="none" stroke="rgba(74,222,128,0.12)" strokeWidth="1" />
         </svg>
       </div>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
