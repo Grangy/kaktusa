@@ -100,17 +100,43 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
   return (
     <section
       id="upcoming"
-      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0a0a0a] via-[#070807] to-[#090a09] relative"
+      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 relative overflow-hidden"
+      style={{
+        background: `
+          linear-gradient(135deg, #080908 0%, #0a0c0a 25%, #070806 50%, #090b09 75%, #0b0d0b 100%),
+          radial-gradient(ellipse 80% 50% at 20% 20%, rgba(74,222,128,0.04) 0%, transparent 50%),
+          radial-gradient(ellipse 60% 80% at 80% 80%, rgba(74,222,128,0.03) 0%, transparent 50%),
+          radial-gradient(ellipse 50% 40% at 50% 50%, rgba(74,222,128,0.02) 0%, transparent 70%)
+        `,
+      }}
     >
+      {/* Полигональный декор фона */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
+        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
+          <defs>
+            <linearGradient id="polygon-fill-1" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="rgba(74,222,128,0.1)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+            <linearGradient id="polygon-fill-2" x1="100%" y1="100%" x2="0%" y2="0%">
+              <stop offset="0%" stopColor="rgba(74,222,128,0.06)" />
+              <stop offset="100%" stopColor="transparent" />
+            </linearGradient>
+          </defs>
+          <polygon points="0,0 500,0 300,200 0,150" fill="url(#polygon-fill-1)" />
+          <polygon points="1200,800 700,800 900,500 1200,600" fill="url(#polygon-fill-2)" />
+          <polygon points="600,250 1050,180 1000,450 550,520 200,400" fill="none" stroke="rgba(74,222,128,0.08)" strokeWidth="1" />
+        </svg>
+      </div>
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
+        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/4 blur-3xl rounded-3xl" />
       </div>
       <div className="relative">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center"
+        className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center text-white/95 drop-shadow-sm"
       >
         Мероприятия
       </motion.h2>
@@ -131,7 +157,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
               viewport={{ once: true }}
               className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
-              <div className="group relative block w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_35px_-8px_rgba(74,222,128,0.2)] hover:border-white/20 hover:shadow-[0_4px_28px_-4px_rgba(0,0,0,0.5),0_0_50px_-5px_rgba(74,222,128,0.35)] transition-all duration-300">
+              <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),inset_0_1px_0_rgba(255,255,255,0.02)]">
                 <TransitionLink
                   href={event.link}
                   className="block"
@@ -145,11 +171,11 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                       className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                     />
                     <div
-                      className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.35)_55%,transparent_90%)]"
+                      className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0.6)_25%,rgba(0,0,0,0.3)_50%,transparent_75%)]"
                       aria-hidden
                     />
                     <span
-                      className={`absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${event.tagStyle}`}
+                      className={`absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider shadow-lg ${event.tagStyle}`}
                     >
                       {event.tag}
                     </span>
@@ -184,7 +210,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                 </TransitionLink>
                 <TransitionLink
                   href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
-                  className="absolute bottom-3 right-3 inline-flex items-center justify-center py-2 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider border border-white/40 text-white hover:bg-white/10 transition-colors z-10"
+                  className="absolute bottom-3 right-3 inline-flex items-center justify-center py-2.5 px-5 rounded-xl text-xs font-semibold uppercase tracking-wider border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50 transition-all duration-200 z-10 shadow-lg"
                 >
                   {event.linkText}
                 </TransitionLink>
@@ -197,14 +223,14 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={() => scroll(-1)}
-              className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white/80 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              className="w-11 h-11 flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
               aria-label="Назад"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => scroll(1)}
-              className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white/80 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              className="w-11 h-11 flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
               aria-label="Вперёд"
             >
               <ChevronRight size={20} />
