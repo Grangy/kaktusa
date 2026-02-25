@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 
 const MENU_ITEMS: { label: string; path: string }[] = [
+  { label: "Главная", path: "/" },
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
   { label: "Прошедшие", path: "/#past" },
   { label: "Что такое ?КАКТУСА", path: "/#about-us" },
