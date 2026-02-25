@@ -5,7 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
-const photos = [
+const DEFAULT_PHOTOS = [
   "/photos/DSCF4999.jpg",
   "/photos/0201-31-02DSCF5104.jpg",
   "/photos/DSCF4640.jpg",
@@ -16,7 +16,12 @@ const photos = [
   "/photos/0203-09-00DSCF6271.jpg",
 ];
 
-export default function GallerySection() {
+interface GallerySectionProps {
+  photos?: string[] | null;
+}
+
+export default function GallerySection({ photos: photosProp }: GallerySectionProps) {
+  const photos = photosProp?.length ? photosProp : DEFAULT_PHOTOS;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
 

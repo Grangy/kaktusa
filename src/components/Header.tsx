@@ -22,7 +22,7 @@ export default function Header() {
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
     if (path.startsWith("/#")) {
-      const [base, hash] = path.split("#");
+      const [, hash] = path.split("#");
       if (pathname !== "/") {
         router.push(path);
       } else if (hash) {

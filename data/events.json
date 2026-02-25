@@ -1,0 +1,54 @@
+[
+  {
+    "id": "bloom",
+    "slug": "bloom-of-energy",
+    "type": "upcoming",
+    "title": "BLOOM OF ENERGY",
+    "date": "2026-03-28",
+    "dateDisplay": "28 марта 2026",
+    "time": "22:00",
+    "location": "Foster Night Club | Mriya Resort",
+    "locationShort": "Mriya Resort, Крым",
+    "price": "От 3 000 ₽",
+    "priceNote": "стартовая цена",
+    "heroImage": "/avisha/IMG_2657.PNG",
+    "tag": "Special Event",
+    "metaTitle": "BLOOM OF ENERGY — 28 марта 2026 | ?КАКТУСА",
+    "metaDescription": "BLOOM OF ENERGY — электронный ивент с особым смыслом и звучанием. Foster Night Club, Mriya Resort. Билеты от 3 000 ₽.",
+    "artists": ["GRETTA", "SANSÁRIAN", "WILYAMDELOVE & NOBE (Bassmatic Records)", "RESONANCE", "KVITASH"],
+    "tickets": [
+      { "id": "ga", "name": "General Admission", "price": "3 000 ₽", "earlyBird": true },
+      { "id": "promo", "name": "4 билета + 1 в подарок", "price": "по запросу", "earlyBird": false }
+    ],
+    "aboutParagraphs": [
+      "Приглашаем Вас на BLOOM OF ENERGY — вечер, где каждый ощутит внутренний рассвет весенней энергии в изысканной атмосфере.",
+      "Специально для Вас мы везем WILYAMDELOVE & NOBE — творческий тандем, основатели лейбла Bassmatic Records, релизы которого регулярно попадают в топ мировых площадок."
+    ],
+    "venueTitle": "Foster Night Club",
+    "venueAddress": "Mriya Resort",
+    "venueCity": "Крым, Россия",
+    "buyTicketUrl": "https://llava.ru/e/73a93efa2e7b750ff16a2cedc1c69c56",
+    "age": "18+",
+    "dressCode": "Яркие оттенки в образе и макияже, необычные фактуры",
+    "rules": "Уважайте площадку и других гостей"
+  },
+  {
+    "id": "bal",
+    "slug": "tot-samyj-bal",
+    "type": "past",
+    "title": "ТОТ САМЫЙ БАЛ",
+    "date": "2025-11-01",
+    "dateDisplay": "1 ноября 2025",
+    "location": "Foster Night Club | Mriya Resort",
+    "heroImage": "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg",
+    "subtitle": "Мастер и Маргарита",
+    "metaTitle": "ТОТ САМЫЙ БАЛ — 1 ноября 2025 | ?КАКТУСА",
+    "metaDescription": "ТОТ САМЫЙ БАЛ — Мастер и Маргарита. Foster Night Club, Mriya Resort.",
+    "artists": [],
+    "tickets": [],
+    "aboutParagraphs": [],
+    "venueTitle": "Foster Night Club",
+    "venueAddress": "Mriya Resort",
+    "venueCity": "Крым, Россия"
+  }
+]

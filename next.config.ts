@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   output: "standalone",
   compress: true,
   poweredByHeader: false,
+  serverExternalPackages: ["@prisma/client", ".prisma/client"],
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,

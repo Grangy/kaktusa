@@ -2,25 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
-import TransitionLink from "@/components/TransitionLink";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { MapPin, Calendar, Clock, Ticket, Gift, Users } from "lucide-react";
+import type { Event } from "@/types/data";
 
-const EVENT_DATE = new Date("2026-03-28T22:00:00");
-
-const artists = [
-  "GRETTA",
-  "SANSÁRIAN",
-  "WILYAMDELOVE & NOBE (Bassmatic Records)",
-  "RESONANCE",
-  "KVITASH",
-];
-
-const tickets = [
+const DEFAULT_ARTISTS = ["GRETTA", "SANSÁRIAN", "WILYAMDELOVE & NOBE (Bassmatic Records)", "RESONANCE", "KVITASH"];
+const DEFAULT_TICKETS = [
   { id: "ga", name: "General Admission", price: "3 000 ₽", earlyBird: true },
   { id: "promo", name: "4 билета + 1 в подарок", price: "по запросу", earlyBird: false },
 ];
+
+const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
 
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
@@ -47,9 +41,44 @@ function useCountdown(targetDate: Date) {
   return timeLeft;
 }
 
-export default function EventLanding() {
-  const { days, hours, minutes, seconds } = useCountdown(EVENT_DATE);
+function parseEventDate(dateStr: string, timeStr?: string): Date {
+  if (!dateStr) return new Date("2026-03-28T22:00:00");
+  const time = timeStr?.trim() || "22:00";
+  const [h, m] = time.split(":").map(Number);
+  const d = new Date(dateStr);
+  d.setHours(isNaN(h) ? 22 : h, isNaN(m) ? 0 : m, 0, 0);
+  return d;
+}
+
+export default function EventLanding({ event }: { event?: Event | null }) {
+  const eventDate = event ? parseEventDate(event.date, event.time) : new Date("2026-03-28T22:00:00");
+  const { days, hours, minutes, seconds } = useCountdown(eventDate);
   const heroRef = useRef<HTMLElement>(null);
+  const title = event?.title ?? "BLOOM OF ENERGY";
+  const heroImage = event?.heroImage || "/avisha/IMG_2657.PNG";
+  const dateDisplay = event?.dateDisplay ?? "28 марта 2026";
+  const timeDisplay = event?.time ?? "22:00";
+  const locationShort = event?.locationShort ?? event?.location ?? "Foster Night Club";
+  const venueTitle = event?.venueTitle ?? "Foster Night Club";
+  const venueAddress = event?.venueAddress ?? "Mriya Resort";
+  const venueCity = event?.venueCity ?? "Крым, Россия";
+  const price = event?.price ?? "От 3 000 ₽";
+  const artists = event?.artists?.length ? event.artists : DEFAULT_ARTISTS;
+  const tickets = event?.tickets?.length ? event.tickets : DEFAULT_TICKETS;
+  const aboutParagraphs = event?.aboutParagraphs?.filter(Boolean).length
+    ? event.aboutParagraphs.filter(Boolean)
+    : [
+        "Приглашаем Вас на BLOOM OF ENERGY — вечер, где каждый ощутит внутренний рассвет весенней энергии в изысканной атмосфере.",
+        "Специально для Вас мы везем WILYAMDELOVE & NOBE — творческий тандем, основатели лейбла Bassmatic Records, релизы которого регулярно попадают в топ мировых площадок.",
+      ];
+  const buyTicketUrl = event?.buyTicketUrl ?? "https://llava.ru/e/73a93efa2e7b750ff16a2cedc1c69c56";
+  const age = event?.age ?? "18+";
+  const dressCode = event?.dressCode ?? "Яркие оттенки в образе и макияже, необычные фактуры";
+  const rules = event?.rules ?? "Уважайте площадку и других гостей";
+  const heroTagline = event?.heroTagline?.trim();
+  const heroTitleTop = event?.heroTitleTop?.trim();
+  const heroTitleBottom = event?.heroTitleBottom?.trim();
+  const titleSplit = !!(heroTitleTop || heroTitleBottom);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ["start start", "end start"],
@@ -64,8 +93,8 @@ export default function EventLanding() {
         <div className="absolute inset-0">
           <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
             <Image
-              src="/avisha/IMG_2657.PNG"
-              alt="BLOOM OF ENERGY"
+              src={heroImage}
+              alt={title}
               fill
               className="object-cover opacity-50"
               priority
@@ -85,22 +114,48 @@ export default function EventLanding() {
           >
             Special Event
           </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-5xl md:text-7xl lg:text-8xl font-bold  uppercase mb-4"
-          >
-            BLOOM OF ENERGY
-          </motion.h1>
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="text-white/70 text-sm  uppercase mb-12"
-          >
-            До начала осталось
-          </motion.p>
+          {titleSplit ? (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display font-bold uppercase text-center mb-4"
+            >
+              <div className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-wide">
+                {heroTitleTop || title}
+              </div>
+              <div className="text-3xl md:text-5xl lg:text-6xl mt-1 md:mt-2 tracking-widest text-white/95">
+                {heroTitleBottom || ""}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold  uppercase mb-4"
+            >
+              {title}
+            </motion.h1>
+          )}
+          {heroTagline ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/80 text-sm md:text-base uppercase mb-12 prose prose-invert prose-p:my-1 prose-strong:text-white prose-em:text-white/90 max-w-none"
+              dangerouslySetInnerHTML={{ __html: heroTagline }}
+            />
+          ) : (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/70 text-sm  uppercase mb-12"
+            >
+              До начала осталось
+            </motion.p>
+          )}
 
           {/* Countdown */}
           <motion.div
@@ -140,7 +195,7 @@ export default function EventLanding() {
 
       {/* When & Location & Price */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-3 gap-12">
+        <div className={`${EVENT_CONTAINER} grid md:grid-cols-3 gap-12`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -150,11 +205,11 @@ export default function EventLanding() {
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <Calendar size={18} />
-              <span>28 марта 2026</span>
+              <span>{dateDisplay}</span>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white/80 mt-2">
               <Clock size={18} />
-              <span>22:00</span>
+              <span>{timeDisplay}</span>
             </div>
           </motion.div>
           <motion.div
@@ -167,9 +222,9 @@ export default function EventLanding() {
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <MapPin size={18} />
-              <span>Foster Night Club</span>
+              <span>{locationShort}</span>
             </div>
-            <p className="text-white/70 text-sm mt-2">Mriya Resort, Крым</p>
+            <p className="text-white/70 text-sm mt-2">{venueAddress}{venueCity ? `, ${venueCity}` : ""}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -179,15 +234,15 @@ export default function EventLanding() {
             className="text-center md:text-left"
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Цена</h3>
-            <p className="text-[var(--accent)] font-semibold">От 3 000 ₽</p>
-            <p className="text-white/50 text-sm mt-1">стартовая цена</p>
+            <p className="text-[var(--accent)] font-semibold">{price}</p>
+            {event?.priceNote && <p className="text-white/50 text-sm mt-1">{event.priceNote}</p>}
           </motion.div>
         </div>
       </section>
 
       {/* Event Details */}
-      <section className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
-        <div className="max-w-3xl mx-auto">
+      <section id="about-event" className="py-16 md:py-24 px-6 md:px-12 bg-black/50 scroll-mt-20">
+        <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -196,22 +251,17 @@ export default function EventLanding() {
           >
             О мероприятии
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-white/90 text-lg leading-relaxed mb-8"
-          >
-            Приглашаем Вас на BLOOM OF ENERGY — вечер, где каждый ощутит внутренний рассвет весенней энергии в изысканной атмосфере.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-white/60 text-sm mb-10"
-          >
-            Специально для Вас мы везем WILYAMDELOVE & NOBE — творческий тандем, основатели лейбла Bassmatic Records, релизы которого регулярно попадают в топ мировых площадок.
-          </motion.p>
+          {aboutParagraphs.map((p, i) => (
+            <motion.p
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className={i === 0 ? "text-white/90 text-lg leading-relaxed mb-8" : "text-white/60 text-sm mb-10"}
+            >
+              {p}
+            </motion.p>
+          ))}
           <ul className="space-y-3">
             {artists.map((artist, i) => (
               <motion.li
@@ -231,7 +281,7 @@ export default function EventLanding() {
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-3xl mx-auto">
+        <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -246,16 +296,16 @@ export default function EventLanding() {
             viewport={{ once: true }}
             className="space-y-2"
           >
-            <h4 className="font-display text-lg tracking-wide">Foster Night Club</h4>
-            <p className="text-white/70">Mriya Resort</p>
-            <p className="text-white/50 text-sm">Крым, Россия</p>
+            <h4 className="font-display text-lg tracking-wide">{venueTitle}</h4>
+            <p className="text-white/70">{venueAddress}</p>
+            <p className="text-white/50 text-sm">{venueCity}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Tickets */}
       <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
-        <div className="max-w-2xl mx-auto">
+        <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -268,10 +318,19 @@ export default function EventLanding() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="text-white/60 text-sm mb-10"
+            className="text-white/60 text-sm mb-4"
           >
             Выберите тип билета
           </motion.p>
+          <motion.a
+            href="#about-event"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            className="inline-block text-sm text-white/70 hover:text-[var(--accent)] transition-colors underline underline-offset-2 mb-10"
+          >
+            О мероприятии
+          </motion.a>
           <div className="space-y-4">
             {tickets.map((ticket, i) => (
               <motion.div
@@ -292,7 +351,7 @@ export default function EventLanding() {
                   <p className="text-[var(--accent)] font-semibold mt-1">{ticket.price}</p>
                 </div>
                 <a
-                  href="https://llava.ru/e/73a93efa2e7b750ff16a2cedc1c69c56"
+                  href={buyTicketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-white/90 transition-colors shrink-0"
@@ -319,7 +378,7 @@ export default function EventLanding() {
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-2xl mx-auto space-y-8">
+        <div className={`${EVENT_CONTAINER} space-y-8`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -327,7 +386,7 @@ export default function EventLanding() {
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Возраст</h3>
             <p className="flex items-center gap-2 text-white">
-              <Users size={18} /> 18+
+              <Users size={18} /> {age}
             </p>
           </motion.div>
           <motion.div
@@ -336,7 +395,7 @@ export default function EventLanding() {
             viewport={{ once: true }}
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Дресс-код</h3>
-            <p className="text-white/80 italic">Яркие оттенки в образе и макияже, необычные фактуры</p>
+            <p className="text-white/80 italic">{dressCode}</p>
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -344,36 +403,12 @@ export default function EventLanding() {
             viewport={{ once: true }}
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Правила</h3>
-            <p className="text-white/80">Уважайте площадку и других гостей</p>
+            <p className="text-white/80">{rules}</p>
           </motion.div>
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-2xl mx-auto text-center">
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="font-display text-xl tracking-wide text-white/90 mb-6"
-          >
-            Ивенты с любовью в шипах
-          </motion.p>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <TransitionLink
-              href="/"
-              className="inline-block font-display text-2xl font-bold  uppercase text-white hover:text-[var(--accent)] transition-colors"
-            >
-              ?КАКТУСА
-            </TransitionLink>
-          </motion.div>
-        </div>
-      </section>
+      <Footer />
     </main>
   );
 }

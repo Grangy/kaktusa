@@ -9,12 +9,19 @@ import AboutSection from "./AboutSection";
 import GallerySection from "./GallerySection";
 import ReviewsSection from "./ReviewsSection";
 import Footer from "./Footer";
+import type { MainContent } from "@/types/data";
+import type { Event } from "@/types/data";
 
 const PRELOADER_DONE_KEY = "kaktusa-preloader-done";
 const MIN_PRELOADER_TIME = 800;
 const MAX_WAIT_TIME = 4000; // Защита: принудительно показать контент, если видео не загрузилось
 
-export default function PageWithPreloader() {
+interface PageWithPreloaderProps {
+  main?: MainContent | null;
+  events?: Event[] | null;
+}
+
+export default function PageWithPreloader({ main, events }: PageWithPreloaderProps) {
   const [skipPreloader, setSkipPreloader] = useState(false);
   const [minTimeReached, setMinTimeReached] = useState(false);
   const [videoLoaded, setVideoLoaded] = useState(false);
@@ -65,11 +72,11 @@ export default function PageWithPreloader() {
       <Preloader isVisible={!isReady} />
       <main className="min-h-screen">
         <Header />
-        <HeroSection onVideoLoaded={handleVideoLoaded} isReady={isReady} />
-        <EventsCarousel />
-        <AboutSection />
-        <GallerySection />
-        <ReviewsSection />
+        <HeroSection hero={main?.hero} onVideoLoaded={handleVideoLoaded} isReady={isReady} />
+        <EventsCarousel events={events ?? undefined} />
+        <AboutSection about={main?.about} />
+        <GallerySection photos={main?.gallery?.photos} />
+        <ReviewsSection reviews={main?.reviews} />
         <Footer />
       </main>
     </>

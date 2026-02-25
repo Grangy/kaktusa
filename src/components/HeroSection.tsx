@@ -5,29 +5,42 @@ import TransitionLink from "./TransitionLink";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 
-const TITLE_TOP = "BLOOM";
-const TITLE_BOTTOM = "OF ENERGY";
-const PC_IMAGES = ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"];
+const DEFAULT_TITLE_TOP = "BLOOM";
+const DEFAULT_TITLE_BOTTOM = "OF ENERGY";
+const DEFAULT_PC_IMAGES = ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"];
 const SWITCH_INTERVAL = 20000;
-const VIDEO_FULL = "/intro.mp4";
-const VIDEO_LITE = "/intro-lite.mp4";
+const DEFAULT_VIDEO_FULL = "/intro.mp4";
+const DEFAULT_VIDEO_LITE = "/intro-lite.mp4";
 
-function getVideoSrc(): string {
-  if (typeof navigator === "undefined") return VIDEO_FULL;
+function getVideoSrc(full: string, lite: string): string {
+  if (typeof navigator === "undefined") return full;
   const conn = (navigator as Navigator & { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
-  if (conn?.saveData) return VIDEO_LITE;
-  if (conn?.effectiveType === "2g" || conn?.effectiveType === "slow-2g") return VIDEO_LITE;
-  return VIDEO_FULL;
+  if (conn?.saveData) return lite;
+  if (conn?.effectiveType === "2g" || conn?.effectiveType === "slow-2g") return lite;
+  return full;
 }
 
 interface HeroSectionProps {
+  hero?: {
+    titleTop: string;
+    titleBottom: string;
+    heroDate: string;
+    heroVenue: string;
+    heroVenueEn: string;
+    pcImages: string[];
+    videoFull: string;
+    videoLite: string;
+  } | null;
   onVideoLoaded?: () => void;
   isReady?: boolean;
 }
 
-export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps) {
+export default function HeroSection({ hero, onVideoLoaded, isReady }: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
-  const [videoSrc] = useState(() => getVideoSrc());
+  const videoFull = hero?.videoFull ?? DEFAULT_VIDEO_FULL;
+  const videoLite = hero?.videoLite ?? DEFAULT_VIDEO_LITE;
+  const [videoSrc] = useState(() => getVideoSrc(videoFull, videoLite));
+  const pcImages = hero?.pcImages?.length ? hero.pcImages : DEFAULT_PC_IMAGES;
   const [pcImageIndex, setPcImageIndex] = useState(0);
 
   useEffect(() => {
@@ -62,9 +75,9 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
   }, [isReady]);
 
   useEffect(() => {
-    const t = setInterval(() => setPcImageIndex((i) => (i + 1) % PC_IMAGES.length), SWITCH_INTERVAL);
+    const t = setInterval(() => setPcImageIndex((i) => (i + 1) % pcImages.length), SWITCH_INTERVAL);
     return () => clearInterval(t);
-  }, []);
+  }, [pcImages.length]);
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -99,7 +112,7 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
           <div className="absolute inset-0">
             <Image src="/avisha/IMG_2657.PNG" alt="" fill className="object-cover" priority sizes="100vw" />
           </div>
-          {PC_IMAGES.map((src, i) => (
+          {pcImages.map((src, i) => (
             <div
               key={src}
               className={`absolute inset-0 transition-opacity duration-1000 ${i === pcImageIndex ? "opacity-100" : "opacity-0"}`}
@@ -122,10 +135,10 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
             className="font-display font-bold uppercase text-center text-white mb-6"
           >
             <div className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-wide">
-              {TITLE_TOP}
+              {hero?.titleTop ?? DEFAULT_TITLE_TOP}
             </div>
             <div className="text-3xl md:text-5xl lg:text-6xl mt-1 md:mt-2 tracking-widest text-white/95">
-              {TITLE_BOTTOM}
+              {hero?.titleBottom ?? DEFAULT_TITLE_BOTTOM}
             </div>
           </motion.div>
         )}
@@ -136,9 +149,9 @@ export default function HeroSection({ onVideoLoaded, isReady }: HeroSectionProps
             transition={{ duration: 0.6 }}
             className="text-white/90 text-center text-base md:text-lg mb-10 space-y-1"
           >
-            <p className="font-semibold">28 марта 2026</p>
-            <p className="text-white/80">Отель Мрия</p>
-            <p className="text-white/70 text-sm md:text-base">Night club Foster</p>
+            <p className="font-semibold">{hero?.heroDate ?? "28 марта 2026"}</p>
+            <p className="text-white/80">{hero?.heroVenue ?? "Отель Мрия"}</p>
+            <p className="text-white/70 text-sm md:text-base">{hero?.heroVenueEn ?? "Night club Foster"}</p>
           </motion.div>
         )}
         <motion.div

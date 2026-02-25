@@ -10,24 +10,42 @@
     "deploy": "node deploy/deploy.mjs",
     "update": "node deploy/update.mjs",
     "dev:perf": "node scripts/dev-perf.mjs",
-    "ssl": "node deploy/ssl-remote.mjs"
+    "ssl": "node deploy/ssl-remote.mjs",
+    "test:e2e": "playwright test",
+    "kill-dev": "node scripts/kill-dev.mjs",
+    "setup": "node scripts/setup-env.mjs",
+    "test:prisma": "node scripts/test-prisma.mjs",
+    "db:push": "node scripts/db-push.mjs",
+    "db:seed": "node -e \"process.env.DATABASE_URL='file:'+require('path').join(process.cwd(),'prisma','dev.db'); require('child_process').execSync('npx tsx prisma/seed.ts', {stdio:'inherit'})\""
   },
   "dependencies": {
+    "@auth/core": "^0.41.0",
     "@fontsource/libre-franklin": "^5.2.8",
+    "@playwright/test": "^1.58.2",
+    "@prisma/adapter-better-sqlite3": "^7.4.1",
+    "@tiptap/pm": "^3.20.0",
+    "@tiptap/react": "^3.20.0",
+    "@tiptap/starter-kit": "^3.20.0",
+    "better-sqlite3": "^12.6.2",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
     "next": "16.1.6",
+    "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
   "devDependencies": {
+    "@prisma/client": "^6.19.2",
     "@tailwindcss/postcss": "^4",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "prisma": "^6.19.2",
     "tailwindcss": "^4",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

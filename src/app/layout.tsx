@@ -3,6 +3,7 @@ import "@fontsource/libre-franklin";
 import "@fontsource/libre-franklin/600.css";
 import "@fontsource/libre-franklin/700.css";
 import "./globals.css";
+import { Providers } from "@/components/Providers";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://kaktusa.ru"),
@@ -19,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="ru">
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)]">
-        {children}
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

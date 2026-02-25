@@ -9,8 +9,8 @@ import { spawn } from "child_process";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 
-const __dir = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dir, "..");
+const _dir = dirname(fileURLToPath(import.meta.url));
+const ROOT = join(_dir, "..");
 
 const PAGES = [
   { name: "Главная", path: "/" },
@@ -20,16 +20,6 @@ const PAGES = [
 
 const BASE = "http://localhost:3000";
 const startDev = process.argv.includes("--start-dev");
-
-function run(cmd) {
-  return new Promise((resolve, reject) => {
-    const p = spawn("sh", ["-c", cmd], { cwd: ROOT, stdio: "pipe" });
-    let out = "";
-    p.stdout?.on("data", (d) => (out += d.toString()));
-    p.stderr?.on("data", (d) => (out += d.toString()));
-    p.on("exit", (c) => (c === 0 ? resolve(out) : reject(new Error(out || `Exit ${c}`))));
-  });
-}
 
 async function fetchTime(url) {
   const start = Date.now();
@@ -46,7 +36,7 @@ async function fetchTime(url) {
 async function main() {
   if (startDev) {
     console.log("Запуск dev-сервера (npm run dev)...");
-    const dev = spawn("npm", ["run", "dev"], { cwd: ROOT, stdio: "inherit" });
+    spawn("npm", ["run", "dev"], { cwd: ROOT, stdio: "inherit" });
     await new Promise((r) => setTimeout(r, 8000));
     console.log("");
   }

@@ -1,0 +1,61 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./prisma/dev.db"
+}
+
+model Event {
+  id               String   @id
+  slug             String   @unique
+  type             String   // "upcoming" | "past"
+  title            String
+  date             String
+  dateDisplay      String
+  time             String?
+  location         String
+  locationShort    String?
+  price            String?
+  priceNote        String?
+  heroImage        String
+  heroTagline      String?   // HTML, текст под заголовком в hero
+  heroTitleTop     String?   // первая строка в hero (BLOOM)
+  heroTitleBottom  String?   // вторая строка в hero (OF ENERGY)
+  tag              String?
+  tagStyle         String?
+  metaTitle        String
+  metaDescription  String
+  artists          String   // JSON array
+  tickets          String   // JSON array
+  aboutParagraphs  String   // JSON array
+  venueTitle       String
+  venueAddress     String
+  venueCity        String
+  buyTicketUrl     String?
+  age              String?
+  dressCode        String?
+  rules            String?
+  subtitle         String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model Main {
+  id        String   @id @default("main")
+  hero      String   // JSON
+  about     String   // JSON
+  gallery   String   // JSON
+  reviews   String   // JSON
+  updatedAt DateTime @updatedAt
+}
+
+model Meta {
+  id          String   @id @default("meta")
+  title       String
+  description String
+  canonical   String?
+  updatedAt   DateTime @updatedAt
+}

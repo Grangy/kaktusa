@@ -10,7 +10,6 @@ import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dir, "..");
 const KEY = process.env.HOME + "/.ssh/shared_server_key";
 const SERVER = "89.125.37.62";
 const USER = "root";

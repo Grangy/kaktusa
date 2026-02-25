@@ -1,9 +1,14 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isHome = pathname === "/";
+  const navPrefix = isHome ? "" : "/";
+
   return (
     <footer className="border-t border-white/10 pt-12 pb-8 px-6 md:px-12">
       <div className="max-w-6xl mx-auto">
@@ -31,11 +36,11 @@ export default function Footer() {
               Навигация
             </h4>
             <nav className="space-y-2">
-              <a href="#upcoming" className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Мероприятия</a>
-              <a href="#past" className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Прошедшие</a>
-              <a href="#about-us" className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Что такое ?КАКТУСА</a>
-              <a href="#gallery" className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Галерея</a>
-              <a href="#reviews" className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Отзывы</a>
+              <TransitionLink href={`${navPrefix}#upcoming`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Мероприятия</TransitionLink>
+              <TransitionLink href={`${navPrefix}#past`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Прошедшие</TransitionLink>
+              <TransitionLink href={`${navPrefix}#about-us`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Что такое ?КАКТУСА</TransitionLink>
+              <TransitionLink href={`${navPrefix}#gallery`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Галерея</TransitionLink>
+              <TransitionLink href={`${navPrefix}#reviews`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Отзывы</TransitionLink>
             </nav>
           </motion.div>
           <motion.div

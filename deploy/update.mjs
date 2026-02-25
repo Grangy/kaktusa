@@ -4,10 +4,7 @@
  * Без npm ci и без nginx. Запуск: node deploy/update.mjs
  */
 import { spawn } from "child_process";
-import { dirname } from "path";
-import { fileURLToPath } from "url";
 
-const __dir = dirname(fileURLToPath(import.meta.url));
 const SERVER = "89.125.37.62";
 const USER = "root";
 const KEY = process.env.HOME + "/.ssh/shared_server_key";

@@ -2,20 +2,41 @@
 
 import { useRef } from "react";
 import Image from "next/image";
-import TransitionLink from "@/components/TransitionLink";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
+import Footer from "@/components/Footer";
 import { MapPin, Calendar, Clock, Users } from "lucide-react";
+import type { Event } from "@/types/data";
 
-const artists = [
-  "GRETTA",
-  "MARGARYAN",
-  "DOBROV & GAR1SSON (Moscow)",
-  "RESONANCE",
-  "TITORENKO",
-];
+const DEFAULT_ARTISTS = ["GRETTA", "MARGARYAN", "DOBROV & GAR1SSON (Moscow)", "RESONANCE", "TITORENKO"];
 
-export default function PastEventLanding() {
+const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
+
+export default function PastEventLanding({ event }: { event?: Event | null }) {
+  const title = event?.title ?? "ТОТ САМЫЙ БАЛ";
+  const heroImage = event?.heroImage || "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg";
+  const subtitle = event?.subtitle ?? "Мастер и Маргарита";
+  const dateDisplay = event?.dateDisplay ?? "1 ноября 2025";
+  const timeDisplay = event?.time ?? "22:00";
+  const locationShort = event?.locationShort ?? event?.location ?? "Foster Night Club";
+  const venueTitle = event?.venueTitle ?? "Foster Night Club";
+  const venueAddress = event?.venueAddress ?? "Mriya Resort";
+  const venueCity = event?.venueCity ?? "Крым, Россия";
+  const artists = event?.artists?.length ? event.artists : DEFAULT_ARTISTS;
+  const aboutParagraphs = event?.aboutParagraphs?.filter(Boolean).length
+    ? event.aboutParagraphs.filter(Boolean)
+    : [
+        "В ночь, когда оживают самые смелые фантазии, двери ночного клуба Foster распахнулись для того самого бала.",
+        "Роскошь, искушение и музыка переплелись в один единый поток, напоминая страницы романа М. Булгакова «Мастер и Маргарита».",
+        "Музыкальную магию сотворили D&G (Dobrov & Gar1sson) — московский дуэт, образованный в 2019 году двумя диджеями с международным опытом.",
+      ];
+  const heroSubline = event ? `${event.dateDisplay} | ${locationShort}` : "1.11. | Mriya Resort | Ноябрь 2025";
+  const age = event?.age ?? "18+";
+  const heroTagline = event?.heroTagline?.trim();
+  const heroTitleTop = event?.heroTitleTop?.trim();
+  const heroTitleBottom = event?.heroTitleBottom?.trim();
+  const titleSplit = !!(heroTitleTop || heroTitleBottom);
+
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
@@ -31,8 +52,8 @@ export default function PastEventLanding() {
         <div className="absolute inset-0">
           <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
             <Image
-              src="/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg"
-              alt="ТОТ САМЫЙ БАЛ"
+              src={heroImage}
+              alt={title}
               fill
               className="object-cover opacity-55"
               priority
@@ -52,28 +73,63 @@ export default function PastEventLanding() {
           >
             Прошло
           </motion.span>
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="font-display text-5xl md:text-7xl lg:text-8xl font-bold  uppercase mb-4"
-          >
-            ТОТ САМЫЙ БАЛ
-          </motion.h1>
+          {titleSplit ? (
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display font-bold uppercase text-center mb-4"
+            >
+              <div className="text-5xl md:text-7xl lg:text-8xl leading-tight tracking-wide">
+                {heroTitleTop || title}
+              </div>
+              <div className="text-3xl md:text-5xl lg:text-6xl mt-1 md:mt-2 tracking-widest text-white/95">
+                {heroTitleBottom || ""}
+              </div>
+            </motion.div>
+          ) : (
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display text-5xl md:text-7xl lg:text-8xl font-bold  uppercase mb-4"
+            >
+              {title}
+            </motion.h1>
+          )}
+          {heroTagline ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/70 text-sm md:text-base mb-2 prose prose-invert prose-p:my-1 prose-strong:text-white prose-em:text-white/90 max-w-none"
+              dangerouslySetInnerHTML={{ __html: heroTagline }}
+            />
+          ) : null}
+          {subtitle && (
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-white/60 text-sm  uppercase"
+            >
+              {subtitle}
+            </motion.p>
+          )}
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
-            className="text-white/60 text-sm  uppercase"
+            className="text-white/60 text-sm  uppercase mt-2"
           >
-            1.11. | Mriya Resort | Ноябрь 2025
+            {heroSubline}
           </motion.p>
         </div>
       </section>
 
       {/* When & Location */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-12">
+        <div className={`${EVENT_CONTAINER} grid md:grid-cols-2 gap-12`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -83,11 +139,11 @@ export default function PastEventLanding() {
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <Calendar size={18} />
-              <span>1 ноября 2025</span>
+              <span>{dateDisplay}</span>
             </div>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white/80 mt-2">
               <Clock size={18} />
-              <span>22:00</span>
+              <span>{timeDisplay}</span>
             </div>
           </motion.div>
           <motion.div
@@ -100,16 +156,16 @@ export default function PastEventLanding() {
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <MapPin size={18} />
-              <span>Foster Night Club</span>
+              <span>{locationShort}</span>
             </div>
-            <p className="text-white/70 text-sm mt-2">Mriya Resort, Крым</p>
+            <p className="text-white/70 text-sm mt-2">{venueAddress}{venueCity ? `, ${venueCity}` : ""}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Event Details */}
       <section className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
-        <div className="max-w-3xl mx-auto">
+        <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -118,30 +174,17 @@ export default function PastEventLanding() {
           >
             О мероприятии
           </motion.h2>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-white/90 text-lg leading-relaxed mb-6"
-          >
-            В ночь, когда оживают самые смелые фантазии, двери ночного клуба Foster распахнулись для того самого бала.
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-white/80 text-lg leading-relaxed mb-6"
-          >
-            Роскошь, искушение и музыка переплелись в один единый поток, напоминая страницы романа М. Булгакова «Мастер и Маргарита».
-          </motion.p>
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-white/60 text-sm mb-10"
-          >
-            Музыкальную магию сотворили D&G (Dobrov & Gar1sson) — московский дуэт, образованный в 2019 году двумя диджеями с международным опытом. Pablo Dobrov и Gar1sson выступали на лучших площадках России, Европы, Индии и Таиланда. Их стиль — энергичное сочетание progressive, electronic, house и techno, заряжающее публику драйвом и эмоциями.
-          </motion.p>
+          {aboutParagraphs.map((p, i) => (
+            <motion.p
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className={i < 2 ? "text-white/90 text-lg leading-relaxed mb-6" : "text-white/60 text-sm mb-10"}
+            >
+              {p}
+            </motion.p>
+          ))}
           <motion.h3
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
@@ -169,7 +212,7 @@ export default function PastEventLanding() {
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className="max-w-3xl mx-auto">
+        <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -184,16 +227,16 @@ export default function PastEventLanding() {
             viewport={{ once: true }}
             className="space-y-2"
           >
-            <h4 className="font-display text-lg tracking-wide">Foster Night Club</h4>
-            <p className="text-white/70">Mriya Resort</p>
-            <p className="text-white/50 text-sm">Крым, Россия</p>
+            <h4 className="font-display text-lg tracking-wide">{venueTitle}</h4>
+            <p className="text-white/70">{venueAddress}</p>
+            <p className="text-white/50 text-sm">{venueCity}</p>
           </motion.div>
         </div>
       </section>
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
-        <div className="max-w-2xl mx-auto space-y-8">
+        <div className={`${EVENT_CONTAINER} space-y-8`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -201,51 +244,23 @@ export default function PastEventLanding() {
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Возраст</h3>
             <p className="flex items-center gap-2 text-white">
-              <Users size={18} /> 18+
+              <Users size={18} /> {age}
             </p>
           </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Тема</h3>
-            <p className="text-white/80 italic">Мастер и Маргарита</p>
-          </motion.div>
+          {subtitle && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Тема</h3>
+              <p className="text-white/80 italic">{subtitle}</p>
+            </motion.div>
+          )}
         </div>
       </section>
 
-      {/* Footer CTA */}
-      <section className="py-20 px-6 border-t border-white/10">
-        <div className="max-w-2xl mx-auto text-center space-y-6">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-          >
-            <TransitionLink
-              href="/#events"
-              className="inline-block px-8 py-3 border-2 border-white/30 text-white/90 font-display text-sm uppercase  hover:bg-white/10 transition-colors"
-            >
-              Другие тусы
-            </TransitionLink>
-          </motion.div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="font-display text-xl tracking-wide text-white/90"
-          >
-            Ивенты с любовью в шипах
-          </motion.p>
-          <TransitionLink
-            href="/"
-            className="inline-block font-display text-2xl font-bold  uppercase text-white hover:text-[var(--accent)] transition-colors"
-          >
-            ?КАКТУСА
-          </TransitionLink>
-        </div>
-      </section>
+      <Footer />
     </main>
   );
 }

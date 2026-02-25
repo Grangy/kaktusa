@@ -12,6 +12,8 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 3000,
+        // БД в корне проекта (приложение крутится из .next/standalone)
+        DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
       },
     },
   ],
