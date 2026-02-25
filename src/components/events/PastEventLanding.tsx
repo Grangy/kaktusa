@@ -15,7 +15,7 @@ const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
 export default function PastEventLanding({ event }: { event?: Event | null }) {
   const title = event?.title ?? "ТОТ САМЫЙ БАЛ";
   const heroImage = event?.heroImage || "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg";
-  const subtitle = event?.subtitle ?? "Мастер и Маргарита";
+  const subtitle = event?.subtitle ?? undefined;
   const dateDisplay = event?.dateDisplay ?? "1 ноября 2025";
   const timeDisplay = event?.time ?? "22:00";
   const locationShort = event?.locationShort ?? event?.location ?? "Foster Night Club";
@@ -27,7 +27,7 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
     ? event.aboutParagraphs.filter(Boolean)
     : [
         "В ночь, когда оживают самые смелые фантазии, двери ночного клуба Foster распахнулись для того самого бала.",
-        "Роскошь, искушение и музыка переплелись в один единый поток, напоминая страницы романа М. Булгакова «Мастер и Маргарита».",
+        "Роскошь, искушение и музыка переплелись в один единый поток.",
         "Музыкальную магию сотворили D&G (Dobrov & Gar1sson) — московский дуэт, образованный в 2019 году двумя диджеями с международным опытом.",
       ];
   const heroSubline = event ? `${event.dateDisplay} | ${locationShort}` : "1.11. | Mriya Resort | Ноябрь 2025";
@@ -55,11 +55,11 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
               src={heroImage}
               alt={title}
               fill
-              className="object-cover opacity-55"
+              className="object-cover object-top opacity-55"
               priority
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(0,0,0,0.85),rgba(0,0,0,0.4)_60%,transparent_85%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_15%,rgba(0,0,0,0.5)_35%,rgba(0,0,0,0.5)_65%,transparent_85%)]" />
         </div>

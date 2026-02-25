@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import Preloader from "./Preloader";
 import Header from "./Header";
 import HeroSection from "./HeroSection";
@@ -19,18 +20,6 @@ const MAX_WAIT_TIME = 4000; // Защита: принудительно пока
 interface PageWithPreloaderProps {
   main?: MainContent | null;
   events?: Event[] | null;
-}
-
-function useIsMobile() {
-  const [isMobile, setIsMobile] = useState(false);
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mql.matches);
-    const handler = () => setIsMobile(mql.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
-  return isMobile;
 }
 
 export default function PageWithPreloader({ main, events }: PageWithPreloaderProps) {

@@ -11,7 +11,6 @@ import type { Event } from "@/types/data";
 const DEFAULT_ARTISTS = ["GRETTA", "SANSÁRIAN", "WILYAMDELOVE & NOBE (Bassmatic Records)", "RESONANCE", "KVITASH"];
 const DEFAULT_TICKETS = [
   { id: "ga", name: "General Admission", price: "3 000 ₽", earlyBird: true },
-  { id: "promo", name: "4 билета + 1 в подарок", price: "по запросу", earlyBird: false },
 ];
 
 const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
@@ -64,7 +63,8 @@ export default function EventLanding({ event }: { event?: Event | null }) {
   const venueCity = event?.venueCity ?? "Крым, Россия";
   const price = event?.price ?? "От 3 000 ₽";
   const artists = event?.artists?.length ? event.artists : DEFAULT_ARTISTS;
-  const tickets = event?.tickets?.length ? event.tickets : DEFAULT_TICKETS;
+  const allTickets = event?.tickets?.length ? event.tickets : DEFAULT_TICKETS;
+  const tickets = allTickets.filter((t) => t.id !== "promo" && !t.name?.includes("4 билета + 1"));
   const aboutParagraphs = event?.aboutParagraphs?.filter(Boolean).length
     ? event.aboutParagraphs.filter(Boolean)
     : [
@@ -96,11 +96,11 @@ export default function EventLanding({ event }: { event?: Event | null }) {
               src={heroImage}
               alt={title}
               fill
-              className="object-cover opacity-50"
+              className="object-cover object-top opacity-50"
               priority
             />
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/45 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(0,0,0,0.85),rgba(0,0,0,0.4)_60%,transparent_85%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_15%,rgba(0,0,0,0.5)_35%,rgba(0,0,0,0.5)_65%,transparent_85%)]" />
         </div>
@@ -348,7 +348,9 @@ export default function EventLanding({ event }: { event?: Event | null }) {
                       <span className="px-2 py-0.5 text-xs bg-[var(--accent)]/20 text-[var(--accent)]">Early Bird</span>
                     )}
                   </div>
-                  <p className="text-[var(--accent)] font-semibold mt-1">{ticket.price}</p>
+                  <p className="text-[var(--accent)] font-semibold mt-1">
+                    От {ticket.price.replace(/^От\s?/, "")}
+                  </p>
                 </div>
                 <a
                   href={buyTicketUrl}
@@ -365,12 +367,11 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-8 p-6 border border-white/10 bg-white/5 flex items-start gap-3"
+            className="mt-8 p-6 border border-[var(--accent)]/30 bg-[var(--accent)]/5 flex items-start gap-3"
           >
             <Gift size={20} className="shrink-0 text-[var(--accent)]" />
             <div>
-              <p className="font-medium text-white">Акция: 4 билета + 1 в подарок</p>
-              <p className="text-white/60 text-sm mt-1">Детали уточняйте у организаторов</p>
+              <p className="font-medium text-white">Акция 4+1: детали уточняйте у оргов</p>
             </div>
           </motion.div>
         </div>

@@ -2,7 +2,7 @@
 
 import { useRef, useMemo } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, MapPin } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Calendar } from "lucide-react";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 import type { Event } from "@/types/data";
@@ -13,10 +13,11 @@ const DEFAULT_UPCOMING = {
   title: "BLOOM OF ENERGY",
   date: "28 марта 2026",
   location: "Foster Night Club, Mriya Resort",
+  locationShort: "Крым",
   price: "От 3 000 ₽",
   image: "/avisha/IMG_2657.PNG",
   tag: "Ближайшее",
-  tagStyle: "bg-[var(--accent)]/90 text-black font-semibold",
+  tagStyle: "bg-purple-500/90 text-white",
   link: "/events/bloom-of-energy",
   linkText: "Купить билет",
 };
@@ -28,44 +29,46 @@ const DEFAULT_PAST = [
     title: "ТОТ САМЫЙ БАЛ",
     date: "1 ноября 2025",
     location: "Foster Night Club, Mriya Resort",
-    subtitle: "Мастер и Маргарита",
+    locationShort: "Крым",
     image: "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg",
     tag: "Прошло",
-    tagStyle: "bg-white/15 text-white/90 border border-white/25",
+    tagStyle: "bg-gray-600/90 text-white",
     link: "/events/tot-samyj-bal",
     linkText: "Подробнее",
   },
 ];
 
-function eventToUpcoming(e: Event) {
-  return {
-    id: e.id,
-    type: "upcoming" as const,
-    title: e.title,
-    date: e.dateDisplay,
-    location: e.location,
-    price: e.price ?? "",
-    image: e.heroImage,
-    tag: e.tag ?? "Ближайшее",
-    tagStyle: e.tagStyle ?? "bg-[var(--accent)]/90 text-black font-semibold",
-    link: `/events/${e.slug}`,
-    linkText: "Купить билет",
-  };
-}
+type CardEvent = {
+  id: string;
+  type: "upcoming" | "past";
+  title: string;
+  date: string;
+  location: string;
+  locationShort?: string;
+  price?: string;
+  subtitle?: string;
+  image: string;
+  tag: string;
+  tagStyle: string;
+  link: string;
+  linkText: string;
+};
 
-function eventToPast(e: Event) {
+function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
   return {
     id: e.id,
-    type: "past" as const,
+    type,
     title: e.title,
     date: e.dateDisplay,
     location: e.location,
+    locationShort: e.locationShort ?? e.venueCity?.split(",")[0]?.trim() ?? e.location,
+    price: type === "upcoming" ? (e.price ?? "От 3 000 ₽") : undefined,
     subtitle: e.subtitle ?? undefined,
     image: e.heroImage,
-    tag: "Прошло",
-    tagStyle: "bg-white/15 text-white/90 border border-white/25",
+    tag: type === "upcoming" ? (e.tag ?? "Ближайшее") : "Прошло",
+    tagStyle: type === "upcoming" ? (e.tagStyle ?? "bg-purple-500/90 text-white") : "bg-gray-600/90 text-white",
     link: `/events/${e.slug}`,
-    linkText: "Подробнее",
+    linkText: type === "upcoming" ? "Купить билет" : "Подробнее",
   };
 }
 
@@ -74,216 +77,138 @@ interface EventsCarouselProps {
 }
 
 export default function EventsCarousel({ events }: EventsCarouselProps) {
-  const { upcoming, past } = useMemo(() => {
-    if (!events?.length) return { upcoming: DEFAULT_UPCOMING, past: DEFAULT_PAST };
+  const cards = useMemo(() => {
+    if (!events?.length) return [DEFAULT_UPCOMING, ...DEFAULT_PAST];
     const upcomingList = events.filter((e) => e.type === "upcoming").sort((a, b) => a.date.localeCompare(b.date));
     const pastList = events.filter((e) => e.type === "past").sort((a, b) => b.date.localeCompare(a.date));
-    const upcoming = upcomingList[0] ? eventToUpcoming(upcomingList[0]) : DEFAULT_UPCOMING;
-    const past = pastList.length ? pastList.map(eventToPast) : DEFAULT_PAST;
-    return { upcoming, past };
+    const upcoming = upcomingList[0] ? toCard(upcomingList[0], "upcoming") : DEFAULT_UPCOMING;
+    const past = pastList.map((e) => toCard(e, "past"));
+    return [upcoming, ...past];
   }, [events]);
-  const pastScrollRef = useRef<HTMLDivElement>(null);
 
-  const scrollPast = (dir: number) => {
-    if (pastScrollRef.current) {
-      const card = pastScrollRef.current.querySelector("[data-event-card]");
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scroll = (dir: number) => {
+    if (scrollRef.current) {
+      const card = scrollRef.current.querySelector("[data-event-card]");
       const gap = 24;
-      const width = (card?.clientWidth ?? 320) + gap;
-      pastScrollRef.current.scrollBy({ left: dir * width, behavior: "smooth" });
+      const width = (card?.clientWidth ?? 300) + gap;
+      scrollRef.current.scrollBy({ left: dir * width, behavior: "smooth" });
     }
   };
 
   return (
-    <section id="upcoming" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
+    <section
+      id="upcoming"
+      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0b140d] via-[#060c06] to-[#09140c] relative"
+    >
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
+      </div>
+      <div className="relative">
       <motion.h2
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        className="font-display text-2xl md:text-4xl font-bold uppercase mb-4 md:mb-6 text-center"
+        className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center"
       >
         Мероприятия
       </motion.h2>
 
-      {/* Ближайшее — один крупный блок */}
-      <motion.div
-        initial={{ opacity: 0, y: 24 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
-        className="max-w-4xl mx-auto mb-16 md:mb-20 overflow-hidden border-2 border-white/20 hover:border-[var(--accent)]/60 transition-colors duration-300 bg-black"
-      >
-        <div className="grid md:grid-cols-5 gap-0">
-          <TransitionLink
-            href={upcoming.link}
-            className="group block relative aspect-[4/3] md:aspect-auto md:col-span-3 md:min-h-[320px]"
-          >
-            <Image
-              src={upcoming.image}
-              alt={upcoming.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 60vw"
-              className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-700"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent md:from-transparent md:via-transparent md:to-black/80" />
-            <div className="absolute top-4 left-4 flex flex-col gap-2">
-              <span className={`inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider ${upcoming.tagStyle}`}>
-                {upcoming.tag}
-              </span>
-              <span className="inline-flex w-fit px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wider bg-white/20 text-white">
-                {upcoming.date}
-              </span>
-            </div>
-          </TransitionLink>
-          <div className="p-6 md:p-8 flex flex-col justify-center md:col-span-2 bg-black/80">
-            <TransitionLink href={upcoming.link} className="block mb-6">
-              <h3 className="font-display text-2xl md:text-3xl font-bold text-white mb-3 hover:text-[var(--accent)] transition-colors">
-                {upcoming.title}
-              </h3>
-              <p className="text-white/80 text-sm flex items-center gap-1.5 mb-2">
-                <MapPin size={14} className="opacity-70 shrink-0" /> {upcoming.location}
-              </p>
-              <p className="text-[var(--accent)] font-semibold">{upcoming.price}</p>
-            </TransitionLink>
-            <TransitionLink
-              href={`${upcoming.link}#tickets`}
-              className="inline-flex items-center justify-center w-full py-3.5 px-6 text-sm font-semibold uppercase tracking-wider bg-white text-black hover:bg-[var(--accent)] hover:text-black transition-colors"
-            >
-              {upcoming.linkText}
-            </TransitionLink>
-          </div>
-        </div>
-      </motion.div>
-
-      {/* Прошедшие — в том же контейнере по ширине, что и блок выше */}
-      <div className="max-w-4xl mx-auto">
-        <motion.h3
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="font-display text-lg md:text-xl font-semibold uppercase text-white/70 mb-6 text-center"
+      <div className="max-w-5xl mx-auto">
+        <div
+          ref={scrollRef}
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 px-6 md:px-0 md:mx-0 scrollbar-hide items-stretch"
+          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
-          Прошедшие
-        </motion.h3>
-        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-8 place-items-center justify-items-center">
-          {past.map((event) => (
+          {cards.map((event) => (
             <motion.article
               key={event.id}
+              data-event-card
+              id={event.type === "past" ? "past" : undefined}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              id="past"
-              className="w-full max-w-[320px]"
+              className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
               <TransitionLink
                 href={event.link}
-                className="group block rounded-none overflow-hidden bg-black border border-white/10 hover:border-white/20 transition-colors"
+                className="group block w-full rounded-2xl overflow-hidden border border-white/10 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_35px_-8px_rgba(74,222,128,0.2)] hover:border-white/20 hover:shadow-[0_4px_28px_-4px_rgba(0,0,0,0.5),0_0_50px_-5px_rgba(74,222,128,0.35)] transition-all duration-300"
               >
-                <div className="relative aspect-[4/5] overflow-hidden">
+                <div className="relative aspect-[3/4] overflow-hidden">
                   <Image
                     src={event.image}
                     alt={event.title}
                     fill
                     sizes="320px"
-                    className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                    className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                  <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                    <span className={`inline-flex w-fit px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-none ${event.tagStyle}`}>
-                      {event.tag}
-                    </span>
-                    <span className="inline-flex w-fit px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-none bg-white/20 text-white">
-                      {event.date}
-                    </span>
-                  </div>
-                </div>
-                <div className="p-4">
-                  <h4 className="font-display text-lg font-bold text-white mb-1.5">{event.title}</h4>
-                  <p className="text-white/70 text-xs flex items-center gap-1 mb-2">
-                    <MapPin size={12} className="opacity-70 shrink-0" /> {event.location}
-                  </p>
-                  {event.subtitle && (
-                    <p className="text-white/50 text-xs mb-3">{event.subtitle}</p>
-                  )}
-                  <span className="inline-flex items-center justify-center w-full py-2.5 px-4 text-xs font-semibold uppercase tracking-wider border-2 border-[var(--accent)] text-[var(--accent)] group-hover:bg-[var(--accent)]/10 transition-colors">
-                    {event.linkText}
+                  <div
+                    className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.7)_30%,rgba(0,0,0,0.35)_55%,transparent_90%)]"
+                    aria-hidden
+                  />
+                  <span
+                    className={`absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider ${event.tagStyle}`}
+                  >
+                    {event.tag}
                   </span>
+                  <div className="absolute bottom-0 left-0 right-0 p-3 pb-4 pt-16 space-y-1.5">
+                    <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
+                      {event.title}
+                    </h3>
+                    <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-white/90 text-sm">
+                      <span className="flex items-center gap-1">
+                        <Calendar size={12} className="shrink-0 opacity-70" />
+                        {event.date}
+                      </span>
+                      <span className="flex items-center gap-1">
+                        <MapPin size={12} className="shrink-0 opacity-70" />
+                        {event.locationShort ?? event.location}
+                      </span>
+                    </div>
+                    <div className="flex items-center justify-between gap-2 pt-1.5">
+                      {"price" in event && event.price ? (
+                        <p className="text-white text-sm">
+                          От <span className="font-bold">{event.price.replace(/^От\s/, "")}</span>
+                        </p>
+                      ) : event.type === "past" ? (
+                        <span className="text-white/70 text-sm font-medium">[DONE]</span>
+                      ) : (
+                        <span />
+                      )}
+                      <TransitionLink
+                        href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
+                        className="inline-flex items-center justify-center py-2 px-4 rounded-lg text-xs font-semibold uppercase tracking-wider border border-white/40 text-white hover:bg-white/10 transition-colors shrink-0"
+                      >
+                        {event.linkText}
+                      </TransitionLink>
+                    </div>
+                  </div>
                 </div>
               </TransitionLink>
             </motion.article>
           ))}
         </div>
 
-        {/* Mobile: карусель прошедших */}
-        <div className="md:hidden relative">
-          <div
-            ref={pastScrollRef}
-            className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-2 -mx-6 px-6 scrollbar-hide"
-            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          >
-            {past.map((event) => (
-              <article
-                key={event.id}
-                id="past"
-                data-event-card
-                className="flex-shrink-0 w-[280px] snap-center"
-              >
-                <TransitionLink
-                  href={event.link}
-                  className="group block rounded-none overflow-hidden bg-black border border-white/10"
-                >
-                  <div className="relative aspect-[4/5] overflow-hidden">
-                    <Image
-                      src={event.image}
-                      alt={event.title}
-                      fill
-                      sizes="280px"
-                      className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
-                    <div className="absolute top-3 left-3 flex flex-col gap-1.5">
-                      <span className={`inline-flex w-fit px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-none ${event.tagStyle}`}>
-                        {event.tag}
-                      </span>
-                      <span className="inline-flex w-fit px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider rounded-none bg-white/20 text-white">
-                        {event.date}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h4 className="font-display text-lg font-bold text-white mb-1.5">{event.title}</h4>
-                    <p className="text-white/70 text-xs flex items-center gap-1 mb-2">
-                      <MapPin size={12} className="opacity-70 shrink-0" /> {event.location}
-                    </p>
-                    {event.subtitle && (
-                      <p className="text-white/50 text-xs mb-3">{event.subtitle}</p>
-                    )}
-                    <span className="inline-flex items-center justify-center w-full py-3 px-4 text-xs font-semibold uppercase tracking-wider border-2 border-[var(--accent)] text-[var(--accent)]">
-                      {event.linkText}
-                    </span>
-                  </div>
-                </TransitionLink>
-              </article>
-            ))}
+        {cards.length > 1 && (
+          <div className="flex items-center justify-center gap-4 mt-6">
+            <button
+              onClick={() => scroll(-1)}
+              className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white/80 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              aria-label="Назад"
+            >
+              <ChevronLeft size={20} />
+            </button>
+            <button
+              onClick={() => scroll(1)}
+              className="w-10 h-10 flex items-center justify-center rounded-full border border-white/20 text-white/80 hover:border-[var(--accent)] hover:text-[var(--accent)] transition-colors"
+              aria-label="Вперёд"
+            >
+              <ChevronRight size={20} />
+            </button>
           </div>
-          {past.length > 1 && (
-            <>
-              <button
-                onClick={() => scrollPast(-1)}
-                className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-none bg-black/70 border border-white/20 text-white z-10"
-                aria-label="Назад"
-              >
-                <ChevronLeft size={20} />
-              </button>
-              <button
-                onClick={() => scrollPast(1)}
-                className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 flex items-center justify-center rounded-none bg-black/70 border border-white/20 text-white z-10"
-                aria-label="Вперёд"
-              >
-                <ChevronRight size={20} />
-              </button>
-            </>
-          )}
-        </div>
+        )}
+      </div>
       </div>
     </section>
   );

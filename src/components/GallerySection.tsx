@@ -33,7 +33,11 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
   };
 
   return (
-    <section id="gallery" className="py-14 md:py-20 px-6 md:px-12 overflow-hidden scroll-mt-20">
+    <section id="gallery" className="py-14 md:py-20 px-6 md:px-12 overflow-hidden scroll-mt-20 bg-gradient-to-b from-[#0b140d] to-transparent relative">
+      <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
+      </div>
+      <div className="relative">
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -67,7 +71,7 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[420px] snap-center group"
             >
-              <div className="relative aspect-[4/5] overflow-hidden border border-white/10 bg-black/50">
+              <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl border bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 ${i === activeIndex ? "border-[var(--accent)]/60 shadow-[0_0_30px_-5px_rgba(74,222,128,0.25)]" : "border-white/10 group-hover:border-white/20 group-hover:shadow-[0_0_30px_-5px_rgba(74,222,128,0.2)]"}`}>
                 <Image
                   src={src}
                   alt=""
@@ -81,42 +85,43 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
           ))}
         </div>
 
-        {/* Кнопки навигации */}
+        {/* Навигация: стрелки + scroll line */}
         <div className="flex items-center justify-center gap-6 mt-6">
           <button
             type="button"
             onClick={() => scrollTo(activeIndex - 1)}
             disabled={activeIndex === 0}
-            className="w-12 h-12 flex items-center justify-center border border-white/20 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+            className={`w-12 h-12 flex items-center justify-center rounded-full border transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+              activeIndex === 0
+                ? "border-white/20 text-white/60 hover:bg-white/5"
+                : "border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)]/10"
+            }`}
             aria-label="Назад"
           >
             <ChevronLeft size={24} />
           </button>
-          <div className="flex gap-2">
-            {photos.map((_, i) => (
-              <button
-                key={i}
-                type="button"
-                onClick={() => scrollTo(i)}
-                className={`w-2 h-2 transition-all duration-200 ${
-                  i === activeIndex ? "bg-[var(--accent)] scale-125" : "bg-white/40 hover:bg-white/60"
-                }`}
-                aria-label={`Фото ${i + 1}`}
-              />
-            ))}
+          <div className="flex-1 max-w-[200px] h-1 bg-white/20 rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-[var(--accent)] rounded-full"
+              style={{ width: `${((activeIndex + 1) / photos.length) * 100}%` }}
+              transition={{ duration: 0.3 }}
+            />
           </div>
           <button
             type="button"
             onClick={() => scrollTo(activeIndex + 1)}
             disabled={activeIndex === photos.length - 1}
-            className="w-12 h-12 flex items-center justify-center border border-white/20 text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/10 transition-colors"
+            className={`w-12 h-12 flex items-center justify-center rounded-full border transition-colors disabled:opacity-30 disabled:cursor-not-allowed ${
+              activeIndex === photos.length - 1
+                ? "border-white/20 text-white/60 hover:bg-white/5"
+                : "border-[var(--accent)] text-[var(--accent)] hover:bg-[var(--accent)]/10"
+            }`}
             aria-label="Вперёд"
           >
             <ChevronRight size={24} />
           </button>
         </div>
-
-        <p className="text-center text-white/40 text-xs mt-4">Свайпните для просмотра</p>
+      </div>
       </div>
     </section>
   );

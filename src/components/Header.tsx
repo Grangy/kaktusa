@@ -3,39 +3,23 @@
 import { useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
-import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import { X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
-  { label: "Прошедшие", path: "/#past" },
+  { label: "Прошедшие мероприятия", path: "/#past" },
   { label: "Что такое ?КАКТУСА", path: "/#about-us" },
   { label: "Галерея", path: "/#gallery" },
   { label: "Отзывы", path: "/#reviews" },
 ];
 
-const SCROLL_THRESHOLD = 800;
-const SCROLL_PER_ROTATION = 2000;
-
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-  const { scrollY } = useScroll();
-  const smoothstep = (t: number) => t * t * (3 - 2 * t);
-  const textOpacity = useTransform(scrollY, (v) => {
-    const t = Math.max(0, Math.min(1, v / SCROLL_THRESHOLD));
-    return 1 - smoothstep(t);
-  });
-  const logoOpacity = useTransform(scrollY, (v) => {
-    const t = Math.max(0, Math.min(1, v / SCROLL_THRESHOLD));
-    return smoothstep(t);
-  });
-  const logoRotate = useTransform(scrollY, (v) =>
-    v > SCROLL_THRESHOLD ? ((v - SCROLL_THRESHOLD) / SCROLL_PER_ROTATION) * 360 : 0
-  );
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
@@ -57,31 +41,26 @@ export default function Header() {
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className="flex items-center justify-between h-10 md:h-12"
+        className="flex items-center justify-between h-12 md:h-14"
       >
-        <div className="relative flex items-center justify-start h-full flex-shrink-0 min-w-[2.5rem] md:min-w-[3rem]">
-          <span className="invisible font-display text-xl md:text-2xl font-semibold uppercase whitespace-nowrap pointer-events-none" aria-hidden>
-            ?КАКТУСА
-          </span>
-          <TransitionLink
-            href="/"
-            className="absolute left-0 top-0 bottom-0 flex items-center z-10 font-display text-xl md:text-2xl font-semibold uppercase text-white hover:text-[var(--accent)] transition-colors duration-300"
-          >
-            <motion.span style={{ opacity: textOpacity }} className="whitespace-nowrap">
-              ?КАКТУСА
-            </motion.span>
-          </TransitionLink>
-          <motion.div
-            style={{ opacity: logoOpacity }}
-            className="absolute inset-0 pointer-events-none z-20 flex items-center justify-start"
-          >
-            <motion.div style={{ rotate: logoRotate }} className="h-full aspect-square relative origin-center shrink-0">
-              <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain" sizes="48px" />
-            </motion.div>
-          </motion.div>
-        </div>
+        <TransitionLink href="/" className="flex items-center h-full">
+          <div className="h-full w-32 md:w-40 relative shrink-0">
+            <Image src="/new-logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" />
+          </div>
+        </TransitionLink>
 
-        <button
+        <div className="flex items-center gap-4">
+          {/* Desktop: соцсети справа */}
+          <div className="hidden md:flex items-center gap-4">
+            <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[var(--accent)] transition-colors" aria-label="Telegram">
+              <Send size={18} />
+            </a>
+            <a href="https://www.instagram.com/kaktusa.project" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[var(--accent)] transition-colors" aria-label="Instagram">
+              <Camera size={18} />
+            </a>
+          </div>
+
+          <button
           onClick={() => setMenuOpen(!menuOpen)}
           className="relative w-10 h-10 flex flex-col justify-center items-center gap-1.5 group"
           aria-label="Меню"
@@ -99,6 +78,7 @@ export default function Header() {
             className="block w-6 h-0.5 bg-white"
           />
         </button>
+        </div>
       </motion.div>
 
       <AnimatePresence>
@@ -136,6 +116,15 @@ export default function Header() {
                 {label}
               </button>
             ))}
+            {/* Mobile: соцсети под меню */}
+            <div className="flex md:hidden gap-6 pt-4">
+              <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/70 hover:text-[var(--accent)] transition-colors">
+                <Send size={20} /> Telegram
+              </a>
+              <a href="https://www.instagram.com/kaktusa.project" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/70 hover:text-[var(--accent)] transition-colors">
+                <Camera size={20} /> Instagram
+              </a>
+            </div>
           </motion.nav>
         )}
       </AnimatePresence>

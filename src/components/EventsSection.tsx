@@ -28,7 +28,6 @@ const events = [
     title: "ТОТ САМЫЙ БАЛ",
     date: "1 ноября 2025",
     location: "Foster Night Club | Mriya Resort",
-    subtitle: "Мастер и Маргарита",
     image: "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg",
     tag: "Прошло",
     tagStyle: "bg-white/5 border border-white/10 text-white/70",
@@ -143,9 +142,6 @@ export default function EventsSection() {
                       <p className={`font-semibold mt-2 ${event.muted ? "text-white/50" : "text-[var(--accent)]"}`}>
                         {event.price}
                       </p>
-                    )}
-                    {event.subtitle && (
-                      <p className="text-white/50 text-sm mt-2">{event.subtitle}</p>
                     )}
                     {(event.link || event.linkText) && (
                       <motion.a

@@ -18,21 +18,12 @@ export default function Preloader({ isVisible }: PreloaderProps) {
           className="fixed inset-0 z-[200] flex items-center justify-center bg-black"
         >
           <motion.div
-            initial={false}
+            initial={{ opacity: 0, scale: 0.82 }}
             animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
-            className="relative w-28 h-28 md:w-36 md:h-36 flex items-center justify-center"
+            transition={{ duration: 1, ease: [0.12, 0.8, 0.24, 1] }}
+            className="relative w-28 h-28 md:w-36 md:h-36"
           >
-            <div className="relative w-full h-full animate-preloader-spin">
-              <Image
-                src="/logo.png"
-                alt="?КАКТУСА"
-                fill
-                sizes="144px"
-                className="object-contain"
-                priority
-              />
-            </div>
+            <Image src="/logo.png" alt="?КАКТУСА" fill sizes="144px" className="object-contain" priority />
           </motion.div>
         </motion.div>
       )}

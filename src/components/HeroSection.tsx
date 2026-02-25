@@ -1,9 +1,11 @@
 "use client";
 
 import { useRef, useEffect, useState } from "react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import TransitionLink from "./TransitionLink";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
+import { ChevronDown } from "lucide-react";
 
 const DEFAULT_TITLE_TOP = "BLOOM";
 const DEFAULT_TITLE_BOTTOM = "OF ENERGY";
@@ -44,15 +46,7 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
   const [videoSrc] = useState(() => getVideoSrc(videoFull, videoLite));
   const pcImages = hero?.pcImages?.length ? hero.pcImages : DEFAULT_PC_IMAGES;
   const [pcImageIndex, setPcImageIndex] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
-
-  useEffect(() => {
-    const mql = window.matchMedia("(max-width: 767px)");
-    setIsMobile(mql.matches);
-    const handler = () => setIsMobile(mql.matches);
-    mql.addEventListener("change", handler);
-    return () => mql.removeEventListener("change", handler);
-  }, []);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const video = videoRef.current;
@@ -190,27 +184,30 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
           <TransitionLink
             href="/events/bloom-of-energy#tickets"
             prefetch
-            className="inline-block px-10 py-4 border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all duration-300 animate-glow-pulse"
+            className="inline-block px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
           >
             Купить билет
           </TransitionLink>
         </motion.div>
       </div>
 
-      {/* Scroll indicator */}
+      {/* Scroll indicator: 3 arrows racing style */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={isReady ? { opacity: 1 } : { opacity: 0 }}
         transition={{ duration: 0.4, delay: 2 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2"
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0"
       >
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-          className="w-6 h-10 border-2 border-white/50 flex justify-center pt-2"
-        >
-          <motion.div className="w-1.5 h-1.5 bg-white/80" />
-        </motion.div>
+        {[0, 1, 2].map((i) => (
+          <motion.div
+            key={i}
+            animate={{ opacity: [0.3, 1, 0.3] }}
+            transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+            className="-mt-2 first:mt-0"
+          >
+            <ChevronDown size={28} className="text-white/90" strokeWidth={2} />
+          </motion.div>
+        ))}
       </motion.div>
     </section>
   );

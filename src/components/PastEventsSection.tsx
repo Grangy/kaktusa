@@ -9,7 +9,6 @@ const pastEvents = [
     id: "bal",
     title: "ТОТ САМЫЙ БАЛ",
     date: "1 ноября 2025",
-    subtitle: "Мастер и Маргарита",
     image: "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg",
     link: "/events/tot-samyj-bal",
   },
@@ -57,7 +56,6 @@ export default function PastEventsSection() {
                 </span>
                 <h3 className="font-display text-xl md:text-2xl font-bold text-white">{event.title}</h3>
                 <p className="text-white/80 text-sm mt-1">{event.date}</p>
-                {event.subtitle && <p className="text-white/60 text-sm mt-1">{event.subtitle}</p>}
                 <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
                   Подробнее →
                 </span>
