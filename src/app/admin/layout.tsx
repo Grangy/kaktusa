@@ -1,8 +1,14 @@
+import type { Metadata } from "next";
 import { auth } from "@/auth";
 import Link from "next/link";
 import { LayoutDashboard, Calendar, FileText, Tag, ExternalLink } from "lucide-react";
 import { AdminToastProvider } from "@/components/admin/ToastProvider";
 import { RevalidateCacheButton } from "@/components/admin/RevalidateCacheButton";
+
+export const metadata: Metadata = {
+  title: "Админ",
+  robots: { index: false, follow: false },
+};
 
 export default async function AdminLayout({
   children,
