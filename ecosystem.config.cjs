@@ -17,6 +17,8 @@ module.exports = {
         DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
         NEXT_SERVER_ACTIONS_ENCRYPTION_KEY: "<REMOVED>",
         AUTH_SECRET: "<REMOVED>",
+        AUTH_TRUST_HOST: "true",
+        AUTH_URL: "https://kaktusa.ru",
         ADMIN_PASSWORD: "22170313",
       },
     },
