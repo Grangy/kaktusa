@@ -371,7 +371,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
           >
             <Gift size={20} className="shrink-0 text-[var(--accent)]" />
             <div>
-              <p className="font-medium text-white">Акция 4+1: детали уточняйте у оргов</p>
+              <p className="font-medium text-white">Акция 4+1: детали уточняйте у организаторов</p>
             </div>
           </motion.div>
         </div>
