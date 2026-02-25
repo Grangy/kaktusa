@@ -19,8 +19,12 @@ export default function Preloader({ isVisible }: PreloaderProps) {
         >
           <motion.div
             initial={false}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.4 }}
+            animate={{ opacity: 1, scale: 1, rotate: 360 }}
+            transition={{
+              opacity: { duration: 0.4 },
+              scale: { duration: 0.4 },
+              rotate: { duration: 6, repeat: Infinity, ease: "linear" },
+            }}
             className="relative w-28 h-28 md:w-36 md:h-36"
           >
             <motion.div
