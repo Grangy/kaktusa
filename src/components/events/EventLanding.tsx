@@ -110,7 +110,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
-            className="inline-block px-4 py-1 mb-6 bg-purple-500/80 text-white text-xs font-medium tracking-wide uppercase"
+            className="inline-block px-4 py-1 mb-6 rounded-full bg-purple-500/90 text-white text-xs font-semibold tracking-wide uppercase"
           >
             Special Event
           </motion.span>
@@ -170,7 +170,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
               { value: minutes, label: "Мин" },
               { value: seconds, label: "Сек" },
             ].map((item) => (
-              <div key={item.label} className="text-center">
+              <div key={item.label} className="text-center p-3 rounded-2xl border border-white/10 bg-white/[0.03]">
                 <div className="text-3xl md:text-4xl font-display font-bold tabular-nums text-[var(--accent)]">
                   {String(item.value).padStart(2, "0")}
                 </div>
@@ -186,7 +186,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             transition={{ delay: 0.6 }}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
-            className="inline-block px-10 py-4 border-2 border-[var(--accent)] font-display text-sm uppercase  text-white hover:bg-[var(--accent)]/20 transition-all"
+            className="inline-block px-10 py-4 rounded-xl border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all backdrop-blur-sm"
           >
             Купить билет
           </motion.a>
@@ -195,12 +195,12 @@ export default function EventLanding({ event }: { event?: Event | null }) {
 
       {/* When & Location & Price */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={`${EVENT_CONTAINER} grid md:grid-cols-3 gap-12`}>
+        <div className={`${EVENT_CONTAINER} grid md:grid-cols-3 gap-6`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center md:text-left"
+            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
@@ -217,7 +217,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-center md:text-left"
+            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
@@ -231,7 +231,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-center md:text-left"
+            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
           >
             <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Цена</h3>
             <p className="text-[var(--accent)] font-semibold">{price}</p>
@@ -241,8 +241,8 @@ export default function EventLanding({ event }: { event?: Event | null }) {
       </section>
 
       {/* Event Details */}
-      <section id="about-event" className="py-16 md:py-24 px-6 md:px-12 bg-black/50 scroll-mt-20">
-        <div className={EVENT_CONTAINER}>
+      <section id="about-event" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -281,7 +281,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={EVENT_CONTAINER}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -304,7 +304,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
       </section>
 
       {/* Tickets */}
-      <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 bg-black/50">
+      <section id="tickets" className="py-16 md:py-24 px-6 md:px-12">
         <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -339,7 +339,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 * i }}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 border border-white/10 bg-white/5"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.2)]"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -356,7 +356,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
                   href={buyTicketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-white/90 transition-colors shrink-0"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-white/90 transition-colors shrink-0"
                 >
                   <Ticket size={16} /> Купить билет
                 </a>
@@ -367,7 +367,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-8 p-6 border border-[var(--accent)]/30 bg-[var(--accent)]/5 flex items-start gap-3"
+            className="mt-8 p-6 rounded-2xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 flex items-start gap-3 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.2)]"
           >
             <Gift size={20} className="shrink-0 text-[var(--accent)]" />
             <div>
@@ -379,7 +379,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={`${EVENT_CONTAINER} space-y-8`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)] space-y-8`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

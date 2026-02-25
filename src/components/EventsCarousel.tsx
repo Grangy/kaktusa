@@ -100,7 +100,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
   return (
     <section
       id="upcoming"
-      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0b140d] via-[#060c06] to-[#09140c] relative"
+      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-[#0c0e0c] via-[#080a08] to-[#0a0d0a] relative"
     >
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />

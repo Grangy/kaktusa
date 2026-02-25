@@ -33,7 +33,7 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
   };
 
   return (
-    <section id="gallery" className="py-14 md:py-20 px-6 md:px-12 overflow-hidden scroll-mt-20 bg-gradient-to-b from-[#0b140d] to-transparent relative">
+    <section id="gallery" className="py-14 md:py-20 px-6 md:px-12 overflow-hidden scroll-mt-20 bg-gradient-to-b from-[#0c0e0c] to-transparent relative">
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
       </div>
