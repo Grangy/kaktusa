@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
+import Image from "next/image";
 import { Send, Camera } from "lucide-react";
 
 export default function Footer() {
@@ -20,8 +21,13 @@ export default function Footer() {
             viewport={{ once: true }}
             className="md:col-span-2"
           >
-            <TransitionLink href="/" className="font-display text-3xl font-bold uppercase text-white hover:text-[var(--accent)] transition-colors inline-block mb-4">
-              ?КАКТУСА
+            <TransitionLink href="/" className="inline-flex items-center gap-3 mb-4 group">
+              <span className="relative block w-10 h-10 shrink-0">
+                <Image src="/logo.png" alt="" fill className="object-contain transition-transform duration-200 group-hover:scale-105" sizes="40px" />
+              </span>
+              <span className="font-display text-3xl font-bold uppercase text-white group-hover:text-[var(--accent)] transition-colors">
+                ?КАКТУСА
+              </span>
             </TransitionLink>
             <p className="text-white/60 text-sm leading-relaxed max-w-sm">
               ?КАКТУСА — электронные ивенты с особым смыслом и звучанием в уникальных локациях Крыма.

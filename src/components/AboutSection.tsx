@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Ticket } from "lucide-react";
+import Image from "next/image";
 import TransitionLink from "./TransitionLink";
 
 const DEFAULT_LINES = [
@@ -42,9 +43,14 @@ export default function AboutSection({ about }: AboutSectionProps) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="relative p-8 md:p-12 border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm"
+          className="relative p-8 md:p-12 border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
         >
-          <div className="space-y-6 text-center">
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
+            <div className="relative w-48 h-48 md:w-64 md:h-64 opacity-20">
+              <Image src="/logo.png" alt="" fill className="object-contain" sizes="256px" />
+            </div>
+          </div>
+          <div className="relative space-y-6 text-center">
             {lines.map((text, i) => (
               <motion.p
                 key={i}
@@ -64,7 +70,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="pt-10 flex justify-center"
+            className="relative pt-10 flex justify-center"
           >
             <TransitionLink
               href={ctaHref}
