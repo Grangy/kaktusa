@@ -46,8 +46,9 @@ next-env.d.ts
 
 /src/generated/prisma
 
-# Исходники видео (финалы: intro.mp4, intro-lite.mp4)
+# Исходники видео (финалы: intro.webm, intro.mp4, intro-lite.mp4)
 /public/intro-new.mp4
+/public/IMG_5316 (online-video-cutter.com).mp4
 
 # База SQLite — не в git (на проде хранится локально, при деплое сохраняется)
 /prisma/*.db

@@ -115,14 +115,22 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
         <motion.div style={{ y: yVideo }} className="absolute inset-0 -top-[30%] -bottom-[30%] scale-110">
           <video
             ref={videoRef}
-            src={videoSrc}
             poster="/intro-poster.jpg"
             playsInline
             muted
             loop
             preload="metadata"
             className="absolute inset-0 w-full h-full object-cover"
-          />
+          >
+            {videoSrc === DEFAULT_VIDEO_FULL ? (
+              <>
+                <source src="/intro.webm" type="video/webm" />
+                <source src="/intro.mp4" type="video/mp4" />
+              </>
+            ) : (
+              <source src={videoSrc} type="video/mp4" />
+            )}
+          </video>
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90 pointer-events-none" />
       </div>

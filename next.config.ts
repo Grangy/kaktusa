@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
       headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
     },
     {
-      source: "/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif|mp4|woff2|woff)",
+      source: "/:all*(svg|jpg|jpeg|png|gif|ico|webp|avif|mp4|webm|woff2|woff)",
       headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
     },
   ],
