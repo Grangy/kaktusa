@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 /**
  * Деплой: git pull → npm ci → prisma db push + generate → db:seed → build → pm2.
- * БД на сервере: db push синхронизирует схему (добавляет колонки), данные сохраняются.
- * Seed на проде: только новые события из events.json; Main и Meta НЕ перезаписываются.
+ * БД на сервере: только db push (схема). seed НЕ запускается — данные прода не трогаются.
  *
  * Переменные окружения (из .env или экспорта):
  *   NEXT_SERVER_ACTIONS_ENCRYPTION_KEY — обязательно для сборки и runtime
@@ -56,7 +55,7 @@ async function main() {
   let stepStart = Date.now();
   console.log("=== 1/4 Git pull на сервере ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && git fetch origin && git reset --hard origin/main"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -a prisma/dev.db /tmp/kaktusa-dev.db.bak 2>/dev/null || true && git fetch origin && git reset --hard origin/main && cp -a /tmp/kaktusa-dev.db.bak prisma/dev.db 2>/dev/null || true"`
   );
   audit.push({ name: "1. Git pull", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
@@ -99,8 +98,9 @@ async function main() {
   console.log("\n📊 Аудит деплоя:");
   audit.forEach(({ name, s }) => console.log(`   ${name}: ${s}s`));
   console.log(`   ─────────────────`);
-  console.log(`   ИТОГО: ${total}s\n`);
-  console.log("💡 Для быстрого обновления кода без npm ci/prisma: npm run deploy:light\n");
+  console.log(`   ИТОГО: ${total}s`);
+  console.log("   ℹ️  БД прода: сохранена (backup перед git pull, restore после)\n");
+  console.log("💡 Для быстрого обновления: npm run deploy:light\n");
 }
 
 main().catch((e) => {

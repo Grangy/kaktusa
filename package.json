@@ -21,7 +21,8 @@
     "setup": "node scripts/setup-env.mjs",
     "test:prisma": "node scripts/test-prisma.mjs",
     "db:push": "node scripts/db-push.mjs",
-    "db:seed": "node scripts/seed.mjs"
+    "db:seed": "node scripts/seed.mjs",
+    "audit:prod": "node scripts/audit-prod.mjs"
   },
   "dependencies": {
     "dotenv": "^16.4.5",

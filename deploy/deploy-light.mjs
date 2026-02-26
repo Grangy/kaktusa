@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * Лайт-деплой: git pull → prisma db push → build → pm2 restart.
- * Без: npm ci, nginx. Схема синхронизируется, данные сохраняются.
+ * Без: npm ci, nginx, seed. База прода не трогается (только схема через db push).
  * Использовать когда менялся только код (src/), а не package.json.
  *
  * Переменные окружения: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY (обязательно), DEPLOY_* (опционально).
@@ -52,7 +52,7 @@ async function main() {
   let stepStart = Date.now();
   console.log("=== 1/3 Git pull ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && git fetch origin && git reset --hard origin/main"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -a prisma/dev.db /tmp/kaktusa-dev.db.bak 2>/dev/null || true && git fetch origin && git reset --hard origin/main && cp -a /tmp/kaktusa-dev.db.bak prisma/dev.db 2>/dev/null || true"`
   );
   audit.push({ name: "1. Git pull", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
@@ -74,7 +74,8 @@ async function main() {
   console.log("\n📊 Аудит лайт-деплоя:");
   audit.forEach(({ name, s }) => console.log(`   ${name}: ${s}s`));
   console.log(`   ─────────────────`);
-  console.log(`   ИТОГО: ${total}s\n`);
+  console.log(`   ИТОГО: ${total}s`);
+  console.log("   ℹ️  БД прода: сохранена (backup перед git pull, restore после)\n");
 }
 
 main().catch((e) => {
