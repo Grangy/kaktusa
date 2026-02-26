@@ -172,7 +172,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                       className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                     />
                     <div
-                      className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.95)_0%,rgba(0,0,0,0.6)_25%,rgba(0,0,0,0.3)_50%,transparent_75%)]"
+                      className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.78)_22%,rgba(0,0,0,0.5)_45%,rgba(0,0,0,0.2)_65%,transparent_80%)]"
                       aria-hidden
                     />
                     <span
@@ -180,7 +180,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     >
                       {event.tag}
                     </span>
-                    <div className="absolute bottom-0 left-0 right-0 px-3.5 py-3 pb-4 pt-16 space-y-1.5 md:px-3">
+                    <div className="absolute bottom-[1.5rem] left-0 right-0 px-3.5 py-3 pb-14 pt-16 space-y-1.5 md:px-3">
                       <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
                         {event.title}
                       </h3>
