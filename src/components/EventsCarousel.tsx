@@ -211,7 +211,11 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                 </TransitionLink>
                 <TransitionLink
                   href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
-                  className="absolute bottom-3 right-3 inline-flex items-center justify-center py-2.5 px-5 rounded-xl text-xs font-semibold uppercase tracking-wider border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50 transition-all duration-200 z-10 shadow-lg"
+                  className={`absolute bottom-3 right-3 inline-flex items-center justify-center py-2.5 px-5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 z-10 shadow-lg ${
+                    event.type === "upcoming"
+                      ? "bg-[var(--accent)] text-black hover:bg-[var(--accent-muted)] shadow-[0_0_16px_rgba(74,222,128,0.3)]"
+                      : "border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50"
+                  }`}
                 >
                   {event.linkText}
                 </TransitionLink>

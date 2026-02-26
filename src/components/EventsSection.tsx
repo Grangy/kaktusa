@@ -149,7 +149,11 @@ export default function EventsSection() {
                         href={event.link ?? "#"}
                         whileHover={{ scale: 1.03 }}
                         whileTap={{ scale: 0.98 }}
-                        className="mt-4 inline-flex items-center justify-center px-6 py-3 bg-white text-black font-display text-sm font-semibold tracking-widest uppercase hover:bg-white/90 transition-colors"
+                        className={`mt-4 inline-flex items-center justify-center px-6 py-3 font-display text-sm font-semibold tracking-widest uppercase transition-colors ${
+                          event.type === "upcoming"
+                            ? "bg-[var(--accent)] text-black hover:bg-[var(--accent-muted)] shadow-[0_0_16px_rgba(74,222,128,0.25)]"
+                            : "bg-white text-black hover:bg-white/90"
+                        }`}
                       >
                         {event.linkText}
                       </motion.a>
