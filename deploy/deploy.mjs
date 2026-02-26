@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 /**
- * Деплой: git pull → npm ci → prisma db push → build → pm2.
- * БД на сервере НЕ перезаписывается — используем серверную как основную.
- * db push только добавляет новые колонки/таблицы, данные сохраняются.
+ * Деплой: git pull → npm ci → prisma db push → db:seed → build → pm2.
+ * БД на сервере: db push добавляет колонки, данные сохраняются.
+ * Seed на проде: только новые события из events.json; Main и Meta НЕ перезаписываются.
  */
 import { spawn } from "child_process";
 import { existsSync } from "fs";
@@ -53,7 +53,7 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 2/4 npm ci + Prisma db push + Build (схема — без перезаписи данных) ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push && npm run db:seed && npm run build"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push --accept-data-loss && npm run db:seed && npm run build"`
   );
   audit.push({ name: "2. npm ci + db push + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 

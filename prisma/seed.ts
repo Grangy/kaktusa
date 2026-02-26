@@ -91,6 +91,13 @@ function eventToCreate(e: SeedEvent) {
   };
 }
 
+/**
+ * На production (NODE_ENV=production): только добавляем новые события из events.json.
+ * Main и Meta НЕ трогаем — данные на проде приоритетны.
+ * Локально: полный seed (events + main + meta из data/*.json).
+ */
+const isProduction = process.env.NODE_ENV === "production";
+
 async function main() {
   const events = readJson<SeedEvent[]>("events.json");
   let added = 0;
@@ -105,6 +112,40 @@ async function main() {
   }
 
   const mainData = readJson<SeedMain>("main.json");
+  const metaData = readJson<SeedMeta>("meta.json");
+
+  if (isProduction) {
+    // На проде: только создаём Main/Meta если нет, не перезаписываем
+    const existingMain = await prisma.main.findUnique({ where: { id: "main" } });
+    if (!existingMain) {
+      await prisma.main.create({
+        data: {
+          id: "main",
+          hero: JSON.stringify(mainData.hero),
+          about: JSON.stringify(mainData.about),
+          gallery: JSON.stringify(mainData.gallery),
+          reviews: JSON.stringify(mainData.reviews),
+        },
+      });
+      console.log("Seed: Main создан (новый сервер).");
+    }
+    const existingMeta = await prisma.meta.findUnique({ where: { id: "meta" } });
+    if (!existingMeta) {
+      await prisma.meta.create({
+        data: {
+          id: "meta",
+          title: metaData.title,
+          description: metaData.description,
+          canonical: metaData.canonical ?? null,
+        },
+      });
+      console.log("Seed: Meta создана (новый сервер).");
+    }
+    console.log("Seed done. (production: Main/Meta не перезаписаны)");
+    return;
+  }
+
+  // Локально: полный upsert
   await prisma.main.upsert({
     where: { id: "main" },
     create: {
@@ -122,7 +163,6 @@ async function main() {
     },
   });
 
-  const metaData = readJson<SeedMeta>("meta.json");
   await prisma.meta.upsert({
     where: { id: "meta" },
     create: {

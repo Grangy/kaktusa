@@ -85,22 +85,41 @@ export default function EventLanding({ event }: { event?: Event | null }) {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 0.4, 1], [0, 120, 320]);
+  const parallaxY = useTransform(scrollYProgress, [0, 0.5, 1], [0, 60, 180]);
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <Header />
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
-        <div className="absolute inset-0">
-          <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
-            <Image
-              src={getOptimizedPhotoUrl(heroImage)}
-              alt={title}
-              fill
-              className="object-cover object-top opacity-50"
-              priority
-            />
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            style={{ y: parallaxY }}
+            className="absolute inset-0 -top-[40%] -bottom-[40%] -left-[15%] -right-[15%]"
+          >
+            <motion.div
+              className="absolute inset-0 origin-center"
+              style={{ scale: 1.2 }}
+              animate={{
+                x: [0, 18, -14, 10, 0],
+                y: [0, -12, 14, -8, 0],
+              }}
+              transition={{
+                duration: 14,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: [0.4, 0, 0.2, 1],
+                type: "tween",
+              }}
+            >
+              <Image
+                src={getOptimizedPhotoUrl(heroImage)}
+                alt={title}
+                fill
+                className="object-cover object-top opacity-50"
+                priority
+              />
+            </motion.div>
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(0,0,0,0.85),rgba(0,0,0,0.4)_60%,transparent_85%)]" />
@@ -172,12 +191,16 @@ export default function EventLanding({ event }: { event?: Event | null }) {
               { value: minutes, label: "Мин" },
               { value: seconds, label: "Сек" },
             ].map((item) => (
-              <div key={item.label} className="text-center p-3 rounded-2xl border border-white/10 bg-white/[0.03]">
-                <div className="text-3xl md:text-4xl font-display font-bold tabular-nums text-[var(--accent)]">
+              <motion.div
+                key={item.label}
+                whileHover={{ scale: 1.05 }}
+                className="text-center p-3 rounded-2xl border border-white/10 bg-white/[0.03] hover:border-[var(--accent)]/30 hover:bg-white/[0.06] transition-colors"
+              >
+                <div className="text-3xl md:text-4xl font-display font-bold tabular-nums text-[var(--accent)] drop-shadow-[0_0_12px_rgba(74,222,128,0.3)]">
                   {String(item.value).padStart(2, "0")}
                 </div>
                 <div className="text-xs tracking-wide text-white/60 mt-1">{item.label}</div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
 
@@ -186,7 +209,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.03 }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(74,222,128,0.4)" }}
             whileTap={{ scale: 0.98 }}
             className="inline-block px-10 py-4 rounded-xl border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all backdrop-blur-sm"
           >
@@ -202,9 +225,10 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
+            whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)] transition-shadow duration-300"
           >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Когда</h3>
+            <h3 className="font-display text-xs uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <Calendar size={18} />
               <span>{dateDisplay}</span>
@@ -219,9 +243,10 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
+            whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)] transition-shadow duration-300"
           >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Локация</h3>
+            <h3 className="font-display text-xs uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <MapPin size={18} />
               <span>{locationShort}</span>
@@ -233,11 +258,14 @@ export default function EventLanding({ event }: { event?: Event | null }) {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
+            whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)] transition-shadow duration-300"
           >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Цена</h3>
-            <p className="text-[var(--accent)] font-semibold">{price}</p>
-            {event?.priceNote && <p className="text-white/50 text-sm mt-1">{event.priceNote}</p>}
+            <h3 className="font-display text-xs uppercase text-white/50 mb-4">Цена</h3>
+            <p className="text-[var(--accent)] font-semibold text-lg">{price}</p>
+            {event?.priceNote && (
+              <p className="text-white/50 text-xs mt-1 italic">{event.priceNote}</p>
+            )}
           </motion.div>
         </div>
       </section>
@@ -306,7 +334,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
       </section>
 
       {/* Tickets */}
-      <section id="tickets" className="py-16 md:py-24 px-6 md:px-12">
+      <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
         <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}

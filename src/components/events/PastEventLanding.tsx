@@ -44,22 +44,41 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
     target: heroRef,
     offset: ["start start", "end start"],
   });
-  const y = useTransform(scrollYProgress, [0, 0.4, 1], [0, 120, 320]);
+  const parallaxY = useTransform(scrollYProgress, [0, 0.5, 1], [0, 60, 180]);
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
       <Header />
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
-        <div className="absolute inset-0">
-          <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
-            <Image
-              src={getOptimizedPhotoUrl(heroImage)}
-              alt={title}
-              fill
-              className="object-cover object-top opacity-55"
-              priority
-            />
+        <div className="absolute inset-0 overflow-hidden">
+          <motion.div
+            style={{ y: parallaxY }}
+            className="absolute inset-0 -top-[40%] -bottom-[40%] -left-[15%] -right-[15%]"
+          >
+            <motion.div
+              className="absolute inset-0 origin-center"
+              style={{ scale: 1.2 }}
+              animate={{
+                x: [0, 18, -14, 10, 0],
+                y: [0, -12, 14, -8, 0],
+              }}
+              transition={{
+                duration: 14,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: [0.4, 0, 0.2, 1],
+                type: "tween",
+              }}
+            >
+              <Image
+                src={getOptimizedPhotoUrl(heroImage)}
+                alt={title}
+                fill
+                className="object-cover object-top opacity-55"
+                priority
+              />
+            </motion.div>
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(0,0,0,0.85),rgba(0,0,0,0.4)_60%,transparent_85%)]" />
