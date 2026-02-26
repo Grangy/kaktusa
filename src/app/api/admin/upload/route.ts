@@ -7,6 +7,11 @@ const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
 const UPLOAD_DIR = "photos"; // under public
 
+/** Всегда пишем в project root / public / photos — постоянное хранилище. Deploy делает symlink в standalone. */
+function getUploadDir(): string {
+  return path.join(process.cwd(), "public", UPLOAD_DIR);
+}
+
 function safeName(original: string): string {
   const ext = path.extname(original).toLowerCase() || ".jpg";
   const base = path.basename(original, path.extname(original))
@@ -34,8 +39,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const root = process.cwd();
-    const dir = path.join(root, "public", UPLOAD_DIR);
+    const dir = getUploadDir();
     await mkdir(dir, { recursive: true });
 
     const paths: string[] = [];

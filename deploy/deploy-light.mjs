@@ -38,7 +38,7 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 2/3 Build ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && npm run build && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
   );
   audit.push({ name: "2. Build + copy", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
