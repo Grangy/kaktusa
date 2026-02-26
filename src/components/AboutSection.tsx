@@ -46,8 +46,8 @@ export default function AboutSection({ about }: AboutSectionProps) {
           className="relative p-8 md:p-12 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
-            <div className="relative w-64 h-64 md:w-80 md:h-80 opacity-[0.12]">
-              <Image src="/logo.png" alt="" fill className="object-contain" sizes="320px" />
+            <div className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] opacity-[0.10]">
+              <Image src="/logo.png" alt="" fill className="object-contain" sizes="448px" />
             </div>
           </div>
           <div className="relative space-y-6 text-left w-full">

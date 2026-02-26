@@ -11,7 +11,7 @@ const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
   { label: "Прошедшие мероприятия", path: "/#past" },
-  { label: "Что такое ?КАКТУСА", path: "/#about-us" },
+  { label: "О нас", path: "/#about-us" },
   { label: "Галерея", path: "/#gallery" },
   { label: "Отзывы", path: "/#reviews" },
 ];
