@@ -14,9 +14,12 @@ function getUploadDir(): string {
 
 function safeName(original: string): string {
   const ext = path.extname(original).toLowerCase() || ".jpg";
-  const base = path.basename(original, path.extname(original))
+  let base = path.basename(original, path.extname(original))
     .replace(/[^a-zA-Z0-9_-]/g, "_")
-    .slice(0, 80) || "image";
+    .replace(/_+/g, "_")
+    .replace(/^_|_$/g, "")
+    .slice(0, 80);
+  if (!base || /^_+$/.test(base)) base = "image";
   const stamp = Date.now().toString(36);
   return `${base}-${stamp}${ext}`;
 }
