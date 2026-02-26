@@ -1,6 +1,6 @@
 # 🐱 ?КАКТУСА
 
-![КАКТУСА](https://kaktusa.ru/readme-hero.png)
+![КАКТУСА](https://kaktusa.ru/photos/image_1772103405970.png)
 
 Проект создал добрый энтузиаст **Макс Grangy** для хороших людей &lt;3
 

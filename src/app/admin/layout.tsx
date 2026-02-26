@@ -71,6 +71,21 @@ export default async function AdminLayout({
               <div className="pt-2 mt-2 border-t border-white/10">
                 <RevalidateCacheButton />
               </div>
+              <div className="pt-4 mt-4 border-t border-white/10 space-y-3">
+                <img
+                  src="/photos/image_1772103405970.png"
+                  alt="КАКТУСА"
+                  className="w-full max-w-32 mx-auto rounded-lg object-cover"
+                />
+                <a
+                  href="https://github.com/Grangy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block text-center text-[10px] text-white/50 hover:text-[var(--accent)] transition-colors"
+                >
+                  by Grangy 2026 with love &lt;3
+                </a>
+              </div>
             </nav>
           </aside>
             <main className="flex-1 overflow-auto p-6 md:p-8 lg:p-10">
