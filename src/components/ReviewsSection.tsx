@@ -51,14 +51,14 @@ export default function ReviewsSection({ reviews: reviewsProp }: ReviewsSectionP
   const handleInteract = useCallback(() => setPaused(true), []);
   const handleLeave = useCallback(() => setPaused(false), []);
 
-  // Колёсико мыши → горизонтальный скролл
+  // Колёсико мыши → горизонтальный скролл только при Shift+колесо (не блокируем вертикальный скролл страницы)
   useEffect(() => {
     const el = scrollRef.current;
     if (!el) return;
     const onWheel = (e: WheelEvent) => {
-      handleInteract();
-      if (e.deltaY !== 0) {
+      if (e.shiftKey && e.deltaY !== 0) {
         e.preventDefault();
+        handleInteract();
         el.scrollLeft += e.deltaY;
       }
     };
