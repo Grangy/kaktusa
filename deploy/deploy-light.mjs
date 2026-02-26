@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Лайт-деплой: git pull → prisma migrate deploy → build → pm2 restart.
- * Без: npm ci, nginx. Миграции применяются, данные сохраняются.
+ * Лайт-деплой: git pull → prisma db push → build → pm2 restart.
+ * Без: npm ci, nginx. Схема синхронизируется, данные сохраняются.
  * Использовать когда менялся только код (src/), а не package.json.
  * Если добавлены зависимости — запустить deploy.
  */
@@ -36,9 +36,9 @@ async function main() {
   audit.push({ name: "1. Git pull", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
-  console.log("=== 2/3 Prisma migrate deploy + Build ===");
+  console.log("=== 2/3 Prisma db push + Build ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && node node_modules/prisma/build/index.js migrate deploy && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && node node_modules/prisma/build/index.js db push && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
   );
   audit.push({ name: "2. Prisma migrate + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 

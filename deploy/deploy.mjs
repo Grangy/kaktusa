@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
- * Деплой: git pull → npm ci → prisma migrate deploy + generate → db:seed → build → pm2.
- * БД на сервере: migrate deploy применяет миграции, данные сохраняются.
+ * Деплой: git pull → npm ci → prisma db push + generate → db:seed → build → pm2.
+ * БД на сервере: db push синхронизирует схему (добавляет колонки), данные сохраняются.
  * Seed на проде: только новые события из events.json; Main и Meta НЕ перезаписываются.
  */
 import { spawn } from "child_process";
@@ -51,11 +51,11 @@ async function main() {
   }
 
   stepStart = Date.now();
-  console.log("=== 2/4 npm ci + Prisma migrate deploy + generate + Build ===");
+  console.log("=== 2/4 npm ci + Prisma db push + generate + Build ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && rm -rf node_modules && npm ci --no-audit --no-fund --include=dev && node node_modules/prisma/build/index.js migrate resolve --applied 20260225071400_init 2>/dev/null; node node_modules/prisma/build/index.js migrate resolve --applied 20260224120000_drop_lightning_effect 2>/dev/null; node node_modules/prisma/build/index.js migrate deploy && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && rm -rf node_modules && npm ci --no-audit --no-fund --include=dev && node node_modules/prisma/build/index.js db push && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build"`
   );
-  audit.push({ name: "2. npm ci + migrate + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
+  audit.push({ name: "2. npm ci + db push + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
   console.log("=== 3/4 PM2 restart ===");
