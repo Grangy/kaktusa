@@ -105,9 +105,6 @@ export default function ReviewsSection({ reviews: reviewsProp }: ReviewsSectionP
           </motion.div>
         ))}
       </div>
-      <p className="text-center text-white/40 text-xs mt-4 px-6">
-        Прокрутите для просмотра · Наведите или коснитесь, чтобы остановить
-      </p>
     </section>
   );
 }
