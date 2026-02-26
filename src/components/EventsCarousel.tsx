@@ -180,7 +180,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     >
                       {event.tag}
                     </span>
-                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-6 pt-16 space-y-1.5 md:px-3">
+                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-8 pt-16 space-y-1.5 md:px-3">
                       <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
                         {event.title}
                       </h3>
