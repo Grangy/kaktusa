@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus, X, ZoomIn } from "lucide-react";
+import { uploadImages } from "@/lib/uploadImage";
 
 interface HeroImageEditorProps {
   value: string;
@@ -27,14 +28,9 @@ export function HeroImageEditor({
     if (!file) return;
     setUploading(true);
     try {
-      const form = new FormData();
-      form.append("file", file);
-      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      if (data.paths?.[0]) onChange(data.paths[0]);
+      const paths = await uploadImages([file]);
+      if (paths[0]) onChange(paths[0]);
     } catch (err) {
-      console.error(err);
       alert(err instanceof Error ? err.message : "Ошибка загрузки");
     } finally {
       setUploading(false);

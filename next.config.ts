@@ -11,6 +11,7 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
+    serverActions: { bodySizeLimit: "10mb" },
   },
   headers: async () => [
     {

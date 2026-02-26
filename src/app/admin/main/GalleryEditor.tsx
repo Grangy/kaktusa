@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Image from "next/image";
 import { GripVertical, Plus, X, ZoomIn } from "lucide-react";
+import { uploadImages } from "@/lib/uploadImage";
 
 interface GalleryEditorProps {
   value: string[];
@@ -63,16 +64,10 @@ export function GalleryEditor({
     if (!files?.length) return;
     setUploading(true);
     try {
-      const form = new FormData();
-      for (let i = 0; i < files.length; i++) {
-        form.append("files", files[i]);
-      }
-      const res = await fetch("/api/admin/upload", { method: "POST", body: form });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Upload failed");
-      if (data.paths?.length) onChange([...value, ...data.paths]);
+      const fileList = Array.from(files);
+      const paths = await uploadImages(fileList);
+      if (paths.length) onChange([...value, ...paths]);
     } catch (err) {
-      console.error(err);
       alert(err instanceof Error ? err.message : "Ошибка загрузки");
     } finally {
       setUploading(false);

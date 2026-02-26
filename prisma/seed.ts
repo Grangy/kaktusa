@@ -55,76 +55,53 @@ interface SeedMeta {
   canonical?: string;
 }
 
+function eventToCreate(e: SeedEvent) {
+  return {
+    id: e.id,
+    slug: e.slug,
+    type: e.type,
+    title: e.title,
+    date: e.date,
+    dateDisplay: e.dateDisplay,
+    time: e.time ?? null,
+    location: e.location,
+    locationShort: e.locationShort ?? null,
+    price: e.price ?? null,
+    priceNote: e.priceNote ?? null,
+    heroImage: e.heroImage,
+    heroTagline: null,
+    heroTitleTop: null,
+    heroTitleBottom: null,
+    tag: e.tag ?? null,
+    tagStyle: e.tagStyle ?? null,
+    metaTitle: e.metaTitle,
+    metaDescription: e.metaDescription,
+    artists: JSON.stringify(e.artists ?? []),
+    tickets: JSON.stringify(e.tickets ?? []),
+    aboutParagraphs: JSON.stringify(e.aboutParagraphs ?? []),
+    venueTitle: e.venueTitle,
+    venueAddress: e.venueAddress,
+    venueCity: e.venueCity,
+    buyTicketUrl: e.buyTicketUrl ?? null,
+    age: e.age ?? null,
+    dressCode: e.dressCode ?? null,
+    rules: e.rules ?? null,
+    subtitle: e.subtitle ?? null,
+    gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
+  };
+}
+
 async function main() {
   const events = readJson<SeedEvent[]>("events.json");
+  let added = 0;
   for (const e of events) {
-    await prisma.event.upsert({
-      where: { slug: e.slug },
-      create: {
-        id: e.id,
-        slug: e.slug,
-        type: e.type,
-        title: e.title,
-        date: e.date,
-        dateDisplay: e.dateDisplay,
-        time: e.time ?? null,
-        location: e.location,
-        locationShort: e.locationShort ?? null,
-        price: e.price ?? null,
-        priceNote: e.priceNote ?? null,
-        heroImage: e.heroImage,
-        heroTagline: null,
-        heroTitleTop: null,
-        heroTitleBottom: null,
-        tag: e.tag ?? null,
-        tagStyle: e.tagStyle ?? null,
-        metaTitle: e.metaTitle,
-        metaDescription: e.metaDescription,
-        artists: JSON.stringify(e.artists ?? []),
-        tickets: JSON.stringify(e.tickets ?? []),
-        aboutParagraphs: JSON.stringify(e.aboutParagraphs ?? []),
-        venueTitle: e.venueTitle,
-        venueAddress: e.venueAddress,
-        venueCity: e.venueCity,
-        buyTicketUrl: e.buyTicketUrl ?? null,
-        age: e.age ?? null,
-        dressCode: e.dressCode ?? null,
-        rules: e.rules ?? null,
-        subtitle: e.subtitle ?? null,
-        gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
-      },
-      update: {
-        type: e.type,
-        title: e.title,
-        date: e.date,
-        dateDisplay: e.dateDisplay,
-        time: e.time ?? null,
-        location: e.location,
-        locationShort: e.locationShort ?? null,
-        price: e.price ?? null,
-        priceNote: e.priceNote ?? null,
-        heroImage: e.heroImage,
-        heroTagline: null,
-        heroTitleTop: null,
-        heroTitleBottom: null,
-        tag: e.tag ?? null,
-        tagStyle: e.tagStyle ?? null,
-        metaTitle: e.metaTitle,
-        metaDescription: e.metaDescription,
-        artists: JSON.stringify(e.artists ?? []),
-        tickets: JSON.stringify(e.tickets ?? []),
-        aboutParagraphs: JSON.stringify(e.aboutParagraphs ?? []),
-        venueTitle: e.venueTitle,
-        venueAddress: e.venueAddress,
-        venueCity: e.venueCity,
-        buyTicketUrl: e.buyTicketUrl ?? null,
-        age: e.age ?? null,
-        dressCode: e.dressCode ?? null,
-        rules: e.rules ?? null,
-        subtitle: e.subtitle ?? null,
-        gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
-      },
-    });
+    const existing = await prisma.event.findUnique({ where: { slug: e.slug } });
+    if (existing) continue;
+    await prisma.event.create({ data: eventToCreate(e) });
+    added++;
+  }
+  if (added > 0) {
+    console.log(`Seed: добавлено ${added} новых мероприятий.`);
   }
 
   const mainData = readJson<SeedMain>("main.json");
