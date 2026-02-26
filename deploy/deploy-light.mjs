@@ -46,25 +46,42 @@ function run(cmd) {
 async function main() {
   const start = Date.now();
   const audit = [];
+  const commitMsg = process.env.DEPLOY_COMMIT_MSG || process.argv.slice(2).join(" ") || "deploy";
 
-  console.log("\n⚡ LIGHT DEPLOY (только git pull + build + pm2)\n");
+  console.log("\n⚡ LIGHT DEPLOY (git push → pull → build → pm2)\n");
 
   let stepStart = Date.now();
-  console.log("=== 1/3 Git pull ===");
+  console.log("=== 0/4 Git add, commit, push (локально) ===");
+  await run("git add -A");
+  const hasChanges = await new Promise((resolve) => {
+    const p = spawn("sh", ["-c", "git diff --staged --quiet"], { stdio: "ignore" });
+    p.on("exit", (c) => resolve(c !== 0));
+  });
+  if (hasChanges) {
+    await run(`git commit -m ${JSON.stringify(commitMsg)}`);
+    await run("git push");
+    console.log("   ✓ Изменения запушены");
+  } else {
+    console.log("   Нет изменений для коммита");
+  }
+  audit.push({ name: "0. Git push", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
+
+  stepStart = Date.now();
+  console.log("=== 1/4 Git pull ===");
   await run(
     `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -a prisma/dev.db /tmp/kaktusa-dev.db.bak 2>/dev/null || true && git fetch origin && git reset --hard origin/main && cp -a /tmp/kaktusa-dev.db.bak prisma/dev.db 2>/dev/null || true"`
   );
   audit.push({ name: "1. Git pull", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
-  console.log("=== 2/3 Prisma db push + Build ===");
+  console.log("=== 2/4 Prisma db push + Build ===");
   await run(
     `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && node node_modules/prisma/build/index.js db push && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
   );
   audit.push({ name: "2. Prisma migrate + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
-  console.log("=== 3/3 PM2 restart ===");
+  console.log("=== 3/4 PM2 restart ===");
   await run(
     `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && pm2 restart ecosystem.config.cjs && pm2 save"`
   );
@@ -75,7 +92,8 @@ async function main() {
   audit.forEach(({ name, s }) => console.log(`   ${name}: ${s}s`));
   console.log(`   ─────────────────`);
   console.log(`   ИТОГО: ${total}s`);
-  console.log("   ℹ️  БД прода: сохранена (backup перед git pull, restore после)\n");
+  console.log("   ℹ️  БД прода: сохранена (backup перед git pull, restore после)");
+  console.log("   💡 Сообщение коммита: DEPLOY_COMMIT_MSG или аргумент (npm run deploy:light \"fix preloader\")\n");
 }
 
 main().catch((e) => {
