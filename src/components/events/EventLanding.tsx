@@ -99,8 +99,8 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             className="absolute inset-0 -top-[40%] -bottom-[40%] -left-[15%] -right-[15%]"
           >
             <motion.div
-              className="absolute inset-0 origin-center"
-              style={{ scale: 1.2 }}
+              className="absolute inset-0 origin-center min-w-full min-h-full"
+              style={{ scale: 1.15 }}
               animate={{
                 x: [0, 18, -14, 10, 0],
                 y: [0, -12, 14, -8, 0],
@@ -117,7 +117,8 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                 src={getOptimizedPhotoUrl(heroImage)}
                 alt={title}
                 fill
-                className="object-cover object-top opacity-50"
+                className="object-cover object-center md:object-[center_35%] opacity-50 size-full"
+                sizes="100vw"
                 priority
               />
             </motion.div>
