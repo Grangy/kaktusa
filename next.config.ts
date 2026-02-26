@@ -22,7 +22,10 @@ const nextConfig: NextConfig = {
     },
     {
       source: "/",
-      headers: [{ key: "Cache-Control", value: "no-cache, no-store, must-revalidate" }],
+      headers: [
+        { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
+        { key: "Link", value: "</logo.png>; rel=preload; as=image; fetchpriority=high" },
+      ],
     },
     {
       source: "/events/:path*",

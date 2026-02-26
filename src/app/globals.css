@@ -95,6 +95,11 @@ body {
   animation: preloader-spin 6s linear infinite;
 }
 
+/* Скрыть статический прелоадер после готовности приложения */
+body.preloader-done #preloader-shell {
+  display: none !important;
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }

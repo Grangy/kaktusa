@@ -61,6 +61,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
+      <head>
+        <link rel="preload" href="/logo.png" as="image" fetchPriority="high" />
+      </head>
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative">
         <PolygonBackground />
         <div className="relative z-10">

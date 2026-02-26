@@ -38,13 +38,16 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
 
   useEffect(() => {
     queueMicrotask(() => {
-      setSkipPreloader(!!sessionStorage.getItem(PRELOADER_DONE_KEY));
+      const skip = !!sessionStorage.getItem(PRELOADER_DONE_KEY);
+      setSkipPreloader(skip);
+      if (skip) document.body.classList.add("preloader-done");
     });
   }, []);
 
   useEffect(() => {
     if (isReady) {
       sessionStorage.setItem(PRELOADER_DONE_KEY, "1");
+      document.body.classList.add("preloader-done");
     }
   }, [isReady]);
 
