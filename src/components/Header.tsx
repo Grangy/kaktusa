@@ -7,8 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
 
-const HERO_THRESHOLD = 0.7;
-const LOGO_SWITCH_DURATION = 0.4;
+const SCROLL_THRESHOLD = 20; // как только скролл начался
+const LOGO_SWITCH_DURATION = 1; // плавная смена
 
 const DEFAULT_LOGO_HERO = "/new-logo.png";
 const DEFAULT_LOGO_SCROLLED = "/logo.png";
@@ -39,7 +39,7 @@ export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DE
       setShowMinimal(true);
       return;
     }
-    const check = () => setShowMinimal(window.scrollY > window.innerHeight * HERO_THRESHOLD);
+    const check = () => setShowMinimal(window.scrollY > SCROLL_THRESHOLD);
     check();
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
