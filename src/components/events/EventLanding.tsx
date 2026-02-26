@@ -210,9 +210,9 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(74,222,128,0.4)" }}
+            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(74,222,128,0.5)" }}
             whileTap={{ scale: 0.98 }}
-            className="inline-block px-10 py-4 rounded-xl border-2 border-[var(--accent)] font-display text-sm uppercase text-white hover:bg-[var(--accent)]/20 transition-all backdrop-blur-sm"
+            className="inline-block px-10 py-4 rounded-xl bg-[var(--accent)] text-black font-display text-sm font-semibold uppercase hover:bg-[var(--accent-muted)] transition-all shadow-[0_0_20px_rgba(74,222,128,0.3)]"
           >
             Купить билет
           </motion.a>
@@ -406,7 +406,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                   href={buyTicketUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-white/90 transition-colors shrink-0"
+                  className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[var(--accent)] text-black font-display text-sm font-semibold tracking-wide uppercase hover:bg-[var(--accent-muted)] transition-colors shrink-0 shadow-[0_0_16px_rgba(74,222,128,0.25)]"
                 >
                   <Ticket size={16} /> Купить билет
                 </a>
