@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
+
+const HERO_THRESHOLD = 0.7; // доля viewport: проскроллили 70% — уже «прошли» херо
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
@@ -18,8 +20,21 @@ const MENU_ITEMS: { label: string; path: string }[] = [
 
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [pastHero, setPastHero] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
+
+  const isHome = pathname === "/";
+  useEffect(() => {
+    if (!isHome) {
+      setPastHero(true);
+      return;
+    }
+    const check = () => setPastHero(window.scrollY > window.innerHeight * HERO_THRESHOLD);
+    check();
+    window.addEventListener("scroll", check, { passive: true });
+    return () => window.removeEventListener("scroll", check);
+  }, [isHome]);
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
@@ -45,7 +60,24 @@ export default function Header() {
       >
         <TransitionLink href="/" className="flex items-center h-full">
           <div className="h-full w-32 md:w-40 relative shrink-0">
-            <Image src="/new-logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" />
+            <div className="absolute inset-0">
+              <motion.div
+                animate={{ opacity: pastHero ? 0 : 1 }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0"
+                aria-hidden={pastHero}
+              >
+                <Image src="/new-logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" priority />
+              </motion.div>
+              <motion.div
+                animate={{ opacity: pastHero ? 1 : 0 }}
+                transition={{ duration: 0.4 }}
+                className="absolute inset-0"
+                aria-hidden={!pastHero}
+              >
+                <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="160px" />
+              </motion.div>
+            </div>
           </div>
         </TransitionLink>
 

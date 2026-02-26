@@ -9,6 +9,7 @@
     "lint": "eslint",
     "deploy": "node deploy/deploy.mjs",
     "deploy:light": "node deploy/deploy-light.mjs",
+    "deploy:go": "node deploy/deploy-push.mjs",
     "deploy:hard": "node deploy/deploy.mjs",
     "update": "node deploy/deploy-light.mjs",
     "dev:perf": "node scripts/dev-perf.mjs",
