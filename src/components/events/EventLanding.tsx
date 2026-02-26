@@ -96,7 +96,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
             style={{ y: parallaxY }}
-            className="absolute inset-0 -top-[40%] -bottom-[40%] -left-[15%] -right-[15%]"
+            className="absolute inset-0"
           >
             <motion.div
               className="absolute inset-0 origin-center min-w-full min-h-full"
@@ -123,7 +123,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
               />
             </motion.div>
           </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/40 to-black" />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/25 to-black/70" />
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_50%_45%,rgba(0,0,0,0.85),rgba(0,0,0,0.4)_60%,transparent_85%)]" />
           <div className="absolute inset-0 bg-[linear-gradient(to_right,transparent_15%,rgba(0,0,0,0.5)_35%,rgba(0,0,0,0.5)_65%,transparent_85%)]" />
         </div>
