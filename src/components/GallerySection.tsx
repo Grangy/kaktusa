@@ -101,9 +101,6 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                  <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
-                    <span className="text-white/90 text-sm px-4 py-2 rounded-lg bg-black/50">Нажмите для просмотра</span>
-                  </div>
                 </div>
               </button>
             </motion.div>
