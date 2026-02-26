@@ -18,10 +18,12 @@ const DEFAULT_PHOTOS = [
 
 interface GallerySectionProps {
   photos?: string[] | null;
+  /** Скрыть блок, если фото нет (для страниц мероприятий) */
+  hideIfEmpty?: boolean;
 }
 
-export default function GallerySection({ photos: photosProp }: GallerySectionProps) {
-  const photos = photosProp?.length ? photosProp : DEFAULT_PHOTOS;
+export default function GallerySection({ photos: photosProp, hideIfEmpty }: GallerySectionProps) {
+  const photos = photosProp?.length ? photosProp : hideIfEmpty ? [] : DEFAULT_PHOTOS;
   const scrollRef = useRef<HTMLDivElement>(null);
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
@@ -40,6 +42,8 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
       document.body.style.overflow = "";
     };
   }, [lightboxIndex, photos.length]);
+
+  if (hideIfEmpty && !photos.length) return null;
 
   const scrollTo = (index: number) => {
     const i = Math.max(0, Math.min(index, photos.length - 1));

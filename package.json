@@ -19,7 +19,7 @@
     "setup": "node scripts/setup-env.mjs",
     "test:prisma": "node scripts/test-prisma.mjs",
     "db:push": "node scripts/db-push.mjs",
-    "db:seed": "node -e \"process.env.DATABASE_URL='file:'+require('path').join(process.cwd(),'prisma','dev.db'); require('child_process').execSync('npx tsx prisma/seed.ts', {stdio:'inherit'})\""
+    "db:seed": "node scripts/seed.mjs"
   },
   "dependencies": {
     "@auth/core": "^0.41.0",

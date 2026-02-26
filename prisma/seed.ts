@@ -39,6 +39,7 @@ interface SeedEvent {
   dressCode?: string;
   rules?: string;
   subtitle?: string;
+  gallery?: string[];
 }
 
 interface SeedMain {
@@ -90,6 +91,7 @@ async function main() {
         dressCode: e.dressCode ?? null,
         rules: e.rules ?? null,
         subtitle: e.subtitle ?? null,
+        gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
       },
       update: {
         type: e.type,
@@ -120,6 +122,7 @@ async function main() {
         dressCode: e.dressCode ?? null,
         rules: e.rules ?? null,
         subtitle: e.subtitle ?? null,
+        gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
       },
     });
   }

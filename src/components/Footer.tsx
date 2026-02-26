@@ -49,7 +49,7 @@ export default function Footer({ logo = "/logo.png" }: FooterProps = {}) {
             <nav className="space-y-2">
               <TransitionLink href={`${navPrefix}#upcoming`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Мероприятия</TransitionLink>
               <TransitionLink href={`${navPrefix}#past`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Прошедшие</TransitionLink>
-              <TransitionLink href={`${navPrefix}#about-us`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">О нас</TransitionLink>
+              <TransitionLink href={`${navPrefix}#about-us`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">О НАС</TransitionLink>
               <TransitionLink href={`${navPrefix}#gallery`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Галерея</TransitionLink>
               <TransitionLink href={`${navPrefix}#reviews`} className="block py-1.5 text-white/60 text-sm hover:text-[var(--accent)] transition-colors focus:text-[var(--accent)] focus:outline-none">Отзывы</TransitionLink>
             </nav>

@@ -81,9 +81,9 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
     if (!events?.length) return [DEFAULT_UPCOMING, ...DEFAULT_PAST];
     const upcomingList = events.filter((e) => e.type === "upcoming").sort((a, b) => a.date.localeCompare(b.date));
     const pastList = events.filter((e) => e.type === "past").sort((a, b) => b.date.localeCompare(a.date));
-    const upcoming = upcomingList[0] ? toCard(upcomingList[0], "upcoming") : DEFAULT_UPCOMING;
+    const upcoming = upcomingList.map((e) => toCard(e, "upcoming"));
     const past = pastList.map((e) => toCard(e, "past"));
-    return [upcoming, ...past];
+    return upcoming.length ? [...upcoming, ...past] : [DEFAULT_UPCOMING, ...past];
   }, [events]);
 
   const scrollRef = useRef<HTMLDivElement>(null);

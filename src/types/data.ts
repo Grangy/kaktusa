@@ -38,6 +38,7 @@ export interface Event {
   dressCode?: string;
   rules?: string;
   subtitle?: string; // for past events
+  gallery?: string[]; // фото мероприятия
 }
 
 export interface MainContent {

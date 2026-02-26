@@ -16,7 +16,7 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ about, logo = "/logo.png" }: AboutSectionProps) {
-  const heading = about?.heading ?? "О нас";
+  const heading = about?.heading ?? "О НАС";
   const lines = about?.lines?.length ? about.lines : DEFAULT_LINES;
   const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
 

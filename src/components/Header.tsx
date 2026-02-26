@@ -17,7 +17,7 @@ const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
   { label: "Прошедшие мероприятия", path: "/#past" },
-  { label: "О нас", path: "/#about-us" },
+  { label: "О НАС", path: "/#about-us" },
   { label: "Галерея", path: "/#gallery" },
   { label: "Отзывы", path: "/#reviews" },
 ];
@@ -29,21 +29,18 @@ interface HeaderProps {
 
 export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DEFAULT_LOGO_SCROLLED }: HeaderProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [showMinimal, setShowMinimal] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
-
   const isHome = pathname === "/";
+  const [pastThreshold, setPastThreshold] = useState(false);
   useEffect(() => {
-    if (!isHome) {
-      setShowMinimal(true);
-      return;
-    }
-    const check = () => setShowMinimal(window.scrollY > SCROLL_THRESHOLD);
+    if (!isHome) return;
+    const check = () => setPastThreshold(window.scrollY > SCROLL_THRESHOLD);
     check();
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
   }, [isHome]);
+  const showMinimal = !isHome || pastThreshold;
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);

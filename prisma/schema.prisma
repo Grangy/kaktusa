@@ -5,7 +5,7 @@ generator client {
 
 datasource db {
   provider = "sqlite"
-  url      = "file:./prisma/dev.db"
+  url      = "file:./dev.db"
 }
 
 model Event {
@@ -39,6 +39,7 @@ model Event {
   dressCode        String?
   rules            String?
   subtitle         String?
+  gallery          String?  // JSON array of photo paths
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Event } from "@/types/data";
 import { HeroImageEditor } from "./HeroImageEditor";
+import { GalleryEditor } from "@/app/admin/main/GalleryEditor";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
@@ -38,6 +39,7 @@ const defaultEvent: Partial<Event> = {
   age: "",
   dressCode: "",
   rules: "",
+  gallery: [],
 };
 
 function inputClass() {
@@ -261,6 +263,12 @@ export function EventEditForm({
           value={form.heroImage ?? ""}
           onChange={(heroImage) => update({ heroImage })}
           label="Hero-изображение"
+        />
+        <GalleryEditor
+          title="Галерея мероприятия"
+          value={form.gallery ?? []}
+          onChange={(gallery) => update({ gallery })}
+          emptyLabel="Добавьте фото для страницы мероприятия"
         />
       </div>
       <div>

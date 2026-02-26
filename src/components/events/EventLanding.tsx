@@ -5,6 +5,7 @@ import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import GallerySection from "@/components/GallerySection";
 import { MapPin, Calendar, Clock, Ticket, Gift, Users } from "lucide-react";
 import type { Event } from "@/types/data";
 
@@ -408,6 +409,8 @@ export default function EventLanding({ event }: { event?: Event | null }) {
           </motion.div>
         </div>
       </section>
+
+      <GallerySection photos={event?.gallery} hideIfEmpty />
 
       <Footer />
     </main>

@@ -33,6 +33,7 @@ function rowToEvent(row: {
   dressCode: string | null;
   rules: string | null;
   subtitle: string | null;
+  gallery?: string | null;
 }): Event {
   return {
     id: row.id,
@@ -65,6 +66,7 @@ function rowToEvent(row: {
     dressCode: row.dressCode ?? undefined,
     rules: row.rules ?? undefined,
     subtitle: row.subtitle ?? undefined,
+    gallery: row.gallery ? (JSON.parse(row.gallery) as string[]) : undefined,
   };
 }
 
@@ -109,6 +111,7 @@ const eventToUpsert = (e: Event) => ({
   dressCode: e.dressCode ?? null,
   rules: e.rules ?? null,
   subtitle: e.subtitle ?? null,
+  gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
 });
 
 export async function createEvent(event: Event): Promise<void> {
