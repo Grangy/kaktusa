@@ -1,13 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import type { MainContent } from "@/types/data";
 import { GalleryEditor } from "./GalleryEditor";
 import { HeroImageEditor } from "@/app/admin/events/[slug]/HeroImageEditor";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
-import { Loader2 } from "lucide-react";
+import { Loader2, GripVertical } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-2.5 bg-black/50 border border-white/20 text-white rounded-lg focus:outline-none focus:border-[var(--accent)] placeholder:text-white/40";
@@ -42,6 +42,19 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
   const updateGallery = (patch: Partial<MainContent["gallery"]>) => {
     setForm((f) => ({ ...f, gallery: { ...f.gallery, ...patch } }));
   };
+
+  const [reviewDragged, setReviewDragged] = useState<number | null>(null);
+  const [reviewDragOver, setReviewDragOver] = useState<number | null>(null);
+  const moveReview = useCallback(
+    (from: number, to: number) => {
+      if (to < 0 || to >= form.reviews.length || from === to) return;
+      const next = [...form.reviews];
+      const [removed] = next.splice(from, 1);
+      next.splice(to, 0, removed);
+      update({ reviews: next });
+    },
+    [form.reviews, update]
+  );
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -196,11 +209,41 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
       <section className={sectionCard}>
         <h2 className="font-display text-lg uppercase text-white/90 mb-6">Отзывы</h2>
         <p className="text-white/50 text-sm mb-4">
-          Отзывы показываются бесконечной каруселью на главной. Можно добавить любое количество.
+          Отзывы показываются бесконечной каруселью на главной. Перетащите для изменения порядка (приоритета).
         </p>
         <div className="space-y-4">
           {form.reviews.map((r, i) => (
-            <div key={r.id} className="rounded-lg border border-white/10 p-4 bg-black/20 flex gap-3">
+            <div
+              key={r.id}
+              draggable
+              onDragStart={(e) => {
+                setReviewDragged(i);
+                e.dataTransfer.effectAllowed = "move";
+              }}
+              onDragOver={(e) => {
+                e.preventDefault();
+                setReviewDragOver(i);
+              }}
+              onDragLeave={() => setReviewDragOver(null)}
+              onDrop={(e) => {
+                e.preventDefault();
+                setReviewDragOver(null);
+                if (reviewDragged !== null) {
+                  moveReview(reviewDragged, i);
+                  setReviewDragged(null);
+                }
+              }}
+              onDragEnd={() => {
+                setReviewDragged(null);
+                setReviewDragOver(null);
+              }}
+              className={`rounded-lg border border-white/10 p-4 bg-black/20 flex gap-3 cursor-grab active:cursor-grabbing select-none ${
+                reviewDragged === i ? "opacity-50" : reviewDragOver === i ? "border-[var(--accent)] bg-[var(--accent)]/10" : ""
+              }`}
+            >
+              <span className="shrink-0 mt-1 text-white/40 cursor-grab" title="Перетащите для изменения порядка">
+                <GripVertical size={18} />
+              </span>
               <div className="flex-1 space-y-2">
                 <input
                   placeholder="Автор"

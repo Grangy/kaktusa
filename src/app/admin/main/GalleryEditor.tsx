@@ -20,6 +20,7 @@ export function GalleryEditor({
   emptyLabel = "Добавьте фото (перетащите или загрузите)",
 }: GalleryEditorProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const [lightboxPath, setLightboxPath] = useState<string | null>(null);
   const [uploading, setUploading] = useState(false);
   const [addPath, setAddPath] = useState("");
@@ -35,15 +36,28 @@ export function GalleryEditor({
     [value, onChange]
   );
 
-  const onDragStart = (index: number) => setDraggedIndex(index);
-  const onDragOver = (e: React.DragEvent) => e.preventDefault();
+  const onDragStart = (e: React.DragEvent, index: number) => {
+    setDraggedIndex(index);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", String(index));
+  };
+  const onDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+    setDragOverIndex(index);
+  };
+  const onDragLeave = () => setDragOverIndex(null);
   const onDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
+    setDragOverIndex(null);
     if (draggedIndex === null) return;
     move(draggedIndex, dropIndex);
     setDraggedIndex(null);
   };
-  const onDragEnd = () => setDraggedIndex(null);
+  const onDragEnd = () => {
+    setDraggedIndex(null);
+    setDragOverIndex(null);
+  };
 
   const remove = (index: number) => {
     onChange(value.filter((_, i) => i !== index));
@@ -81,6 +95,9 @@ export function GalleryEditor({
       <h2 className="font-display text-lg uppercase text-white/90 mb-4">{title}</h2>
 
       {/* Список с превью и drag-n-drop */}
+      <p className="text-white/50 text-sm mb-3">
+        Порядок карточек = приоритет рендера (первая — самая важная). Перетащите для изменения.
+      </p>
       <div
         className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mb-6"
         onDragEnd={onDragEnd}
@@ -89,28 +106,35 @@ export function GalleryEditor({
           <div
             key={`${path}-${index}`}
             draggable
-            onDragStart={() => onDragStart(index)}
-            onDragOver={onDragOver}
+            onDragStart={(e) => onDragStart(e, index)}
+            onDragOver={(e) => onDragOver(e, index)}
+            onDragLeave={onDragLeave}
             onDrop={(e) => onDrop(e, index)}
-            className={`group relative aspect-[4/5] rounded-lg overflow-hidden border-2 bg-black ${
+            className={`group relative aspect-[4/5] rounded-lg overflow-hidden border-2 bg-black cursor-grab active:cursor-grabbing select-none ${
               draggedIndex === index
-                ? "border-[var(--accent)] opacity-80 scale-95"
-                : "border-white/10 hover:border-white/25"
+                ? "border-[var(--accent)] opacity-50 scale-95 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--background)]"
+                : dragOverIndex === index
+                  ? "border-[var(--accent)] bg-[var(--accent)]/10"
+                  : "border-white/10 hover:border-white/25"
             } transition-all`}
           >
-            <div className="absolute inset-0 flex items-center justify-center">
+            <span className="absolute top-2 left-2 z-10 w-6 h-6 flex items-center justify-center rounded bg-black/70 text-[10px] font-bold text-white">
+              {index + 1}
+            </span>
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
               <Image
                 src={getOptimizedPhotoUrl(path)}
                 alt=""
                 fill
                 className="object-cover"
                 sizes="200px"
+                draggable={false}
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
                 }}
               />
             </div>
-            <div className="absolute top-2 left-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <div className="absolute top-2 right-2 flex items-center gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto">
               <span
                 className="cursor-grab active:cursor-grabbing p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
                 title="Перетащите для изменения порядка"

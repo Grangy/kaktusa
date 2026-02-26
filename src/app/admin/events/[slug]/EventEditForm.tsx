@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Event } from "@/types/data";
@@ -10,7 +10,7 @@ import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
 import { ConfirmModal } from "@/components/admin/ConfirmModal";
-import { Loader2, Trash2 } from "lucide-react";
+import { Loader2, Trash2, GripVertical } from "lucide-react";
 
 const defaultEvent: Partial<Event> = {
   type: "upcoming",
@@ -118,6 +118,20 @@ export function EventEditForm({
   }
 
   const update = (patch: Partial<Event>) => setForm((f) => ({ ...f, ...patch }));
+
+  const [paraDragged, setParaDragged] = useState<number | null>(null);
+  const [paraDragOver, setParaDragOver] = useState<number | null>(null);
+  const moveParagraph = useCallback(
+    (from: number, to: number) => {
+      const arr = form.aboutParagraphs ?? [];
+      if (to < 0 || to >= arr.length || from === to) return;
+      const next = [...arr];
+      const [removed] = next.splice(from, 1);
+      next.splice(to, 0, removed);
+      update({ aboutParagraphs: next });
+    },
+    [form.aboutParagraphs, update]
+  );
 
   return (
     <>
@@ -299,8 +313,39 @@ export function EventEditForm({
       </div>
       <div>
         <label className="block text-white/80 text-sm mb-1">О мероприятии (абзацы)</label>
+        <p className="text-white/50 text-xs mb-2">Перетащите для изменения порядка</p>
         {(form.aboutParagraphs ?? []).map((p, i) => (
-          <div key={i} className="mb-2 flex gap-2">
+          <div
+            key={i}
+            draggable
+            onDragStart={(e) => {
+              setParaDragged(i);
+              e.dataTransfer.effectAllowed = "move";
+            }}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setParaDragOver(i);
+            }}
+            onDragLeave={() => setParaDragOver(null)}
+            onDrop={(e) => {
+              e.preventDefault();
+              setParaDragOver(null);
+              if (paraDragged !== null) {
+                moveParagraph(paraDragged, i);
+                setParaDragged(null);
+              }
+            }}
+            onDragEnd={() => {
+              setParaDragged(null);
+              setParaDragOver(null);
+            }}
+            className={`mb-2 flex gap-2 cursor-grab active:cursor-grabbing select-none rounded p-1 -m-1 ${
+              paraDragged === i ? "opacity-50" : paraDragOver === i ? "ring-1 ring-[var(--accent)] rounded" : ""
+            }`}
+          >
+            <span className="shrink-0 mt-3 text-white/40" title="Перетащите">
+              <GripVertical size={18} />
+            </span>
             <textarea
               value={p}
               onChange={(e) => {
@@ -308,7 +353,7 @@ export function EventEditForm({
                 arr[i] = e.target.value;
                 update({ aboutParagraphs: arr });
               }}
-              className={inputClass()}
+              className={`${inputClass()} flex-1 min-w-0`}
               rows={2}
             />
             <button
