@@ -3,6 +3,7 @@
 import { useState, useCallback } from "react";
 import Image from "next/image";
 import { GripVertical, Plus, X, ZoomIn } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import { uploadImages } from "@/lib/uploadImage";
 
 interface GalleryEditorProps {
@@ -99,12 +100,11 @@ export function GalleryEditor({
           >
             <div className="absolute inset-0 flex items-center justify-center">
               <Image
-                src={path}
+                src={getOptimizedPhotoUrl(path)}
                 alt=""
                 fill
                 className="object-cover"
                 sizes="200px"
-                unoptimized
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
                 }}
@@ -189,12 +189,11 @@ export function GalleryEditor({
           aria-label="Закрыть"
         >
           <Image
-            src={lightboxPath}
+            src={getOptimizedPhotoUrl(lightboxPath)}
             alt=""
             width={1200}
             height={800}
             className="max-w-full max-h-full object-contain"
-            unoptimized
             onClick={(e) => e.stopPropagation()}
           />
         </button>

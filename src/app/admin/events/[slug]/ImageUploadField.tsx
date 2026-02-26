@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { uploadImages } from "@/lib/uploadImage";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 interface ImageUploadFieldProps {
   value: string;
@@ -63,12 +64,11 @@ export function ImageUploadField({
         {value && (
           <div className="shrink-0 w-24 h-24 relative rounded-lg overflow-hidden border border-white/20 bg-black/50">
             <Image
-              src={value}
+              src={getOptimizedPhotoUrl(value)}
               alt=""
               fill
               className="object-cover"
               sizes="96px"
-              unoptimized
               onError={(e) => {
                 (e.target as HTMLImageElement).style.display = "none";
               }}

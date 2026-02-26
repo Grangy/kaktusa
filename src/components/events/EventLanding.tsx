@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import { MapPin, Calendar, Clock, Ticket, Gift, Users } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import type { Event } from "@/types/data";
 
 const DEFAULT_ARTISTS = ["GRETTA", "SANSÁRIAN", "WILYAMDELOVE & NOBE (Bassmatic Records)", "RESONANCE", "KVITASH"];
@@ -94,7 +95,7 @@ export default function EventLanding({ event }: { event?: Event | null }) {
         <div className="absolute inset-0">
           <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
             <Image
-              src={heroImage}
+              src={getOptimizedPhotoUrl(heroImage)}
               alt={title}
               fill
               className="object-cover object-top opacity-50"

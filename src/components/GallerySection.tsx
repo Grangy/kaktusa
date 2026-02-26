@@ -4,6 +4,7 @@ import { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const DEFAULT_PHOTOS = [
   "/photos/DSCF4999.jpg",
@@ -98,7 +99,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
               >
                 <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 cursor-pointer ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(255,255,255,0.15)]" : "border border-white/10 group-hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.12)]"}`}>
                   <Image
-                    src={src}
+                    src={getOptimizedPhotoUrl(src)}
                     alt=""
                     fill
                     sizes="(max-width: 640px) 85vw, (max-width: 768px) 75vw, 420px"
@@ -198,12 +199,11 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
             >
               <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06)] ring-1 ring-white/5">
                 <Image
-                  src={photos[lightboxIndex]}
+                  src={getOptimizedPhotoUrl(photos[lightboxIndex])}
                   alt=""
                   width={1920}
                   height={1280}
                   className="block max-w-full max-h-[75vh] sm:max-h-[78vh] md:max-h-[80vh] w-auto h-auto object-contain"
-                  unoptimized
                   priority
                 />
               </div>

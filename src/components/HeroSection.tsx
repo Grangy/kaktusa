@@ -6,6 +6,7 @@ import TransitionLink from "./TransitionLink";
 import Image from "next/image";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const DEFAULT_TITLE_TOP = "BLOOM";
 const DEFAULT_TITLE_BOTTOM = "OF ENERGY";
@@ -137,7 +138,7 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
               key={src}
               className={`absolute inset-0 transition-opacity duration-1000 ${i === pcImageIndex ? "opacity-100" : "opacity-0"}`}
             >
-              <Image src={src} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" loading={i === 0 ? undefined : "lazy"} unoptimized />
+              <Image src={getOptimizedPhotoUrl(src)} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" loading={i === 0 ? undefined : "lazy"} />
             </div>
           ))}
         </motion.div>

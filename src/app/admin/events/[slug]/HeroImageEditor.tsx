@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Plus, X, ZoomIn } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import { uploadImages } from "@/lib/uploadImage";
 
 interface HeroImageEditorProps {
@@ -61,12 +62,11 @@ export function HeroImageEditor({
           {value ? (
             <div className={`group relative rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/25 bg-black transition-colors ${compact ? "aspect-square" : "aspect-[4/5]"}`}>
               <Image
-                src={value}
+                src={getOptimizedPhotoUrl(value)}
                 alt=""
                 fill
                 className="object-cover"
                 sizes="200px"
-                unoptimized
                 onError={(e) => {
                   (e.target as HTMLImageElement).style.display = "none";
                 }}
@@ -141,12 +141,11 @@ export function HeroImageEditor({
           aria-label="Закрыть"
         >
           <Image
-            src={value}
+            src={getOptimizedPhotoUrl(value)}
             alt=""
             width={1200}
             height={800}
             className="max-w-full max-h-full object-contain"
-            unoptimized
             onClick={(e) => e.stopPropagation()}
           />
         </button>

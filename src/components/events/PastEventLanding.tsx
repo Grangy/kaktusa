@@ -7,6 +7,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
 import { MapPin, Calendar, Clock, Users } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import type { Event } from "@/types/data";
 
 const DEFAULT_ARTISTS = ["GRETTA", "MARGARYAN", "DOBROV & GAR1SSON (Moscow)", "RESONANCE", "TITORENKO"];
@@ -53,7 +54,7 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
         <div className="absolute inset-0">
           <motion.div style={{ y }} className="absolute inset-0 -top-[25%] -bottom-[25%]">
             <Image
-              src={heroImage}
+              src={getOptimizedPhotoUrl(heroImage)}
               alt={title}
               fill
               className="object-cover object-top opacity-55"

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import TransitionLink from "./TransitionLink";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const pastEvents = [
   {
@@ -41,7 +42,7 @@ export default function PastEventsSection() {
               {/* Картинка 1:1 */}
               <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
                 <Image
-                  src={event.image}
+                  src={getOptimizedPhotoUrl(event.image)}
                   alt={event.title}
                   fill
                   className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"

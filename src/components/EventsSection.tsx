@@ -4,6 +4,7 @@ import { useRef } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { MapPin, Calendar, ChevronLeft, ChevronRight } from "lucide-react";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const events = [
   {
@@ -103,7 +104,7 @@ export default function EventsSection() {
               >
                 <div className={`relative aspect-square bg-black ${event.muted ? "opacity-90" : ""}`}>
                   <Image
-                    src={event.image}
+                    src={getOptimizedPhotoUrl(event.image)}
                     alt={event.title}
                     fill
                     priority={i === 0}

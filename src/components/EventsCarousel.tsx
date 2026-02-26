@@ -6,6 +6,7 @@ import { ChevronLeft, ChevronRight, MapPin, Calendar } from "lucide-react";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 import type { Event } from "@/types/data";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const DEFAULT_UPCOMING = {
   id: "bloom",
@@ -164,7 +165,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                 >
                   <div className="relative aspect-[3/4] overflow-hidden">
                     <Image
-                      src={event.image}
+                      src={getOptimizedPhotoUrl(event.image)}
                       alt={event.title}
                       fill
                       sizes="320px"

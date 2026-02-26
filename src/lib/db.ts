@@ -4,8 +4,12 @@ import path from "path";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient };
 
-/** Корень проекта: next dev/build запускается из корня, cwd там. */
+/** Корень проекта. При standalone cwd может быть .next/standalone — prisma/ там нет. */
 function getProjectRoot(): string {
+  const cwd = process.cwd().replace(/\\/g, "/");
+  if (cwd.endsWith(".next/standalone") || cwd.endsWith(".next\\standalone")) {
+    return path.join(cwd, "..", "..").replace(/\\/g, "/");
+  }
   return process.cwd();
 }
 
@@ -24,7 +28,13 @@ function getDatabaseUrl(): string {
         ? env.replace(/\\/g, "/")
         : null;
     if (prodPath && path.isAbsolute(prodPath)) return `file:${prodPath}`;
-    return `file:${PRODUCTION_DB_PATH}`;
+    // Использовать PRODUCTION_DB_PATH только на сервере (cwd = /var/www/kaktusa)
+    const rootNorm = root.replace(/\\/g, "/");
+    if (rootNorm === "/var/www/kaktusa" || rootNorm.endsWith("/var/www/kaktusa")) {
+      return `file:${PRODUCTION_DB_PATH}`;
+    }
+    // Локальный next start — использовать локальную БД
+    return `file:${path.join(root, "prisma", "dev.db").replace(/\\/g, "/")}`;
   }
 
   if (env && (env.startsWith("prisma://") || env.startsWith("prisma+"))) {
