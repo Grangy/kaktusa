@@ -1,36 +1,173 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ?КАКТУСА
 
-## Getting Started
+**Сайт проекта электронных ивентов с особым смыслом и звучанием в уникальных локациях Крыма.**
 
-First, run the development server:
+[![Node.js](https://img.shields.io/badge/Node.js-18+-339933?logo=node.js)](https://nodejs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19-61dafb?logo=react)](https://react.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript)](https://www.typescriptlang.org/)
+[![Prisma](https://img.shields.io/badge/Prisma-6-2d3748?logo=prisma)](https://www.prisma.io/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-3-003b57?logo=sqlite)](https://www.sqlite.org/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12-bb4bec)](https://www.framer.com/motion/)
+[![Next-Auth](https://img.shields.io/badge/Next--Auth-5-000000?logo=auth0)](https://authjs.dev/)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## О проекте
+
+?КАКТУСА — лендинг проекта электронных ивентов в Крыму. Объединяет людей с изысканным музыкальным вкусом в уникальных локациях (ночные клубы, отели).
+
+### Основные возможности
+
+- **Главная страница** — hero с видео, карусель мероприятий, о проекте, галерея, отзывы
+- **Страницы мероприятий** — предстоящие и прошедшие ивенты с детальным описанием, билетами, галереей
+- **Админ-панель** — редактирование контента (главная, мета, мероприятия), drag-and-drop для порядка элементов
+- **Блуждание фона** — плавная анимация hero-изображений на главной и страницах ивентов
+- **Смена логотипа** — основной / минималистичный при скролле (главная и ивенты)
+- **Адаптивность** — мобильная вёрстка, оптимизация изображений
+
+---
+
+## Технологии
+
+| Категория | Стек |
+|-----------|------|
+| **Фреймворк** | Next.js 16 (App Router) |
+| **UI** | React 19, Tailwind CSS 4 |
+| **Анимация** | Framer Motion |
+| **БД** | SQLite + Prisma (better-sqlite3) |
+| **Auth** | Next-Auth 5 |
+| **Редактор** | TipTap (rich text) |
+| **Деплой** | PM2, Nginx, SSH |
+
+---
+
+## Структура проекта
+
+```
+kaktusa.ru/
+├── src/
+│   ├── app/                    # App Router
+│   │   ├── page.tsx            # Главная
+│   │   ├── events/[slug]/      # Страницы мероприятий
+│   │   ├── admin/              # Админка (main, meta, events)
+│   │   └── api/                # API routes
+│   ├── components/
+│   │   ├── Header.tsx          # Хедер со сменой логотипа
+│   │   ├── HeroSection.tsx     # Hero главной
+│   │   ├── EventsCarousel.tsx  # Карусель мероприятий
+│   │   ├── events/             # EventLanding, PastEventLanding
+│   │   └── admin/              # Формы, редакторы
+│   ├── lib/                    # data, db, upload, photoUrl
+│   └── types/
+├── prisma/
+│   ├── schema.prisma           # Event, Main, Meta
+│   ├── seed.ts                 # Сидер
+│   └── migrations/
+├── deploy/                     # SSH-деплой
+│   ├── deploy.mjs              # Полный деплой
+│   └── deploy-light.mjs        # Лайт (без npm ci)
+├── data/                       # events.json, main.json (для seed)
+└── public/                     # Статика, фото
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Быстрый старт
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Требования
 
-## Learn More
+- Node.js 18+
+- npm
 
-To learn more about Next.js, take a look at the following resources:
+### Установка
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+git clone https://github.com/Grangy/kaktusa.git
+cd kaktusa
+npm install
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### Переменные окружения
 
-## Deploy on Vercel
+Создайте `.env` в корне:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```env
+DATABASE_URL="file:./prisma/dev.db"
+AUTH_SECRET="your-secret-min-32-chars"
+ADMIN_PASSWORD="admin"
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Запуск
+
+```bash
+# БД: создать/применить схему
+npm run db:push
+
+# Сидер (если нужно)
+npm run db:seed
+
+# Разработка
+npm run dev
+```
+
+Сайт: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## Сборка и продакшен
+
+```bash
+npm run build
+npm run start
+```
+
+Standalone-режим (для PM2):
+
+```bash
+npm run build
+# Используйте output: 'standalone' в next.config
+```
+
+---
+
+## Скрипты
+
+| Команда | Описание |
+|---------|----------|
+| `npm run dev` | Разработка |
+| `npm run build` | Сборка |
+| `npm run start` | Запуск продакшена |
+| `npm run lint` | ESLint |
+| `npm run db:push` | Prisma db push (локально) |
+| `npm run db:seed` | Сидер |
+| `npm run deploy` | Полный деплой (npm ci + prisma + build + pm2) |
+| `npm run deploy:light` | Лайт-деплой (git pull + build + pm2) |
+
+---
+
+## Деплой
+
+Деплой через SSH на сервер:
+
+- **Полный** (`npm run deploy`): git pull → npm ci → prisma db push → seed → build → pm2 → nginx
+- **Лайт** (`npm run deploy:light`): git pull → prisma db push → build → pm2 restart
+
+Сервер: PM2 (Node), Nginx (прокси), SQLite-БД в `/var/www/kaktusa/prisma/dev.db`.
+
+---
+
+## Админ-панель
+
+`/admin` — вход по паролю (ADMIN_PASSWORD).
+
+- **Главная** — hero (видео, изображения, дата, логотипы), о нас, галерея, отзывы
+- **Мета** — title, description, canonical
+- **Мероприятия** — CRUD, hero-блок, билеты, галерея
+
+---
+
+## Лицензия
+
+Private.
