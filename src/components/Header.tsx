@@ -63,7 +63,7 @@ export default function Header() {
             <div className="absolute inset-0">
               <motion.div
                 animate={{ opacity: pastHero ? 0 : 1 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 2 }}
                 className="absolute inset-0"
                 aria-hidden={pastHero}
               >
@@ -71,7 +71,7 @@ export default function Header() {
               </motion.div>
               <motion.div
                 animate={{ opacity: pastHero ? 1 : 0 }}
-                transition={{ duration: 0.4 }}
+                transition={{ duration: 2 }}
                 className="absolute inset-0"
                 aria-hidden={!pastHero}
               >
