@@ -32,15 +32,17 @@ export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DE
   const pathname = usePathname();
   const router = useRouter();
   const isHome = pathname === "/";
+  const isEventPage = pathname.startsWith("/events/");
+  const hasHeroBlock = isHome || isEventPage;
   const [pastThreshold, setPastThreshold] = useState(false);
   useEffect(() => {
-    if (!isHome) return;
+    if (!hasHeroBlock) return;
     const check = () => setPastThreshold(window.scrollY > SCROLL_THRESHOLD);
     check();
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
-  }, [isHome]);
-  const showMinimal = !isHome || pastThreshold;
+  }, [hasHeroBlock]);
+  const showMinimal = !hasHeroBlock || pastThreshold;
 
   const handleMenuLink = (path: string) => {
     setMenuOpen(false);
