@@ -1,6 +1,7 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 import { Ticket } from "lucide-react";
 import Image from "next/image";
 import TransitionLink from "./TransitionLink";
@@ -19,9 +20,15 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
   const heading = about?.heading ?? "О НАС";
   const lines = about?.lines?.length ? about.lines : DEFAULT_LINES;
   const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
+  const sectionRef = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start start", "end end"],
+  });
+  const logoScale = useTransform(scrollYProgress, [0, 0.4, 1], [1.2, 0.85, 0.5]);
 
   return (
-    <section id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-transparent to-[#0a0a0a]">
+    <section ref={sectionRef} id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-transparent to-[#0a0a0a]">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -47,9 +54,12 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
           className="relative p-8 md:p-12 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
-            <div className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] opacity-[0.10]">
+            <motion.div
+              style={{ scale: logoScale }}
+              className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] opacity-[0.10]"
+            >
               <Image src={logo} alt="" fill className="object-contain" sizes="448px" />
-            </div>
+            </motion.div>
           </div>
           <div className="relative space-y-6 text-left w-full">
             {lines.map((text, i) => (
