@@ -15,9 +15,20 @@
     "tag": "Special Event",
     "metaTitle": "BLOOM OF ENERGY — 28 марта 2026 | ?КАКТУСА",
     "metaDescription": "BLOOM OF ENERGY — электронный ивент с особым смыслом и звучанием. Foster Night Club, Mriya Resort. Билеты от 3 000 ₽.",
-    "artists": ["GRETTA", "SANSÁRIAN", "WILYAMDELOVE & NOBE (Bassmatic Records)", "RESONANCE", "KVITASH"],
+    "artists": [
+      "GRETTA",
+      "SANSÁRIAN",
+      "WILYAMDELOVE & NOBE (Bassmatic Records)",
+      "RESONANCE",
+      "KVITASH"
+    ],
     "tickets": [
-      { "id": "ga", "name": "General Admission", "price": "3 000 ₽", "earlyBird": true }
+      {
+        "id": "ga",
+        "name": "General Admission",
+        "price": "3 000 ₽",
+        "earlyBird": true
+      }
     ],
     "aboutParagraphs": [
       "Приглашаем Вас на BLOOM OF ENERGY — вечер, где каждый ощутит внутренний рассвет весенней энергии в изысканной атмосфере.",
@@ -30,6 +41,51 @@
     "age": "18+",
     "dressCode": "Яркие оттенки в образе и макияже, необычные фактуры",
     "rules": "Уважайте площадку и других гостей"
+  },
+  {
+    "id": "birthday",
+    "slug": "1st-birthday-contrust",
+    "type": "upcoming",
+    "title": "1st BIRTHDAY x CONTRUST",
+    "date": "2026-08-30",
+    "dateDisplay": "30 августа 2026",
+    "time": "23:00",
+    "location": "Крыша винодельни AYA, с. Родное",
+    "locationShort": "с. Родное",
+    "price": "От 2 500 ₽",
+    "priceNote": "Первые 30 билетов: 2 500₽",
+    "heroImage": "/avisha/2026-02-26 11.43.06.jpg",
+    "tag": "1st Birthday",
+    "metaTitle": "1st BIRTHDAY x CONTRUST — 30 августа 2026 | ?КАКТУСА",
+    "metaDescription": "День рождения ?КАКТУСА с CONTRUST. Крыша винодельни AYA. 23:00 — 06:00. От 2 500 ₽.",
+    "artists": [
+      "ВИЖУ",
+      "RESONANCE",
+      "KRISHNAMIRA",
+      "TITORENKO",
+      "VDOVKIN",
+      "NESTERUK",
+      "KVITASH"
+    ],
+    "tickets": [
+      {
+        "id": "early",
+        "name": "Первые 30 билетов",
+        "price": "2 500 ₽",
+        "earlyBird": true
+      }
+    ],
+    "aboutParagraphs": [
+      "Приглашаем Вас отпраздновать день рождения проекта ?КАКТУСА в атмосфере вкуса, стиля и высококачественного звучания.",
+      "Совместно с CONTRUST мы создаём пространство, где каждая деталь продумана, а каждый гость — как из кадра фильма.",
+      "В программе: welcome-drink, закуски и сезонные фрукты, красная ковровая дорожка, профессиональные фотографы, качественная музыка от наших артистов.",
+      "Время: 23:00 — 06:00"
+    ],
+    "venueTitle": "Крыша винодельни AYA",
+    "venueAddress": "с. Родное",
+    "venueCity": "Крым, Россия",
+    "age": "21+",
+    "rules": "FC/DC 21+. По вопросам: @sanya_viju @resonance_dj"
   },
   {
     "id": "bal",
