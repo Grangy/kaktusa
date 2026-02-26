@@ -37,10 +37,10 @@
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",
     "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "react-dom": "19.2.3",
+    "dotenv": "^16"
   },
   "devDependencies": {
-    "dotenv": "^16",
     "@prisma/client": "^6.19.2",
     "@tailwindcss/postcss": "^4",
     "@types/better-sqlite3": "^7.6.13",
