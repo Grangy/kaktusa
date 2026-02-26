@@ -18,7 +18,14 @@ const sectionCard =
 export function MainEditForm({ initial }: { initial: MainContent }) {
   const router = useRouter();
   const toast = useToast();
-  const [form, setForm] = useState<MainContent>(initial);
+  const [form, setForm] = useState<MainContent>(() => ({
+    ...initial,
+    hero: {
+      ...initial.hero,
+      logoHero: initial.hero?.logoHero ?? "/new-logo.png",
+      logoScrolled: initial.hero?.logoScrolled ?? "/logo.png",
+    },
+  }));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
