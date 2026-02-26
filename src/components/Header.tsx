@@ -7,7 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
 
-const HERO_THRESHOLD = 0.7; // доля viewport: проскроллили 70% — уже «прошли» херо
+const HERO_THRESHOLD = 0.7;
+const LOGO_SWITCH_DELAY = 1000; // 1 сек в hero → смена на минималистичный
+const LOGO_SWITCH_DURATION = 0.4; // почти сразу
 
 const DEFAULT_LOGO_HERO = "/new-logo.png";
 const DEFAULT_LOGO_SCROLLED = "/logo.png";
@@ -28,18 +30,24 @@ interface HeaderProps {
 
 export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DEFAULT_LOGO_SCROLLED }: HeaderProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
-  const [pastHero, setPastHero] = useState(false);
+  const [showMinimal, setShowMinimal] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
 
   const isHome = pathname === "/";
   useEffect(() => {
     if (!isHome) {
-      setPastHero(true);
+      setShowMinimal(true);
       return;
     }
-    const check = () => setPastHero(window.scrollY > window.innerHeight * HERO_THRESHOLD);
-    check();
+    const t = setTimeout(() => setShowMinimal(true), LOGO_SWITCH_DELAY);
+    return () => clearTimeout(t);
+  }, [isHome]);
+  useEffect(() => {
+    if (!isHome) return;
+    const check = () => {
+      if (window.scrollY > window.innerHeight * HERO_THRESHOLD) setShowMinimal(true);
+    };
     window.addEventListener("scroll", check, { passive: true });
     return () => window.removeEventListener("scroll", check);
   }, [isHome]);
@@ -70,18 +78,18 @@ export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DE
           <div className="h-full w-32 md:w-40 relative shrink-0">
             <div className="absolute inset-0">
               <motion.div
-                animate={{ opacity: pastHero ? 0 : 1 }}
-                transition={{ duration: 2 }}
+                animate={{ opacity: showMinimal ? 0 : 1 }}
+                transition={{ duration: LOGO_SWITCH_DURATION }}
                 className="absolute inset-0"
-                aria-hidden={pastHero}
+                aria-hidden={showMinimal}
               >
                 <Image src={logoHero} alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" priority />
               </motion.div>
               <motion.div
-                animate={{ opacity: pastHero ? 1 : 0 }}
-                transition={{ duration: 2 }}
+                animate={{ opacity: showMinimal ? 1 : 0 }}
+                transition={{ duration: LOGO_SWITCH_DURATION }}
                 className="absolute inset-0"
-                aria-hidden={!pastHero}
+                aria-hidden={!showMinimal}
               >
                 <Image src={logoScrolled} alt="?КАКТУСА" fill className="object-contain object-left" sizes="160px" />
               </motion.div>
