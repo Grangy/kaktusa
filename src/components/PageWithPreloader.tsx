@@ -72,15 +72,15 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
 
   return (
     <>
-      <Preloader isVisible={!isReady} />
+      <Preloader isVisible={!isReady} logo={main?.hero?.logoScrolled} />
       <main className="min-h-screen">
-        <Header />
+        <Header logoHero={main?.hero?.logoHero} logoScrolled={main?.hero?.logoScrolled} />
         <HeroSection hero={main?.hero} onVideoLoaded={handleVideoLoaded} onVideoPlaying={handleVideoPlaying} isReady={isReady} />
         <EventsCarousel events={events ?? undefined} />
-        <AboutSection about={main?.about} />
+        <AboutSection about={main?.about} logo={main?.hero?.logoScrolled} />
         <GallerySection photos={main?.gallery?.photos} />
         <ReviewsSection reviews={main?.reviews} />
-        <Footer />
+        <Footer logo={main?.hero?.logoScrolled} />
       </main>
     </>
   );

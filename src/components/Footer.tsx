@@ -6,7 +6,11 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import { Send, Camera } from "lucide-react";
 
-export default function Footer() {
+interface FooterProps {
+  logo?: string;
+}
+
+export default function Footer({ logo = "/logo.png" }: FooterProps = {}) {
   const pathname = usePathname();
   const isHome = pathname === "/";
   const navPrefix = isHome ? "" : "/";
@@ -23,7 +27,7 @@ export default function Footer() {
           >
             <TransitionLink href="/" className="inline-flex items-center gap-3 mb-4 group">
               <span className="relative block w-10 h-10 shrink-0">
-                <Image src="/logo.png" alt="" fill className="object-contain transition-transform duration-200 group-hover:scale-105" sizes="40px" />
+                <Image src={logo} alt="" fill className="object-contain transition-transform duration-200 group-hover:scale-105" sizes="40px" />
               </span>
               <span className="font-display text-3xl font-bold uppercase text-white group-hover:text-[var(--accent)] transition-colors">
                 ?КАКТУСА

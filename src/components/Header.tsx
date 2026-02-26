@@ -9,6 +9,9 @@ import Image from "next/image";
 
 const HERO_THRESHOLD = 0.7; // доля viewport: проскроллили 70% — уже «прошли» херо
 
+const DEFAULT_LOGO_HERO = "/new-logo.png";
+const DEFAULT_LOGO_SCROLLED = "/logo.png";
+
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
   { label: "Мероприятия", path: "/events/bloom-of-energy" },
@@ -18,7 +21,12 @@ const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Отзывы", path: "/#reviews" },
 ];
 
-export default function Header() {
+interface HeaderProps {
+  logoHero?: string;
+  logoScrolled?: string;
+}
+
+export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DEFAULT_LOGO_SCROLLED }: HeaderProps = {}) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [pastHero, setPastHero] = useState(false);
   const pathname = usePathname();
@@ -67,7 +75,7 @@ export default function Header() {
                 className="absolute inset-0"
                 aria-hidden={pastHero}
               >
-                <Image src="/new-logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" priority />
+                <Image src={logoHero} alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" priority />
               </motion.div>
               <motion.div
                 animate={{ opacity: pastHero ? 1 : 0 }}
@@ -75,7 +83,7 @@ export default function Header() {
                 className="absolute inset-0"
                 aria-hidden={!pastHero}
               >
-                <Image src="/logo.png" alt="?КАКТУСА" fill className="object-contain object-left" sizes="160px" />
+                <Image src={logoScrolled} alt="?КАКТУСА" fill className="object-contain object-left" sizes="160px" />
               </motion.div>
             </div>
           </div>

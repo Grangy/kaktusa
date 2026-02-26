@@ -50,6 +50,8 @@ export interface MainContent {
     pcImages: string[];
     videoFull: string;
     videoLite: string;
+    logoHero?: string;
+    logoScrolled?: string;
   };
   about: {
     heading: string;

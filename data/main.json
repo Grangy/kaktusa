@@ -7,7 +7,9 @@
     "heroVenueEn": "Night club Foster",
     "pcImages": ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"],
     "videoFull": "/intro.mp4",
-    "videoLite": "/intro-lite.mp4"
+    "videoLite": "/intro-lite.mp4",
+    "logoHero": "/new-logo.png",
+    "logoScrolled": "/logo.png"
   },
   "about": {
     "heading": "О нас",

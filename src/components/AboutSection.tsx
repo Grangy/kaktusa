@@ -12,9 +12,10 @@ const DEFAULT_LINES = [
 
 interface AboutSectionProps {
   about?: { heading: string; lines: string[]; ctaHref: string } | null;
+  logo?: string;
 }
 
-export default function AboutSection({ about }: AboutSectionProps) {
+export default function AboutSection({ about, logo = "/logo.png" }: AboutSectionProps) {
   const heading = about?.heading ?? "О нас";
   const lines = about?.lines?.length ? about.lines : DEFAULT_LINES;
   const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
@@ -47,7 +48,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
             <div className="relative w-80 h-80 md:w-[28rem] md:h-[28rem] opacity-[0.10]">
-              <Image src="/logo.png" alt="" fill className="object-contain" sizes="448px" />
+              <Image src={logo} alt="" fill className="object-contain" sizes="448px" />
             </div>
           </div>
           <div className="relative space-y-6 text-left w-full">
