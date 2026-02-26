@@ -71,7 +71,7 @@ export default async function AdminLayout({
               <div className="pt-2 mt-2 border-t border-white/10">
                 <RevalidateCacheButton />
               </div>
-              <div className="pt-4 mt-4 border-t border-white/10 space-y-3">
+              <div className="hidden md:block pt-4 mt-4 border-t border-white/10 space-y-3">
                 <img
                   src="/photos/image_1772103405970.png"
                   alt="КАКТУСА"
@@ -88,9 +88,26 @@ export default async function AdminLayout({
               </div>
             </nav>
           </aside>
-            <main className="flex-1 overflow-auto p-6 md:p-8 lg:p-10">
+            <div className="flex-1 flex flex-col min-h-0">
+              <main className="flex-1 overflow-auto p-6 md:p-8 lg:p-10">
               {children}
-            </main>
+              </main>
+              <footer className="md:hidden shrink-0 p-4 border-t border-white/10 flex flex-col items-center gap-2">
+                <img
+                  src="/photos/image_1772103405970.png"
+                  alt="КАКТУСА"
+                  className="w-20 h-20 rounded-lg object-cover"
+                />
+                <a
+                  href="https://github.com/Grangy"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[10px] text-white/50 hover:text-[var(--accent)] transition-colors"
+                >
+                  by Grangy 2026 with love &lt;3
+                </a>
+              </footer>
+            </div>
           </>
         ) : (
           <main className="flex-1 flex items-center justify-center">{children}</main>
