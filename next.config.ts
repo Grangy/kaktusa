@@ -24,7 +24,7 @@ const nextConfig: NextConfig = {
       source: "/",
       headers: [
         { key: "Cache-Control", value: "no-cache, no-store, must-revalidate" },
-        { key: "Link", value: "</logo.png>; rel=preload; as=image; fetchpriority=high" },
+        { key: "Link", value: "</logo-preloader.png>; rel=preload; as=image; fetchpriority=high, </logo.png>; rel=preload; as=image" },
       ],
     },
     {

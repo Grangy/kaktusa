@@ -62,7 +62,8 @@ export default function RootLayout({
   return (
     <html lang="ru" style={{ background: "#000" }}>
       <head>
-        <link rel="preload" href="/logo.png" as="image" fetchPriority="high" />
+        <link rel="preload" href="/logo-preloader.png" as="image" fetchPriority="high" />
+        <link rel="preload" href="/logo.png" as="image" />
         {/* Критичные стили прелоадера — до загрузки globals.css */}
         <style
           dangerouslySetInnerHTML={{
@@ -73,7 +74,7 @@ export default function RootLayout({
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative" style={{ background: "#000" }}>
         {/* Прелоадер — в первых байтах HTML, до React, до CSS */}
         <div id="preloader-shell" aria-hidden="true">
-          <img src="/logo.png" alt="" width={144} height={144} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
+          <img src="/logo-preloader.png" alt="" width={96} height={96} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
         </div>
         {/* Скрыть прелоадер на не-главных страницах сразу (без ожидания React) */}
         <script
