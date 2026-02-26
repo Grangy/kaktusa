@@ -90,7 +90,7 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
               <button
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="w-full text-left focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[#0a0a0a] rounded-2xl"
+                className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
               >
                 <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 cursor-pointer ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(255,255,255,0.15)]" : "border border-white/10 group-hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.12)]"}`}>
                   <Image
