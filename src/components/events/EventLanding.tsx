@@ -216,26 +216,26 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
           >
             Купить билет
           </motion.a>
-
-          {/* Scroll indicator */}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4, delay: 1.5 }}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0"
-          >
-            {[0, 1, 2].map((i) => (
-              <motion.div
-                key={i}
-                animate={{ opacity: [0.3, 1, 0.3] }}
-                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
-                className="-mt-2 first:mt-0"
-              >
-                <ChevronDown size={28} className="text-white/90" strokeWidth={2} />
-              </motion.div>
-            ))}
-          </motion.div>
         </div>
+
+        {/* Scroll indicator: привязка к низу hero, как на главной */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 1.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0 z-10"
+        >
+          {[0, 1, 2].map((i) => (
+            <motion.div
+              key={i}
+              animate={{ opacity: [0.3, 1, 0.3] }}
+              transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+              className="-mt-2 first:mt-0"
+            >
+              <ChevronDown size={28} className="text-white/90" strokeWidth={2} />
+            </motion.div>
+          ))}
+        </motion.div>
       </section>
 
       {/* When & Location & Price */}
