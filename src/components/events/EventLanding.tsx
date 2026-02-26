@@ -353,60 +353,6 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
         </div>
       </section>
 
-      {/* Past Events */}
-      {pastEvents.length > 0 && (
-        <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
-          <div className={EVENT_CONTAINER}>
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="font-display text-2xl md:text-3xl font-bold uppercase mb-8 text-center"
-            >
-              Прошедшие мероприятия
-            </motion.h2>
-            <div className="flex flex-wrap justify-center gap-6">
-              {pastEvents.map((ev, i) => (
-                <motion.div
-                  key={ev.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.1 * i }}
-                  className="w-full max-w-[280px] md:max-w-[320px]"
-                >
-                  <Link
-                    href={`/events/${ev.slug}`}
-                    className="block overflow-hidden group rounded-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
-                  >
-                    <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
-                      <Image
-                        src={getOptimizedPhotoUrl(ev.heroImage)}
-                        alt={ev.title}
-                        fill
-                        className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 320px"
-                      />
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/80 to-transparent" />
-                    </div>
-                    <div className="bg-black px-6 py-5 md:px-7 md:py-6 -mt-1">
-                      <span className="inline-block px-3 py-1 bg-white/10 text-white/90 text-xs border border-white/20 mb-2">
-                        Прошло
-                      </span>
-                      <h3 className="font-display text-xl md:text-2xl font-bold text-white">{ev.title}</h3>
-                      <p className="text-white/80 text-sm mt-1">{ev.dateDisplay}</p>
-                      <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
-                        Подробнее →
-                      </span>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-
       {/* Tickets */}
       <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
         <div className={EVENT_CONTAINER}>
@@ -480,6 +426,60 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
           </motion.div>
         </div>
       </section>
+
+      {/* Past Events */}
+      {pastEvents.length > 0 && (
+        <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
+          <div className={EVENT_CONTAINER}>
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display text-2xl md:text-3xl font-bold uppercase mb-8 text-center"
+            >
+              Прошедшие мероприятия
+            </motion.h2>
+            <div className="flex flex-wrap justify-center gap-6">
+              {pastEvents.map((ev, i) => (
+                <motion.div
+                  key={ev.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 * i }}
+                  className="w-full max-w-[280px] md:max-w-[320px]"
+                >
+                  <Link
+                    href={`/events/${ev.slug}`}
+                    className="block overflow-hidden group rounded-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
+                  >
+                    <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
+                      <Image
+                        src={getOptimizedPhotoUrl(ev.heroImage)}
+                        alt={ev.title}
+                        fill
+                        className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 320px"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/80 to-transparent" />
+                    </div>
+                    <div className="bg-black px-6 py-5 md:px-7 md:py-6 -mt-1">
+                      <span className="inline-block px-3 py-1 bg-white/10 text-white/90 text-xs border border-white/20 mb-2">
+                        Прошло
+                      </span>
+                      <h3 className="font-display text-xl md:text-2xl font-bold text-white">{ev.title}</h3>
+                      <p className="text-white/80 text-sm mt-1">{ev.dateDisplay}</p>
+                      <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
+                        Подробнее →
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
