@@ -11,6 +11,7 @@
 
 - `AUTH_SECRET` — секрет для NextAuth (например: `openssl rand -base64 32`)
 - `ADMIN_PASSWORD` — пароль входа в админку
+- `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` — для Server Actions (обязателен при деплое; `openssl rand -base64 32`)
 
 ## Разделы
 

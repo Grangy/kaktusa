@@ -3,17 +3,38 @@
  * Лайт-деплой: git pull → prisma db push → build → pm2 restart.
  * Без: npm ci, nginx. Схема синхронизируется, данные сохраняются.
  * Использовать когда менялся только код (src/), а не package.json.
- * Если добавлены зависимости — запустить deploy.
+ *
+ * Переменные окружения: NEXT_SERVER_ACTIONS_ENCRYPTION_KEY (обязательно), DEPLOY_* (опционально).
  */
 import { spawn } from "child_process";
+import { existsSync, readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
 
-const SERVER = "89.125.37.62";
-const USER = "root";
-const KEY = process.env.HOME + "/.ssh/shared_server_key";
-const REMOTE = "/var/www/kaktusa";
+const __dir = dirname(fileURLToPath(import.meta.url));
+const root = join(__dir, "..");
+try {
+  const envPath = join(root, ".env");
+  if (existsSync(envPath)) {
+    const content = readFileSync(envPath, "utf-8");
+    for (const line of content.split("\n")) {
+      const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
+    }
+  }
+} catch (_) {}
+
+const SERVER = process.env.DEPLOY_SERVER || "89.125.37.62";
+const USER = process.env.DEPLOY_USER || "root";
+const REMOTE = process.env.DEPLOY_REMOTE || "/var/www/kaktusa";
+const KEY = process.env.DEPLOY_SSH_KEY || process.env.HOME + "/.ssh/shared_server_key";
 const SSH_OPTS = `-i ${KEY} -o StrictHostKeyChecking=no -o ConnectTimeout=30`;
 const DATABASE_URL = `file:${REMOTE}/prisma/dev.db`;
-const SERVER_ACTIONS_KEY = "<REMOVED>";
+const SERVER_ACTIONS_KEY = process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY;
+if (!SERVER_ACTIONS_KEY) {
+  console.error("❌ NEXT_SERVER_ACTIONS_ENCRYPTION_KEY не задан. Добавьте в .env или экспортируйте.");
+  process.exit(1);
+}
 
 function run(cmd) {
   return new Promise((resolve, reject) => {

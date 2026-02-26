@@ -150,13 +150,13 @@ npm install
 
 ### Переменные окружения
 
-Создайте `.env` в корне:
+Скопируйте `.env.example` в `.env` и заполните значения:
 
-```env
-DATABASE_URL="file:./prisma/dev.db"
-AUTH_SECRET="your-secret-min-32-chars"
-ADMIN_PASSWORD="admin"
+```bash
+cp .env.example .env
 ```
+
+Обязательно: `AUTH_SECRET`, `ADMIN_PASSWORD`. Для деплоя также нужен `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` (сгенерируйте: `openssl rand -base64 32`).
 
 ### Запуск
 
@@ -208,12 +208,12 @@ npm run build
 
 ## Деплой
 
-Деплой через SSH на сервер:
+Деплой через SSH на сервер. В `.env` должен быть `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY` (тот же ключ — на сервере в `/var/www/kaktusa/.env` для PM2 и локально для скриптов деплоя).
 
 - **Полный** (`npm run deploy`): git pull → npm ci → prisma db push → seed → build → pm2 → nginx
 - **Лайт** (`npm run deploy:light`): git pull → prisma db push → build → pm2 restart
 
-Сервер: PM2 (Node), Nginx (прокси), SQLite-БД в `/var/www/kaktusa/prisma/dev.db`.
+Сервер: PM2 (Node), Nginx (прокси), SQLite-БД в `/var/www/kaktusa/prisma/dev.db`. См. `deploy/README.md`.
 
 ---
 

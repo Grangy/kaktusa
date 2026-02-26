@@ -31,6 +31,8 @@ npm run deploy
 ```
 `npm run deploy` подключается по SSH, в каталоге `/var/www/kaktusa` выполняет `git pull`, `npm ci`, `npm run build`, перезапуск PM2 и обновление nginx.
 
+**Секреты:** В `.env` (локально и на сервере `/var/www/kaktusa/.env`) должны быть: `NEXT_SERVER_ACTIONS_ENCRYPTION_KEY`, `AUTH_SECRET`, `ADMIN_PASSWORD`. Никаких ключей в коде — только в .env. См. `.env.example`.
+
 ## 4. DNS для kaktusa.ru
 
 В панели регистратора домена добавьте A-записи:

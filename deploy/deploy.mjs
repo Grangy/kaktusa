@@ -3,22 +3,42 @@
  * Деплой: git pull → npm ci → prisma db push + generate → db:seed → build → pm2.
  * БД на сервере: db push синхронизирует схему (добавляет колонки), данные сохраняются.
  * Seed на проде: только новые события из events.json; Main и Meta НЕ перезаписываются.
+ *
+ * Переменные окружения (из .env или экспорта):
+ *   NEXT_SERVER_ACTIONS_ENCRYPTION_KEY — обязательно для сборки и runtime
+ *   DEPLOY_SERVER, DEPLOY_USER, DEPLOY_REMOTE, DEPLOY_SSH_KEY — опционально (есть дефолты)
  */
 import { spawn } from "child_process";
-import { existsSync } from "fs";
+import { existsSync, readFileSync } from "fs";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
 const __dir = dirname(fileURLToPath(import.meta.url));
 const root = join(__dir, "..");
-const SERVER = "89.125.37.62";
-const USER = "root";
-const KEY = process.env.HOME + "/.ssh/shared_server_key";
-const REMOTE = "/var/www/kaktusa";
+
+// Загрузка .env из корня проекта
+try {
+  const envPath = join(root, ".env");
+  if (existsSync(envPath)) {
+    const content = readFileSync(envPath, "utf-8");
+    for (const line of content.split("\n")) {
+      const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)=(.*)$/);
+      if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
+    }
+  }
+} catch (_) {}
+
+const SERVER = process.env.DEPLOY_SERVER || "89.125.37.62";
+const USER = process.env.DEPLOY_USER || "root";
+const REMOTE = process.env.DEPLOY_REMOTE || "/var/www/kaktusa";
+const KEY = process.env.DEPLOY_SSH_KEY || process.env.HOME + "/.ssh/shared_server_key";
 const SSH_OPTS = `-i ${KEY} -o StrictHostKeyChecking=no -o ConnectTimeout=30`;
 const DATABASE_URL = `file:${REMOTE}/prisma/dev.db`;
-// Один и тот же ключ при сборке и в runtime — избавляет от "Failed to find Server Action" после деплоя
-const SERVER_ACTIONS_KEY = "<REMOVED>";
+const SERVER_ACTIONS_KEY = process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY;
+if (!SERVER_ACTIONS_KEY) {
+  console.error("❌ NEXT_SERVER_ACTIONS_ENCRYPTION_KEY не задан. Добавьте в .env или экспортируйте.");
+  process.exit(1);
+}
 
 function run(cmd) {
   return new Promise((resolve, reject) => {
