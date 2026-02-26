@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 
 const DEFAULT_REVIEWS = [
@@ -15,19 +15,56 @@ interface ReviewsSectionProps {
 
 const CARD_WIDTH = 320;
 const GAP = 24;
-const DURATION = 60; // секунд на один полный круг
+const DURATION = 60;
 
 export default function ReviewsSection({ reviews: reviewsProp }: ReviewsSectionProps) {
   const reviews = reviewsProp?.length ? reviewsProp : DEFAULT_REVIEWS;
   const [paused, setPaused] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Тройное повторение для бесшовного бесконечного скролла
   const repeated = useMemo(
     () => [...reviews, ...reviews, ...reviews],
     [reviews]
   );
 
   const oneSetWidth = reviews.length * (CARD_WIDTH + GAP) - GAP;
+
+  // Автоскролл только когда не в паузе (hover/scroll)
+  useEffect(() => {
+    if (paused) return;
+    const el = scrollRef.current;
+    if (!el) return;
+    let raf: number;
+    let lastTime = performance.now();
+    const animate = (now: number) => {
+      const dt = (now - lastTime) / 1000;
+      lastTime = now;
+      const step = (oneSetWidth / DURATION) * dt;
+      el.scrollLeft += step;
+      if (el.scrollLeft >= oneSetWidth) el.scrollLeft -= oneSetWidth;
+      raf = requestAnimationFrame(animate);
+    };
+    raf = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(raf);
+  }, [paused, oneSetWidth]);
+
+  const handleInteract = useCallback(() => setPaused(true), []);
+  const handleLeave = useCallback(() => setPaused(false), []);
+
+  // Колёсико мыши → горизонтальный скролл
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const onWheel = (e: WheelEvent) => {
+      handleInteract();
+      if (e.deltaY !== 0) {
+        e.preventDefault();
+        el.scrollLeft += e.deltaY;
+      }
+    };
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [handleInteract]);
 
   return (
     <section id="reviews" className="py-14 md:py-20 overflow-hidden scroll-mt-20">
@@ -42,38 +79,35 @@ export default function ReviewsSection({ reviews: reviewsProp }: ReviewsSectionP
       </motion.h2>
 
       <div
-        className="relative w-full"
-        style={{ maskImage: "linear-gradient(to right, transparent, black 6%, black 94%, transparent)" }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
+        ref={scrollRef}
+        className="flex gap-6 py-2 overflow-x-auto overflow-y-hidden scroll-smooth snap-x snap-mandatory scrollbar-hide px-6 md:px-12"
+        style={{
+          maskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+          WebkitMaskImage: "linear-gradient(to right, transparent, black 4%, black 96%, transparent)",
+          scrollbarWidth: "none",
+          msOverflowStyle: "none",
+        }}
+        onMouseEnter={handleInteract}
+        onMouseLeave={handleLeave}
+        onTouchStart={handleInteract}
+        onTouchEnd={() => setTimeout(handleLeave, 200)}
       >
-        <motion.div
-          className="flex gap-6 py-2 w-max"
-          style={{ width: "max-content" }}
-          animate={{ x: [0, -oneSetWidth] }}
-          transition={{
-            x: {
-              duration: paused ? 1e6 : DURATION,
-              repeat: Infinity,
-              repeatType: "loop",
-              ease: "linear",
-            },
-          }}
-        >
-          {repeated.map((review, i) => (
-            <motion.div
-              key={`${review.id}-${i}`}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] p-6 rounded-2xl bg-white/5 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40 transition-all duration-200 min-h-[140px] flex flex-col"
-            >
-              <p className="text-white/90 text-sm leading-relaxed mb-4 flex-1">&ldquo;{review.text}&rdquo;</p>
-              <p className="text-[var(--accent)] text-xs uppercase">{review.author}</p>
-            </motion.div>
-          ))}
-        </motion.div>
+        {repeated.map((review, i) => (
+          <motion.div
+            key={`${review.id}-${i}`}
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] p-6 rounded-2xl bg-white/5 shadow-lg shadow-black/30 hover:shadow-xl hover:shadow-black/40 transition-all duration-200 min-h-[140px] flex flex-col snap-center"
+          >
+            <p className="text-white/90 text-sm leading-relaxed mb-4 flex-1">&ldquo;{review.text}&rdquo;</p>
+            <p className="text-[var(--accent)] text-xs uppercase">{review.author}</p>
+          </motion.div>
+        ))}
       </div>
+      <p className="text-center text-white/40 text-xs mt-4 px-6">
+        Прокрутите для просмотра · Наведите или коснитесь, чтобы остановить
+      </p>
     </section>
   );
 }

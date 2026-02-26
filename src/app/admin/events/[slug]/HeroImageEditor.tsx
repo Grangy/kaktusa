@@ -8,12 +8,15 @@ interface HeroImageEditorProps {
   value: string;
   onChange: (path: string) => void;
   label?: string;
+  /** Компактный режим (для логотипов) */
+  compact?: boolean;
 }
 
 export function HeroImageEditor({
   value,
   onChange,
   label = "Hero-изображение",
+  compact = false,
 }: HeroImageEditorProps) {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -49,16 +52,18 @@ export function HeroImageEditor({
 
   return (
     <div className="rounded-xl border border-white/15 bg-white/[0.02] p-6">
-      <h3 className="font-display text-sm uppercase text-white/90 mb-4">{label}</h3>
-      <p className="text-white/50 text-xs mb-4">
-        Загрузите файл или укажите путь к картинке (как в блоке галереи на главной).
-      </p>
+      <h3 className="font-display text-sm uppercase text-white/90 mb-3">{label}</h3>
+      {!compact && (
+        <p className="text-white/50 text-xs mb-4">
+          Загрузите файл или укажите путь к картинке (как в блоке галереи на главной).
+        </p>
+      )}
 
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 items-start">
         {/* Превью */}
-        <div className="w-full sm:w-48 shrink-0">
+        <div className={`shrink-0 ${compact ? "w-20 sm:w-24" : "w-full sm:w-48"}`}>
           {value ? (
-            <div className="group relative aspect-[4/5] rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/25 bg-black transition-colors">
+            <div className={`group relative rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/25 bg-black transition-colors ${compact ? "aspect-square" : "aspect-[4/5]"}`}>
               <Image
                 src={value}
                 alt=""
@@ -88,20 +93,20 @@ export function HeroImageEditor({
                   <X size={20} />
                 </button>
               </div>
-              <span className="absolute bottom-2 left-2 right-2 text-[10px] text-white/70 bg-black/60 px-2 py-1 rounded truncate">
+              <span className={`absolute bottom-2 left-2 right-2 text-white/70 bg-black/60 px-2 py-1 rounded truncate ${compact ? "text-[9px]" : "text-[10px]"}`}>
                 {value}
               </span>
             </div>
           ) : (
-            <div className="aspect-[4/5] rounded-lg border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-white/50 text-sm p-4">
-              Нет изображения
+            <div className={`rounded-lg border-2 border-dashed border-white/20 flex flex-col items-center justify-center text-white/50 text-xs p-2 ${compact ? "aspect-square" : "aspect-[4/5]"}`}>
+              Нет
             </div>
           )}
         </div>
 
         {/* Загрузка и путь */}
-        <div className="flex-1 flex flex-col gap-3 min-w-0">
-          <label className="cursor-pointer inline-flex items-center gap-2 w-fit px-4 py-2.5 bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/15 transition-colors rounded-lg">
+        <div className="flex-1 flex flex-col gap-3 min-w-0 w-full sm:min-w-[140px]">
+          <label className="cursor-pointer inline-flex items-center gap-2 w-fit px-3 py-2 bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/15 transition-colors rounded-lg shrink-0">
             <Plus size={18} />
             {uploading ? "Загрузка…" : "Загрузить файл"}
             <input

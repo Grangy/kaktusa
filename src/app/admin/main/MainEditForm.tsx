@@ -121,11 +121,13 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
             value={form.hero.logoHero ?? "/new-logo.png"}
             onChange={(logoHero) => updateHero({ logoHero })}
             label="Логотип в hero (до скролла)"
+            compact
           />
           <HeroImageEditor
             value={form.hero.logoScrolled ?? "/logo.png"}
             onChange={(logoScrolled) => updateHero({ logoScrolled })}
             label="Логотип после hero (квадратный)"
+            compact
           />
         </div>
         <div className="mt-6">
