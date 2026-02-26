@@ -15,7 +15,7 @@ interface AboutSectionProps {
 }
 
 export default function AboutSection({ about }: AboutSectionProps) {
-  const heading = about?.heading ?? "Что такое ?КАКТУСА";
+  const heading = about?.heading ?? "О нас";
   const lines = about?.lines?.length ? about.lines : DEFAULT_LINES;
   const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
 
@@ -26,7 +26,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6 }}
-        className="max-w-3xl mx-auto"
+        className="max-w-3xl mx-auto w-full"
       >
         <motion.h2
           initial={{ opacity: 0, scale: 0.98 }}
@@ -43,14 +43,14 @@ export default function AboutSection({ about }: AboutSectionProps) {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="relative p-8 md:p-12 border border-white/10 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
+          className="relative p-8 md:p-12 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
-            <div className="relative w-48 h-48 md:w-64 md:h-64 opacity-20">
-              <Image src="/logo.png" alt="" fill className="object-contain" sizes="256px" />
+            <div className="relative w-64 h-64 md:w-80 md:h-80 opacity-[0.12]">
+              <Image src="/logo.png" alt="" fill className="object-contain" sizes="320px" />
             </div>
           </div>
-          <div className="relative space-y-6 text-center">
+          <div className="relative space-y-6 text-left w-full">
             {lines.map((text, i) => (
               <motion.p
                 key={i}
@@ -58,7 +58,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: 0.1 * i }}
-                className="text-white/90 text-lg leading-relaxed"
+                className="text-white/90 text-base md:text-lg leading-relaxed"
               >
                 {text}
               </motion.p>
@@ -74,7 +74,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
           >
             <TransitionLink
               href={ctaHref}
-              className="inline-flex items-center gap-2 px-8 py-4 min-h-[44px] bg-[var(--accent)]/20 border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/30 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-1 focus:ring-offset-black"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
             >
               <Ticket size={16} /> Купить билет
             </TransitionLink>

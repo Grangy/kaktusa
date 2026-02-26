@@ -179,7 +179,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     >
                       {event.tag}
                     </span>
-                    <div className="absolute bottom-0 left-0 right-0 p-3 pb-4 pt-16 space-y-1.5">
+                    <div className="absolute bottom-0 left-0 right-0 px-3.5 py-3 pb-4 pt-16 space-y-1.5 md:px-3">
                       <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
                         {event.title}
                       </h3>
@@ -223,14 +223,14 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
           <div className="flex items-center justify-center gap-4 mt-6">
             <button
               onClick={() => scroll(-1)}
-              className="w-11 h-11 flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
+              className="w-11 h-11 flex items-center justify-center rounded-full border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
               aria-label="Назад"
             >
               <ChevronLeft size={20} />
             </button>
             <button
               onClick={() => scroll(1)}
-              className="w-11 h-11 flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
+              className="w-11 h-11 flex items-center justify-center rounded-full border border-white/15 bg-white/[0.02] text-white/80 hover:border-[var(--accent)]/50 hover:text-[var(--accent)] hover:bg-[var(--accent)]/5 transition-all duration-200 shadow-sm"
               aria-label="Вперёд"
             >
               <ChevronRight size={20} />

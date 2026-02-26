@@ -71,7 +71,7 @@ export default function GallerySection({ photos: photosProp }: GallerySectionPro
               transition={{ duration: 0.4, delay: i * 0.05 }}
               className="flex-shrink-0 w-[85vw] sm:w-[75vw] md:w-[420px] snap-center group"
             >
-              <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl border bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 ${i === activeIndex ? "border-[var(--accent)]/60 shadow-[0_0_30px_-5px_rgba(74,222,128,0.25)]" : "border-white/10 group-hover:border-white/20 group-hover:shadow-[0_0_30px_-5px_rgba(74,222,128,0.2)]"}`}>
+              <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(255,255,255,0.15)]" : "border border-white/10 group-hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.12)]"}`}>
                 <Image
                   src={src}
                   alt=""

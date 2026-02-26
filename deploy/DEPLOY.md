@@ -25,14 +25,26 @@
    npm run lint
    ```
 
-4. **Пуш в GitHub и деплой**  
+4. **Пуш в GitHub и деплой**
+
+   **Лайт (быстрый, ~25–35 с)** — когда менялся только код (src/), без package.json и prisma:
    ```bash
    git add -A && git commit -m "..." && git push
-   npm run deploy
-   ```  
-   `npm run deploy`: на сервере `git pull` → (если есть локально `prisma/dev.db` — копирование БД на сервер) → `npm ci` → `prisma generate` → `prisma db push` → `npm run build` → копирование static/public в standalone → PM2 restart → nginx reload.
+   npm run deploy:light
+   ```
 
-   **Важно:** В репозитории должны быть запушены папка `prisma/` (schema.prisma и т.д.), `ecosystem.config.cjs` с `DATABASE_URL`, и весь код приложения. Иначе скрипт выдаст ошибку и подскажет, что нужно сделать push.
+   **Хард (полный, ~50–60 с)** — при изменении package.json, prisma/schema.prisma, БД, nginx:
+   ```bash
+   git add -A && git commit -m "..." && git push
+   npm run deploy:hard
+   ```
+
+   | Команда        | Git | БД | npm ci | Prisma | Build | PM2 | Nginx |
+   |----------------|-----|----|--------|--------|-------|-----|-------|
+   | deploy:light   | ✓   | —  | —      | —      | ✓     | ✓   | —     |
+   | deploy:hard    | ✓   | ✓  | ✓      | ✓      | ✓     | ✓   | ✓     |
+
+   Аудит деплоя показывается в конце — время каждого этапа.
 
 ## SSL (один раз)
 
