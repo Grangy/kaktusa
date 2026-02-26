@@ -53,7 +53,7 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 2/4 npm ci + Prisma migrate deploy + generate + Build ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && rm -rf node_modules && npm ci --no-audit --no-fund --include=dev && node node_modules/prisma/build/index.js migrate deploy && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && rm -rf node_modules && npm ci --no-audit --no-fund --include=dev && node node_modules/prisma/build/index.js migrate resolve --applied 20260225071400_init 2>/dev/null; node node_modules/prisma/build/index.js migrate deploy && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build"`
   );
   audit.push({ name: "2. npm ci + migrate + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
