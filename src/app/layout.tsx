@@ -60,11 +60,27 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
+    <html lang="ru" style={{ background: "#000" }}>
       <head>
         <link rel="preload" href="/logo.png" as="image" fetchPriority="high" />
+        {/* Критичные стили прелоадера — до загрузки globals.css */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `#preloader-shell{position:fixed;inset:0;z-index:999999;background:#000;display:flex;align-items:center;justify-content:center}body.preloader-done #preloader-shell{display:none!important}`,
+          }}
+        />
       </head>
-      <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative">
+      <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative" style={{ background: "#000" }}>
+        {/* Прелоадер — в первых байтах HTML, до React, до CSS */}
+        <div id="preloader-shell" aria-hidden="true">
+          <img src="/logo.png" alt="" width={144} height={144} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
+        </div>
+        {/* Скрыть прелоадер на не-главных страницах сразу (без ожидания React) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',h);else h();function h(){if(location.pathname!=='/')document.body.classList.add('preloader-done')}`,
+          }}
+        />
         <PolygonBackground />
         <div className="relative z-10">
         <script
