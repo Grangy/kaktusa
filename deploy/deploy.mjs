@@ -69,7 +69,7 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 3/5 npm ci + Prisma + Build (самый долгий этап) ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push && npm run build"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && mkdir -p prisma && npm ci --no-audit --no-fund && npx prisma generate && npx prisma db push && npm run db:seed && npm run build"`
   );
   audit.push({ name: "3. npm ci + prisma + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
