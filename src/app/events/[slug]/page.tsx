@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getEventBySlug } from "@/lib/data";
+import { getEventBySlug, getEvents } from "@/lib/data";
 import type { Metadata } from "next";
 import EventPageClient from "./EventPageClient";
 
@@ -44,8 +44,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function EventPage({ params }: Props) {
   const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const [event, allEvents] = await Promise.all([getEventBySlug(slug), getEvents()]);
   if (!event) notFound();
+  const pastEvents = allEvents.filter((e) => e.type === "past" && e.slug !== slug);
   const eventUrl = `${SITE_URL}/events/${slug}`;
   const eventImage = event.heroImage?.startsWith("http") ? event.heroImage : `${SITE_URL}${event.heroImage.startsWith("/") ? "" : "/"}${event.heroImage}`;
   const jsonLd = {
@@ -71,7 +72,7 @@ export default async function EventPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <EventPageClient event={event} />
+      <EventPageClient event={event} pastEvents={pastEvents} />
     </>
   );
 }

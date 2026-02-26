@@ -6,7 +6,8 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import GallerySection from "@/components/GallerySection";
-import { MapPin, Calendar, Clock, Users } from "lucide-react";
+import Link from "next/link";
+import { MapPin, Calendar, Clock, Users, ChevronDown } from "lucide-react";
 import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import type { Event } from "@/types/data";
 
@@ -14,7 +15,7 @@ const DEFAULT_ARTISTS = ["GRETTA", "MARGARYAN", "DOBROV & GAR1SSON (Moscow)", "R
 
 const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
 
-export default function PastEventLanding({ event }: { event?: Event | null }) {
+export default function PastEventLanding({ event, pastEvents = [] }: { event?: Event | null; pastEvents?: Event[] }) {
   const title = event?.title ?? "ТОТ САМЫЙ БАЛ";
   const heroImage = event?.heroImage || "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg";
   const subtitle = event?.subtitle ?? undefined;
@@ -145,6 +146,25 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
           >
             {heroSubline}
           </motion.p>
+
+          {/* Scroll indicator */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.4, delay: 1.5 }}
+            className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-0"
+          >
+            {[0, 1, 2].map((i) => (
+              <motion.div
+                key={i}
+                animate={{ opacity: [0.3, 1, 0.3] }}
+                transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
+                className="-mt-2 first:mt-0"
+              >
+                <ChevronDown size={28} className="text-white/90" strokeWidth={2} />
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
@@ -254,6 +274,60 @@ export default function PastEventLanding({ event }: { event?: Event | null }) {
           </motion.div>
         </div>
       </section>
+
+      {/* Past Events */}
+      {pastEvents.length > 0 && (
+        <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
+          <div className={EVENT_CONTAINER}>
+            <motion.h2
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="font-display text-2xl md:text-3xl font-bold uppercase mb-8 text-center"
+            >
+              Прошедшие мероприятия
+            </motion.h2>
+            <div className="flex flex-wrap justify-center gap-6">
+              {pastEvents.map((ev, i) => (
+                <motion.div
+                  key={ev.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.1 * i }}
+                  className="w-full max-w-[280px] md:max-w-[320px]"
+                >
+                  <Link
+                    href={`/events/${ev.slug}`}
+                    className="block overflow-hidden group rounded-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
+                  >
+                    <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
+                      <Image
+                        src={getOptimizedPhotoUrl(ev.heroImage)}
+                        alt={ev.title}
+                        fill
+                        className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 320px"
+                      />
+                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/80 to-transparent" />
+                    </div>
+                    <div className="bg-black px-6 py-5 md:px-7 md:py-6 -mt-1">
+                      <span className="inline-block px-3 py-1 bg-white/10 text-white/90 text-xs border border-white/20 mb-2">
+                        Прошло
+                      </span>
+                      <h3 className="font-display text-xl md:text-2xl font-bold text-white">{ev.title}</h3>
+                      <p className="text-white/80 text-sm mt-1">{ev.dateDisplay}</p>
+                      <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
+                        Подробнее →
+                      </span>
+                    </div>
+                  </Link>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12">
