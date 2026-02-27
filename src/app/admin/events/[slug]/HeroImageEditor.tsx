@@ -48,17 +48,17 @@ export function HeroImageEditor({
   }
 
   return (
-    <div className="rounded-xl border border-white/15 bg-white/[0.02] p-6">
-      <h3 className="font-display text-sm uppercase text-white/90 mb-3">{label}</h3>
+    <div className="rounded-lg border border-white/10 bg-black/20 p-4 overflow-hidden min-w-0">
+      <h3 className="font-display text-xs uppercase text-white/80 mb-3 truncate">{label}</h3>
       {!compact && (
-        <p className="text-white/50 text-xs mb-4">
+        <p className="text-white/50 text-xs mb-3 line-clamp-2">
           Загрузите файл или укажите путь к картинке (как в блоке галереи на главной).
         </p>
       )}
 
-      <div className="flex flex-col sm:flex-row gap-4 items-start">
+      <div className="flex flex-col sm:flex-row gap-3 items-start min-w-0">
         {/* Превью */}
-        <div className={`shrink-0 ${compact ? "w-20 sm:w-24" : "w-full sm:w-48"}`}>
+        <div className={`shrink-0 ${compact ? "w-16 sm:w-20" : "w-full sm:w-40"}`}>
           {value ? (
             <div className={`group relative rounded-lg overflow-hidden border-2 border-white/10 hover:border-white/25 bg-black transition-colors ${compact ? "aspect-square" : "aspect-[4/5]"}`}>
               <Image
@@ -101,10 +101,10 @@ export function HeroImageEditor({
         </div>
 
         {/* Загрузка и путь */}
-        <div className="flex-1 flex flex-col gap-3 min-w-0 w-full sm:min-w-[140px]">
-          <label className="cursor-pointer inline-flex items-center gap-2 w-fit px-3 py-2 bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/15 transition-colors rounded-lg shrink-0">
-            <Plus size={18} />
-            {uploading ? "Загрузка…" : "Загрузить файл"}
+        <div className="flex-1 flex flex-col gap-2 min-w-0 w-full">
+          <label className="cursor-pointer inline-flex items-center gap-2 w-full max-w-full px-3 py-2 bg-white/10 border border-white/20 text-white text-xs font-medium hover:bg-white/15 transition-colors rounded-lg shrink-0 overflow-hidden">
+            <Plus size={16} className="shrink-0" />
+            <span className="truncate">{uploading ? "Загрузка…" : "Загрузить файл"}</span>
             <input
               type="file"
               accept="image/jpeg,image/png,image/webp,image/gif"
@@ -113,19 +113,19 @@ export function HeroImageEditor({
               disabled={uploading}
             />
           </label>
-          <div className="flex gap-2">
+          <div className="flex gap-2 min-w-0">
             <input
               type="text"
               placeholder="/photos/имя.jpg"
               value={pathInput}
               onChange={(e) => setPathInput(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addByPath())}
-              className="flex-1 px-3 py-2 bg-black/50 border border-white/20 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-[var(--accent)] rounded-lg"
+              className="flex-1 min-w-0 px-3 py-2 bg-black/50 border border-white/20 text-white text-xs placeholder:text-white/40 focus:outline-none focus:border-[var(--accent)] rounded-lg"
             />
             <button
               type="button"
               onClick={addByPath}
-              className="px-4 py-2 bg-[var(--accent)]/20 border border-[var(--accent)] text-[var(--accent)] text-sm font-semibold rounded-lg hover:bg-[var(--accent)]/30 shrink-0"
+              className="px-3 py-2 bg-[var(--accent)]/20 border border-[var(--accent)] text-[var(--accent)] text-xs font-semibold rounded-lg hover:bg-[var(--accent)]/30 shrink-0"
             >
               Подставить
             </button>

@@ -6,12 +6,10 @@ import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
+import { useLogo } from "@/contexts/LogoContext";
 
 const SCROLL_THRESHOLD = 20; // как только скролл начался
 const LOGO_SWITCH_DURATION = 1; // плавная смена
-
-const DEFAULT_LOGO_HERO = "/new-logo.png";
-const DEFAULT_LOGO_SCROLLED = "/logo.png";
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
@@ -27,7 +25,10 @@ interface HeaderProps {
   logoScrolled?: string;
 }
 
-export default function Header({ logoHero = DEFAULT_LOGO_HERO, logoScrolled = DEFAULT_LOGO_SCROLLED }: HeaderProps = {}) {
+export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrolledProp }: HeaderProps = {}) {
+  const { logoHero: logoHeroCtx, logoScrolled: logoScrolledCtx } = useLogo();
+  const logoHero = logoHeroProp ?? logoHeroCtx;
+  const logoScrolled = logoScrolledProp ?? logoScrolledCtx;
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();

@@ -41,11 +41,6 @@ export function GalleryEditor({
     e.dataTransfer.effectAllowed = "move";
     e.dataTransfer.setData("text/plain", String(index));
   };
-  const onDragOver = (e: React.DragEvent, index: number) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = "move";
-    setDragOverIndex(index);
-  };
   const onDragLeave = () => setDragOverIndex(null);
   const onDrop = (e: React.DragEvent, dropIndex: number) => {
     e.preventDefault();
@@ -91,7 +86,7 @@ export function GalleryEditor({
   };
 
   return (
-    <section className="rounded-xl border border-white/15 bg-white/[0.02] p-6">
+    <section className="rounded-xl border border-white/15 bg-white/[0.02] p-6 overflow-hidden">
       <h2 className="font-display text-lg uppercase text-white/90 mb-4">{title}</h2>
 
       {/* Список с превью и drag-n-drop */}
@@ -107,17 +102,28 @@ export function GalleryEditor({
             key={`${path}-${index}`}
             draggable
             onDragStart={(e) => onDragStart(e, index)}
-            onDragOver={(e) => onDragOver(e, index)}
+            onDragOver={(e) => {
+              e.preventDefault();
+              e.dataTransfer.dropEffect = "move";
+              setDragOverIndex(index);
+            }}
             onDragLeave={onDragLeave}
             onDrop={(e) => onDrop(e, index)}
-            className={`group relative aspect-[4/5] rounded-lg overflow-hidden border-2 bg-black cursor-grab active:cursor-grabbing select-none ${
+            className={`group relative aspect-[4/5] rounded-lg overflow-hidden border-2 bg-black cursor-grab active:cursor-grabbing select-none transition-all duration-200 ${
               draggedIndex === index
-                ? "border-[var(--accent)] opacity-50 scale-95 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--background)]"
+                ? "border-[var(--accent)] opacity-40 scale-95 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--background)] z-10"
                 : dragOverIndex === index
-                  ? "border-[var(--accent)] bg-[var(--accent)]/10"
+                  ? "border-[var(--accent)] border-dashed bg-[var(--accent)]/20 scale-[1.05] shadow-lg shadow-[var(--accent)]/20"
                   : "border-white/10 hover:border-white/25"
-            } transition-all`}
+            }`}
           >
+            {dragOverIndex === index && draggedIndex !== index && (
+              <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60">
+                <span className="px-4 py-2 rounded-lg bg-[var(--accent)]/90 text-black text-sm font-semibold">
+                  Сюда
+                </span>
+              </div>
+            )}
             <span className="absolute top-2 left-2 z-10 w-6 h-6 flex items-center justify-center rounded bg-black/70 text-[10px] font-bold text-white">
               {index + 1}
             </span>
@@ -175,10 +181,10 @@ export function GalleryEditor({
       )}
 
       {/* Добавить: загрузка и пути */}
-      <div className="flex flex-wrap items-end gap-4">
-        <label className="cursor-pointer inline-flex items-center gap-2 px-4 py-2.5 bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/15 transition-colors rounded-lg">
-          <Plus size={18} />
-          {uploading ? "Загрузка…" : "Загрузить файлы"}
+      <div className="flex flex-wrap items-end gap-3 min-w-0">
+        <label className="cursor-pointer inline-flex items-center gap-2 px-3 py-2 bg-white/10 border border-white/20 text-white text-sm font-medium hover:bg-white/15 transition-colors rounded-lg shrink-0">
+          <Plus size={16} />
+          <span className="truncate max-w-[120px]">{uploading ? "Загрузка…" : "Загрузить файлы"}</span>
           <input
             type="file"
             accept="image/jpeg,image/png,image/webp,image/gif"
@@ -188,19 +194,19 @@ export function GalleryEditor({
             disabled={uploading}
           />
         </label>
-        <div className="flex-1 min-w-[200px] flex gap-2">
+        <div className="flex-1 min-w-0 flex gap-2 max-w-full">
           <input
             type="text"
-            placeholder="/photos/имя.jpg или несколько через запятую"
+            placeholder="/photos/имя.jpg"
             value={addPath}
             onChange={(e) => setAddPath(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), addByPaths())}
-            className="flex-1 px-3 py-2 bg-black border border-white/20 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-[var(--accent)] rounded-lg"
+            className="flex-1 min-w-0 px-3 py-2 bg-black border border-white/20 text-white text-sm placeholder:text-white/40 focus:outline-none focus:border-[var(--accent)] rounded-lg"
           />
           <button
             type="button"
             onClick={addByPaths}
-            className="px-4 py-2 bg-[var(--accent)]/20 border border-[var(--accent)] text-[var(--accent)] text-sm font-semibold rounded-lg hover:bg-[var(--accent)]/30"
+            className="px-3 py-2 bg-[var(--accent)]/20 border border-[var(--accent)] text-[var(--accent)] text-sm font-semibold rounded-lg hover:bg-[var(--accent)]/30 shrink-0"
           >
             Добавить
           </button>

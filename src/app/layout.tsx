@@ -5,6 +5,7 @@ import "@fontsource/libre-franklin/700.css";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PolygonBackground from "@/components/PolygonBackground";
+import { getMainSafe } from "@/lib/data";
 
 const SITE_URL = "https://kaktusa.ru";
 const defaultTitle = "?КАКТУСА — Электронные ивенты с особым смыслом в Крыму";
@@ -54,16 +55,22 @@ export const metadata: Metadata = {
   category: "entertainment",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const main = await getMainSafe();
+  const logoScrolled = main?.hero?.logoScrolled ?? "/logo.png";
+  const logoHero = main?.hero?.logoHero ?? "/new-logo.png";
+  // Для дефолтного лого — облегчённая версия (6KB vs 323KB)
+  const preloaderLogo = logoScrolled === "/logo.png" ? "/logo-preloader.png" : logoScrolled;
+
   return (
     <html lang="ru" style={{ background: "#000" }}>
       <head>
-        <link rel="preload" href="/logo-preloader.png" as="image" fetchPriority="high" />
-        <link rel="preload" href="/logo.png" as="image" />
+        <link rel="preload" href={preloaderLogo} as="image" fetchPriority="high" />
+        {logoScrolled !== "/logo.png" && <link rel="preload" href={logoScrolled} as="image" />}
         {/* Критичные стили прелоадера — до загрузки globals.css */}
         <style
           dangerouslySetInnerHTML={{
@@ -74,7 +81,7 @@ export default function RootLayout({
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative" style={{ background: "#000" }}>
         {/* Прелоадер — в первых байтах HTML, до React, до CSS */}
         <div id="preloader-shell" aria-hidden="true">
-          <img src="/logo-preloader.png" alt="" width={96} height={96} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
+          <img src={preloaderLogo} alt="" width={96} height={96} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
         </div>
         {/* Скрыть прелоадер на не-главных страницах сразу (без ожидания React) */}
         <script
@@ -97,7 +104,7 @@ export default function RootLayout({
             }),
           }}
         />
-        <Providers>{children}</Providers>
+        <Providers logo={{ logoHero, logoScrolled }}>{children}</Providers>
         </div>
       </body>
     </html>

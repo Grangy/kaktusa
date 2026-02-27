@@ -13,7 +13,7 @@ const inputClass =
   "w-full px-4 py-2.5 bg-black/50 border border-white/20 text-white rounded-lg focus:outline-none focus:border-[var(--accent)] placeholder:text-white/40";
 
 const sectionCard =
-  "rounded-xl border border-white/15 bg-white/[0.02] p-6";
+  "rounded-xl border border-white/15 bg-white/[0.02] p-6 overflow-hidden";
 
 export function MainEditForm({ initial }: { initial: MainContent }) {
   const router = useRouter();
@@ -129,7 +129,7 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
             />
           </div>
         </div>
-        <div className="mt-6 grid gap-6 sm:grid-cols-2">
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
           <HeroImageEditor
             value={form.hero.logoHero ?? "/new-logo.png"}
             onChange={(logoHero) => updateHero({ logoHero })}

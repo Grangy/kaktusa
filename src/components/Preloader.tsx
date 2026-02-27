@@ -8,7 +8,12 @@ interface PreloaderProps {
   logo?: string;
 }
 
+function getPreloaderLogo(logo: string): string {
+  return logo === "/logo.png" ? "/logo-preloader.png" : logo;
+}
+
 export default function Preloader({ isVisible, logo = "/logo.png" }: PreloaderProps) {
+  const src = getPreloaderLogo(logo);
   return (
     <AnimatePresence>
       {isVisible && (
@@ -24,7 +29,7 @@ export default function Preloader({ isVisible, logo = "/logo.png" }: PreloaderPr
             transition={{ duration: 1, ease: [0.12, 0.8, 0.24, 1] }}
             className="relative w-28 h-28 md:w-36 md:h-36"
           >
-            <Image src={logo} alt="?КАКТУСА" fill sizes="144px" className="object-contain" priority />
+            <Image src={src} alt="?КАКТУСА" fill sizes="144px" className="object-contain" priority />
           </motion.div>
         </motion.div>
       )}

@@ -5,12 +5,15 @@ import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import { Send, Camera } from "lucide-react";
+import { useLogo } from "@/contexts/LogoContext";
 
 interface FooterProps {
   logo?: string;
 }
 
-export default function Footer({ logo = "/logo.png" }: FooterProps = {}) {
+export default function Footer({ logo: logoProp }: FooterProps = {}) {
+  const { logoScrolled } = useLogo();
+  const logo = logoProp ?? logoScrolled;
   const pathname = usePathname();
   const isHome = pathname === "/";
   const navPrefix = isHome ? "" : "/";

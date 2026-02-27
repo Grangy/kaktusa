@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import PageWithPreloader from "@/components/PageWithPreloader";
 import PreloaderShell from "@/components/PreloaderShell";
-import { getMain, getEvents } from "@/lib/data";
+import { getMain, getEvents, getMainSafe } from "@/lib/data";
 
 export const dynamic = "force-dynamic";
 
@@ -24,9 +24,11 @@ async function HomeContent() {
   );
 }
 
-export default function Home() {
+export default async function Home() {
+  const main = await getMainSafe();
+  const logo = main?.hero?.logoScrolled ?? "/logo.png";
   return (
-    <Suspense fallback={<PreloaderShell logo="/logo.png" />}>
+    <Suspense fallback={<PreloaderShell logo={logo} />}>
       <HomeContent />
     </Suspense>
   );

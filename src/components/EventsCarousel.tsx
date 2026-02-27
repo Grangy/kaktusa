@@ -180,7 +180,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     >
                       {event.tag}
                     </span>
-                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-8 pt-16 space-y-1.5 md:px-3">
+                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-3 pt-16 space-y-1.5 md:px-3">
                       <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
                         {event.title}
                       </h3>
@@ -194,10 +194,10 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                           {event.locationShort ?? event.location}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-2 pt-3 items-end">
+                      <div className="flex items-center justify-between gap-2 pt-3 items-center">
                         {event.type === "upcoming" && event.price ? (
-                          <p className="text-white text-sm">
-                            От <span className="font-bold">{event.price.replace(/^От\s/, "")}</span>
+                          <p className="text-white/90 text-xs">
+                            От <span className="font-semibold">{event.price.replace(/^От\s/, "")}</span>
                           </p>
                         ) : (
                           <span />
@@ -209,7 +209,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                 </TransitionLink>
                 <TransitionLink
                   href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
-                  className={`absolute bottom-3 right-3 inline-flex items-center justify-center py-2.5 px-5 rounded-xl text-xs font-semibold uppercase tracking-wider transition-all duration-200 z-10 ${
+                  className={`absolute bottom-5 right-3 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 z-10 ${
                     event.type === "upcoming"
                       ? "border-2 border-[var(--accent)] text-[var(--accent)] bg-black/30 backdrop-blur-sm hover:bg-[var(--accent)]/20"
                       : "border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50"

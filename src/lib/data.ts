@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { prisma } from "@/lib/db";
 import type { Event, MainContent, MetaContent } from "@/types/data";
 import type { TicketOption } from "@/types/data";
@@ -131,7 +132,7 @@ export async function deleteEvent(slug: string): Promise<void> {
   await prisma.event.delete({ where: { slug } });
 }
 
-export async function getMain(): Promise<MainContent> {
+export const getMain = cache(async (): Promise<MainContent> => {
   const row = await prisma.main.findUnique({ where: { id: "main" } });
   if (!row) throw new Error("Main content not found");
   return {
@@ -140,6 +141,14 @@ export async function getMain(): Promise<MainContent> {
     gallery: JSON.parse(row.gallery) as MainContent["gallery"],
     reviews: JSON.parse(row.reviews) as MainContent["reviews"],
   };
+});
+
+export async function getMainSafe(): Promise<MainContent | null> {
+  try {
+    return await getMain();
+  } catch {
+    return null;
+  }
 }
 
 export async function writeMain(main: MainContent): Promise<void> {
