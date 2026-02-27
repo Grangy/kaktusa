@@ -40,6 +40,7 @@ model Event {
   rules            String?
   subtitle         String?
   gallery          String?  // JSON array of photo paths
+  logoScrolled     String?  // логотип после hero (квадратный) для страницы мероприятия
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }

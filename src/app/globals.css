@@ -96,7 +96,8 @@ body {
 }
 
 /* Скрыть статический прелоадер после готовности приложения */
-body.preloader-done #preloader-shell {
+body.preloader-done #preloader-shell,
+#preloader-shell.preloader-done {
   display: none !important;
 }
 

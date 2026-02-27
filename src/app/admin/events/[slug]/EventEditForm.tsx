@@ -40,6 +40,7 @@ const defaultEvent: Partial<Event> = {
   dressCode: "",
   rules: "",
   gallery: [],
+  logoScrolled: "",
 };
 
 function inputClass() {
@@ -277,6 +278,12 @@ export function EventEditForm({
           value={form.heroImage ?? ""}
           onChange={(heroImage) => update({ heroImage })}
           label="Hero-изображение"
+        />
+        <HeroImageEditor
+          value={form.logoScrolled ?? ""}
+          onChange={(logoScrolled) => update({ logoScrolled })}
+          label="Логотип после hero (квадратный)"
+          compact
         />
         <GalleryEditor
           title="Галерея мероприятия"

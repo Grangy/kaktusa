@@ -28,7 +28,7 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
   const logoScale = useTransform(scrollYProgress, [0, 0.4, 1], [1.2, 0.85, 0.5]);
 
   return (
-    <section ref={sectionRef} id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-gradient-to-b from-transparent to-[#0a0a0a]">
+    <section ref={sectionRef} id="about-us" className="py-14 md:py-24 px-6 md:px-12 scroll-mt-20 bg-transparent">
       <motion.div
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -41,7 +41,7 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="font-display text-3xl md:text-4xl font-bold mb-12 text-center"
+          className="font-display text-3xl md:text-4xl font-bold uppercase mb-12 text-center"
         >
           {heading}
         </motion.h2>

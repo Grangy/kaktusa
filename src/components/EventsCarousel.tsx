@@ -101,18 +101,10 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
   return (
     <section
       id="upcoming"
-      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 relative overflow-hidden"
-      style={{
-        background: `
-          linear-gradient(135deg, #080908 0%, #0a0c0a 25%, #070806 50%, #090b09 75%, #0b0d0b 100%),
-          radial-gradient(ellipse 80% 50% at 20% 20%, rgba(74,222,128,0.04) 0%, transparent 50%),
-          radial-gradient(ellipse 60% 80% at 80% 80%, rgba(74,222,128,0.03) 0%, transparent 50%),
-          radial-gradient(ellipse 50% 40% at 50% 50%, rgba(74,222,128,0.02) 0%, transparent 70%)
-        `,
-      }}
+      className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 relative overflow-hidden bg-transparent"
     >
-      {/* Локальные полигоны поверх глобальных (усиленный акцент секции) */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-60">
+      {/* Лёгкий акцент без резкого перехода */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
         <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
           <defs>
             <linearGradient id="events-poly-1" x1="0%" y1="0%" x2="100%" y2="100%">

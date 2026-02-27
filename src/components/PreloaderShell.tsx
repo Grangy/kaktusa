@@ -1,31 +1,33 @@
-/**
- * Статический прелоадер в начальном HTML — показывается до гидратации React.
- * Лого прелоадится через layout, поэтому здесь он уже в кэше.
- * Для /logo.png используем облегчённую версию logo-preloader.png.
- */
-function getPreloaderLogo(logo: string): string {
-  return logo === "/logo.png" ? "/logo-preloader.png" : logo;
+"use client";
+
+import { usePathname } from "next/navigation";
+
+interface PreloaderShellProps {
+  preloaderLogo: string;
 }
 
-export default function PreloaderShell({ logo = "/logo.png" }: { logo?: string }) {
-  const src = getPreloaderLogo(logo);
+/**
+ * Прелоадер в первых байтах HTML. Класс preloader-done выставляется по pathname
+ * на сервере и клиенте одинаково — без гидрации.
+ */
+export default function PreloaderShell({ preloaderLogo }: PreloaderShellProps) {
+  const pathname = usePathname();
+  const hideOnNonHome = pathname !== "/";
+
   return (
     <div
       id="preloader-shell"
-      className="fixed inset-0 z-[199] flex items-center justify-center bg-black"
       aria-hidden="true"
+      className={hideOnNonHome ? "preloader-done" : undefined}
     >
-      <div className="relative w-28 h-28 md:w-36 md:h-36">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={src}
-          alt=""
-          width={144}
-          height={144}
-          className="w-full h-full object-contain"
-          fetchPriority="high"
-        />
-      </div>
+      <img
+        src={preloaderLogo}
+        alt=""
+        width={96}
+        height={96}
+        fetchPriority="high"
+        style={{ width: "7rem", height: "7rem", objectFit: "contain" }}
+      />
     </div>
   );
 }

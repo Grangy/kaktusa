@@ -49,7 +49,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
 
   return (
     <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
-      <Header />
+      <Header logoScrolled={event?.logoScrolled} />
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">

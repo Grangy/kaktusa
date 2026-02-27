@@ -39,6 +39,7 @@ export interface Event {
   rules?: string;
   subtitle?: string; // for past events
   gallery?: string[]; // фото мероприятия
+  logoScrolled?: string; // логотип после hero (квадратный) для страницы мероприятия
 }
 
 export interface MainContent {

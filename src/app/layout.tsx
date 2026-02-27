@@ -5,6 +5,7 @@ import "@fontsource/libre-franklin/700.css";
 import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PolygonBackground from "@/components/PolygonBackground";
+import PreloaderShell from "@/components/PreloaderShell";
 import { getMainSafe } from "@/lib/data";
 
 const SITE_URL = "https://kaktusa.ru";
@@ -74,21 +75,12 @@ export default async function RootLayout({
         {/* Критичные стили прелоадера — до загрузки globals.css */}
         <style
           dangerouslySetInnerHTML={{
-            __html: `#preloader-shell{position:fixed;inset:0;z-index:999999;background:#000;display:flex;align-items:center;justify-content:center}body.preloader-done #preloader-shell{display:none!important}`,
+            __html: `#preloader-shell{position:fixed;inset:0;z-index:999999;background:#000;display:flex;align-items:center;justify-content:center}#preloader-shell.preloader-done{display:none!important}`,
           }}
         />
       </head>
       <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative" style={{ background: "#000" }}>
-        {/* Прелоадер — в первых байтах HTML, до React, до CSS */}
-        <div id="preloader-shell" aria-hidden="true">
-          <img src={preloaderLogo} alt="" width={96} height={96} fetchPriority="high" style={{ width: "7rem", height: "7rem", objectFit: "contain" }} />
-        </div>
-        {/* Скрыть прелоадер на не-главных страницах сразу (без ожидания React) */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',h);else h();function h(){if(location.pathname!=='/')document.body.classList.add('preloader-done')}`,
-          }}
-        />
+        <PreloaderShell preloaderLogo={preloaderLogo} />
         <PolygonBackground />
         <div className="relative z-10">
         <script
