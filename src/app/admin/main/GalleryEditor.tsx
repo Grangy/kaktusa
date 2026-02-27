@@ -1,8 +1,9 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { GripVertical, Plus, X, ZoomIn } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronLeft, ChevronRight, GripVertical, Plus, X, ZoomIn } from "lucide-react";
 import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 import { uploadImages } from "@/lib/uploadImage";
 
@@ -21,9 +22,28 @@ export function GalleryEditor({
 }: GalleryEditorProps) {
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
-  const [lightboxPath, setLightboxPath] = useState<string | null>(null);
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
   const [uploading, setUploading] = useState(false);
   const [addPath, setAddPath] = useState("");
+
+  const openLightbox = useCallback((index: number) => {
+    if (index >= 0 && index < value.length) setLightboxIndex(index);
+  }, [value.length]);
+
+  useEffect(() => {
+    if (lightboxIndex === null) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxIndex(null);
+      if (e.key === "ArrowLeft") setLightboxIndex((i) => (i === null ? null : Math.max(0, i - 1)));
+      if (e.key === "ArrowRight") setLightboxIndex((i) => (i === null ? null : Math.min(value.length - 1, i + 1)));
+    };
+    document.addEventListener("keydown", onKey);
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = "";
+    };
+  }, [lightboxIndex, value.length]);
 
   const move = useCallback(
     (from: number, to: number) => {
@@ -109,6 +129,11 @@ export function GalleryEditor({
             }}
             onDragLeave={onDragLeave}
             onDrop={(e) => onDrop(e, index)}
+            onClick={() => openLightbox(index)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && openLightbox(index)}
+            aria-label={`Увеличить фото ${index + 1}`}
             className={`group relative aspect-[4/5] rounded-lg overflow-hidden border-2 bg-black cursor-grab active:cursor-grabbing select-none transition-all duration-200 ${
               draggedIndex === index
                 ? "border-[var(--accent)] opacity-40 scale-95 ring-2 ring-[var(--accent)] ring-offset-2 ring-offset-[var(--background)] z-10"
@@ -145,12 +170,13 @@ export function GalleryEditor({
                 <span
                   className="cursor-grab active:cursor-grabbing p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
                   title="Перетащите для изменения порядка"
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <GripVertical size={16} />
                 </span>
                 <button
                   type="button"
-                  onClick={() => setLightboxPath(path)}
+                  onClick={(e) => (e.stopPropagation(), openLightbox(index))}
                   className="p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
                   title="Увеличить"
                 >
@@ -159,7 +185,7 @@ export function GalleryEditor({
               </div>
               <button
                 type="button"
-                onClick={() => remove(index)}
+                onClick={(e) => (e.stopPropagation(), remove(index))}
                 className="p-1.5 rounded bg-red-500/90 text-white hover:bg-red-500"
                 title="Удалить"
                 aria-label="Удалить"
@@ -213,24 +239,66 @@ export function GalleryEditor({
         </div>
       </div>
 
-      {/* Lightbox */}
-      {lightboxPath && (
-        <button
-          type="button"
-          className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
-          onClick={() => setLightboxPath(null)}
-          aria-label="Закрыть"
-        >
-          <Image
-            src={getOptimizedPhotoUrl(lightboxPath)}
-            alt=""
-            width={1200}
-            height={800}
-            className="max-w-full max-h-full object-contain"
-            onClick={(e) => e.stopPropagation()}
-          />
-        </button>
-      )}
+      {/* Попап просмотра фото */}
+      <AnimatePresence>
+        {lightboxIndex !== null && value[lightboxIndex] && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 bg-black/95 flex items-center justify-center p-4"
+            onClick={() => setLightboxIndex(null)}
+          >
+            <button
+              type="button"
+              onClick={() => setLightboxIndex(null)}
+              className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 z-10"
+              aria-label="Закрыть"
+            >
+              <X size={24} />
+            </button>
+            {lightboxIndex > 0 && (
+              <button
+                type="button"
+                onClick={(e) => (e.stopPropagation(), setLightboxIndex(lightboxIndex - 1))}
+                className="absolute left-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 z-10"
+                aria-label="Назад"
+              >
+                <ChevronLeft size={28} />
+              </button>
+            )}
+            {lightboxIndex < value.length - 1 && (
+              <button
+                type="button"
+                onClick={(e) => (e.stopPropagation(), setLightboxIndex(lightboxIndex + 1))}
+                className="absolute right-2 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 z-10"
+                aria-label="Вперёд"
+              >
+                <ChevronRight size={28} />
+              </button>
+            )}
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.98, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="relative max-w-[90vw] max-h-[85vh] flex items-center justify-center"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
+                <Image
+                  src={getOptimizedPhotoUrl(value[lightboxIndex])}
+                  alt=""
+                  width={1200}
+                  height={800}
+                  className="max-w-full max-h-[85vh] w-auto h-auto object-contain"
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -499,7 +499,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                         Прошло
                       </span>
                     </div>
-                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-8 pt-16">
+                    <div className="absolute bottom-[1rem] left-0 right-0 px-3.5 py-3 pb-8 pt-16">
                       <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{ev.title}</h3>
                       <p className="text-white/90 text-sm mt-1">{ev.dateDisplay}</p>
                       <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
