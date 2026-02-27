@@ -28,7 +28,7 @@ export default async function Home() {
   const main = await getMainSafe();
   const logo = main?.hero?.logoScrolled ?? "/logo.png";
   return (
-    <Suspense fallback={<PreloaderShell logo={logo} />}>
+    <Suspense fallback={<PreloaderShell preloaderLogo={logo} />}>
       <HomeContent />
     </Suspense>
   );
