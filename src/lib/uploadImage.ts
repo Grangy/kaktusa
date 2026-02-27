@@ -15,7 +15,7 @@ async function parseErrorResponse(res: Response): Promise<string> {
     // Сервер вернул HTML (например, страница ошибки nginx)
   }
   if (res.status === 413) {
-    return "Файл слишком большой. Попробуйте изображение с меньшим разрешением или другой формат.";
+    return "Файл слишком большой (413). Лимит: 10 MB — изображения, 150 MB — видео. Проверьте nginx client_max_body_size и next.config serverActions.bodySizeLimit.";
   }
   if (res.status === 401) return "Нет доступа. Войдите в админку.";
   if (res.status === 400) return text || "Неверный формат файла.";

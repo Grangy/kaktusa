@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 import { uploadImages } from "@/lib/uploadImage";
 
 const VIDEO_ACCEPT = "video/mp4,video/webm,video/quicktime,video/x-msvideo,.mp4,.webm,.mov,.avi";
+const MAX_VIDEO_SIZE = 150 * 1024 * 1024; // 150 MB
 
 interface HeroVideoEditorProps {
   value: string;
@@ -21,9 +22,17 @@ export function HeroVideoEditor({ value, onChange }: HeroVideoEditorProps) {
   async function uploadFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > MAX_VIDEO_SIZE) {
+      alert(`Видео больше 150 MB (${(file.size / 1024 / 1024).toFixed(1)} MB). Сожмите файл.`);
+      e.target.value = "";
+      return;
+    }
     setUploading(true);
     try {
-      const paths = await uploadImages([file]); // API принимает и видео, оптимизация только для изображений
+      if (typeof window !== "undefined" && (window as unknown as { __DEBUG_VIDEO_UPLOAD?: boolean }).__DEBUG_VIDEO_UPLOAD) {
+        console.log("[HeroVideo] Загрузка видео:", { name: file.name, size: file.size, type: file.type, sizeMB: (file.size / 1024 / 1024).toFixed(2) });
+      }
+      const paths = await uploadImages([file]);
       if (paths[0]) onChange(paths[0]);
     } catch (err) {
       alert(err instanceof Error ? err.message : "Ошибка загрузки");
@@ -42,6 +51,22 @@ export function HeroVideoEditor({ value, onChange }: HeroVideoEditorProps) {
   }
 
   const isVideo = /\.(mp4|webm|mov|avi)(\?|$)/i.test(value);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const w = window as unknown as {
+      __DEBUG_VIDEO_UPLOAD?: boolean;
+      __checkVideoForUpload?: (file: File) => void;
+    };
+    w.__checkVideoForUpload = (file: File) => {
+      const sizeMB = (file.size / 1024 / 1024).toFixed(2);
+      const ok = file.size <= MAX_VIDEO_SIZE;
+      console.log("[HeroVideo] Проверка:", { name: file.name, size: file.size, sizeMB: sizeMB + " MB", type: file.type, ok: ok ? "✓ до 150 MB" : "✗ больше 150 MB" });
+    };
+    return () => {
+      delete w.__checkVideoForUpload;
+    };
+  }, []);
 
   return (
     <div className="rounded-lg border border-white/10 bg-black/20 p-4 overflow-hidden min-w-0">
