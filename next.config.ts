@@ -4,10 +4,12 @@ const nextConfig: NextConfig = {
   output: "standalone",
   compress: true,
   poweredByHeader: false,
-  serverExternalPackages: ["@prisma/client", ".prisma/client"],
+  serverExternalPackages: ["@prisma/client", ".prisma/client", "sharp"],
   images: {
     formats: ["image/avif", "image/webp"],
     minimumCacheTTL: 31536000,
+    loader: "custom",
+    loaderFile: "./src/lib/imageLoader.ts",
   },
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],

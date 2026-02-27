@@ -104,6 +104,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
                     fill
                     sizes="(max-width: 640px) 85vw, (max-width: 768px) 75vw, 420px"
                     className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                    priority={i < 2}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 </div>
