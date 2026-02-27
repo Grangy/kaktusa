@@ -194,7 +194,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                           {event.locationShort ?? event.location}
                         </span>
                       </div>
-                      <div className="flex items-center justify-between gap-2">
+                      <div className={`flex items-center justify-between gap-2 ${event.type === "upcoming" && event.price ? "pt-3" : ""}`}>
                         {event.type === "upcoming" && event.price ? (
                           <p className="text-white/90 text-xs">
                             От <span className="font-semibold">{event.price.replace(/^От\s/, "")}</span>
