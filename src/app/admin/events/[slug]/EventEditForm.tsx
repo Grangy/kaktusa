@@ -73,7 +73,11 @@ export function EventEditForm({
     try {
       const url = slug === "new" ? "/api/admin/events" : `/api/admin/events/${form.slug}`;
       const method = slug === "new" ? "POST" : "PUT";
-      const body = { ...form, id: form.id || form.slug?.replace(/-/g, "") };
+      const body = {
+        ...form,
+        id: form.id || form.slug?.replace(/-/g, ""),
+        artists: (form.artists ?? []).filter((s) => s.trim() !== ""),
+      };
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
@@ -313,9 +317,10 @@ export function EventEditForm({
         <label className="block text-white/80 text-sm mb-1">Артисты (по одному на строку)</label>
         <textarea
           value={(form.artists ?? []).join("\n")}
-          onChange={(e) => update({ artists: e.target.value.split("\n").filter(Boolean) })}
+          onChange={(e) => update({ artists: e.target.value.split("\n") })}
           className={inputClass()}
-          rows={4}
+          rows={6}
+          placeholder="Введите имя артиста и нажмите Enter для новой строки"
         />
       </div>
       <div>
