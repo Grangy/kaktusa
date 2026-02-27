@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
-import { writeFile, mkdir } from "fs/promises";
+import { writeFile, mkdir, unlink, rename } from "fs/promises";
 import path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
+
+const execFileAsync = promisify(execFile);
 
 const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
 const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime", "video/x-msvideo"];
@@ -12,6 +16,29 @@ const UPLOAD_DIR = "photos"; // under public (фото и видео)
 /** Всегда пишем в project root / public / photos — постоянное хранилище. Deploy делает symlink в standalone. */
 function getUploadDir(): string {
   return path.join(process.cwd(), "public", UPLOAD_DIR);
+}
+
+/**
+ * Сжатие видео через ffmpeg: H.264, CRF 28, без аудио, faststart для веба.
+ * Если ffmpeg недоступен или ошибка — возвращаем исходный путь.
+ */
+async function optimizeVideo(inputPath: string, dir: string, baseName: string): Promise<{ path: string }> {
+  const optPath = path.join(dir, `${baseName}-opt.mp4`);
+  const finalPath = path.join(dir, `${baseName}.mp4`);
+  try {
+    // H.264, без аудио (hero всегда muted)
+    await execFileAsync("ffmpeg", [
+      "-i", inputPath,
+      "-c:v", "libx264", "-crf", "28", "-preset", "medium",
+      "-an", "-movflags", "+faststart", "-y", optPath,
+    ], { timeout: 300_000 });
+    await unlink(inputPath);
+    await rename(optPath, finalPath);
+    return { path: `/${UPLOAD_DIR}/${baseName}.mp4` };
+  } catch (err) {
+    console.warn("Video optimize failed, keeping original:", err);
+    return { path: `/${UPLOAD_DIR}/${path.basename(inputPath)}` };
+  }
 }
 
 function safeName(original: string, mime: string): string {
@@ -72,7 +99,13 @@ export async function POST(req: Request) {
       const filePath = path.join(dir, name);
       const buffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filePath, buffer);
-      paths.push(`/${UPLOAD_DIR}/${name}`);
+      if (isVideo) {
+        const baseName = path.basename(name, path.extname(name));
+        const { path: videoPath } = await optimizeVideo(filePath, dir, baseName);
+        paths.push(videoPath);
+      } else {
+        paths.push(`/${UPLOAD_DIR}/${name}`);
+      }
     }
 
     if (!paths.length) {

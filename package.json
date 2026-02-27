@@ -24,6 +24,7 @@
     "db:seed": "node scripts/seed.mjs",
     "audit:prod": "node scripts/audit-prod.mjs",
     "audit:photos": "node scripts/audit-photos.mjs",
+    "test:video-compress": "node scripts/test-video-compress.mjs",
     "sync:prod": "node scripts/sync-from-prod.mjs"
   },
   "dependencies": {
