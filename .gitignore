@@ -53,3 +53,6 @@ next-env.d.ts
 # База SQLite — не в git (на проде хранится локально, при деплое сохраняется)
 /prisma/*.db
 /prisma/prisma/
+
+# Синхронизация с продом — только для локальной разработки
+/scripts/sync-from-prod.mjs

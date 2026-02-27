@@ -133,14 +133,9 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
         <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/4 blur-3xl rounded-3xl" />
       </div>
       <div className="relative">
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center text-white/95 drop-shadow-sm"
-      >
+      <h2 className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center text-white/95 drop-shadow-sm">
         Мероприятия
-      </motion.h2>
+      </h2>
 
       <div className="max-w-5xl mx-auto">
         <div
@@ -153,9 +148,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
               key={event.id}
               data-event-card
               id={event.type === "past" ? "past" : undefined}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              initial={false}
               className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
               <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),inset_0_1px_0_rgba(255,255,255,0.02)]">
@@ -180,19 +173,21 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     >
                       {event.tag}
                     </span>
-                    <div className="absolute bottom-[1rem] left-0 right-0 min-h-[7rem] flex flex-col px-3.5 py-3 pb-3 pt-16 space-y-1.5 md:px-3">
-                      <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
-                        {event.title}
-                      </h3>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-white/90 text-sm">
-                        <span className="flex items-center gap-1">
-                          <Calendar size={12} className="shrink-0 opacity-70" />
-                          {event.date}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin size={12} className="shrink-0 opacity-70" />
-                          {event.locationShort ?? event.location}
-                        </span>
+                    <div className="absolute bottom-[1rem] left-0 right-0 min-h-[7rem] flex flex-col px-3.5 py-3 pb-3 pt-16 space-y-1.5 md:px-3 z-0">
+                      <div className="space-y-1.5 mb-4">
+                        <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)] group-hover:text-[var(--accent)] transition-colors">
+                          {event.title}
+                        </h3>
+                        <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 text-white/90 text-sm">
+                          <span className="flex items-center gap-1">
+                            <Calendar size={12} className="shrink-0 opacity-70" />
+                            {event.date}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MapPin size={12} className="shrink-0 opacity-70" />
+                            {event.locationShort ?? event.location}
+                          </span>
+                        </div>
                       </div>
                       <div className={`flex items-center justify-between gap-2 ${event.type === "upcoming" && event.price ? "pt-3" : ""}`}>
                         {event.type === "upcoming" && event.price ? (
@@ -209,7 +204,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                 </TransitionLink>
                 <TransitionLink
                   href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
-                  className={`absolute bottom-5 right-3 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 z-10 ${
+                  className={`absolute bottom-5 right-3 z-20 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 ${
                     event.type === "upcoming"
                       ? "border-2 border-[var(--accent)] text-[var(--accent)] bg-black/30 backdrop-blur-sm hover:bg-[var(--accent)]/20"
                       : "border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50"
