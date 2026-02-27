@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run on server AFTER domains kaktusa.ru, www.kaktusa.ru, tusa.grangy.ru point to 89.125.37.62
+# Run on server AFTER domains kaktusa.ru, www.kaktusa.ru, tusa.grangy.ru point to this server
 # Sets up Let's Encrypt SSL for all domains
 
 set -e

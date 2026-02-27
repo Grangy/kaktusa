@@ -1,12 +1,20 @@
 #!/bin/bash
 # Полная настройка сервера: swap, Node, PM2, Nginx
 # Запуск: ./deploy/full-setup.sh
+# Требует DEPLOY_SERVER и DEPLOY_SSH_KEY в .env.
 
 set -e
 
-SERVER="89.125.37.62"
-USER="root"
-KEY="${HOME}/.ssh/shared_server_key"
+cd "$(dirname "$0")/.."
+if [ -f .env ]; then set -a; source .env; set +a; fi
+SERVER="${DEPLOY_SERVER}"
+USER="${DEPLOY_USER:-root}"
+KEY="${DEPLOY_SSH_KEY}"
+
+if [ -z "$SERVER" ] || [ -z "$KEY" ]; then
+  echo "❌ Задайте DEPLOY_SERVER и DEPLOY_SSH_KEY в .env."
+  exit 1
+fi
 
 echo "=== 1. Копирование и выполнение server-setup ==="
 scp -i "$KEY" -o StrictHostKeyChecking=no deploy/server-setup.sh $USER@$SERVER:/root/

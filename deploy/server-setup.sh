@@ -1,5 +1,5 @@
 #!/bin/bash
-# Run this script on the server ONCE (ssh root@89.125.37.62)
+# Run this script on the server ONCE (ssh to DEPLOY_SERVER)
 # Sets up: swap, Node.js 20, PM2, Nginx
 
 set -e

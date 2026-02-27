@@ -476,7 +476,9 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
         </div>
       </section>
 
-      {/* Past Events */}
+      <GallerySection photos={event?.gallery} hideIfEmpty />
+
+      {/* Past Events — внизу, чтобы сначала была галерея этого мероприятия */}
       {pastEvents.length > 0 && (
         <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
           <div className={EVENT_CONTAINER}>
@@ -529,8 +531,6 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
           </div>
         </section>
       )}
-
-      <GallerySection photos={event?.gallery} hideIfEmpty />
 
       <Footer />
     </main>

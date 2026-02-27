@@ -329,9 +329,12 @@ export function EventEditForm({
           placeholder="Введите имя артиста и нажмите Enter для новой строки"
         />
       </div>
-      <div>
-        <label className="block text-white/80 text-sm mb-1">О мероприятии (абзацы)</label>
-        <p className="text-white/50 text-xs mb-2">Перетащите для изменения порядка</p>
+      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-6 space-y-4">
+        <h3 className="font-display text-lg uppercase text-white/90">О мероприятии</h3>
+        <p className="text-white/60 text-sm">Текст блока «О мероприятии» на странице события. Каждый абзац — отдельное поле; можно добавить абзац и перетащить для порядка.</p>
+        <div>
+          <label className="block text-white/80 text-sm mb-1">Абзацы</label>
+          <p className="text-white/50 text-xs mb-2">Перетащите для изменения порядка</p>
         {(form.aboutParagraphs ?? []).map((p, i) => (
           <div
             key={i}
@@ -396,6 +399,7 @@ export function EventEditForm({
         >
           + Абзац
         </button>
+        </div>
       </div>
       <div>
         <label className="block text-white/80 text-sm mb-1">Локация (заголовок)</label>

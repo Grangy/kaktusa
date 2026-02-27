@@ -54,11 +54,11 @@
 npm run ssl
 ```
 
-или вручную:
+или вручную (переменные из .env: DEPLOY_SSH_KEY, DEPLOY_SERVER; DEPLOY_USER по умолчанию root):
 
 ```bash
-scp -i ~/.ssh/shared_server_key deploy/ssl-setup.sh root@89.125.37.62:/root/
-ssh -i ~/.ssh/shared_server_key root@89.125.37.62 "chmod +x /root/ssl-setup.sh && /root/ssl-setup.sh"
+scp -i "$DEPLOY_SSH_KEY" deploy/ssl-setup.sh "${DEPLOY_USER:-root}"@$DEPLOY_SERVER:/root/
+ssh -i "$DEPLOY_SSH_KEY" "${DEPLOY_USER:-root}"@$DEPLOY_SERVER "chmod +x /root/ssl-setup.sh && /root/ssl-setup.sh"
 ```
 
 После этого https://kaktusa.ru будет работать с Let's Encrypt.

@@ -1,16 +1,21 @@
 #!/bin/bash
 # Run from project root: ./deploy/deploy.sh
-# Deploys kaktusa to 89.125.37.62
+# Требует DEPLOY_SERVER и DEPLOY_SSH_KEY в .env (или экспорт).
 
 set -e
 
-SERVER="89.125.37.62"
-USER="root"
-KEY="${HOME}/.ssh/shared_server_key"
-REMOTE_DIR="/var/www/kaktusa"
+cd "$(dirname "$0")/.."
+if [ -f .env ]; then set -a; source .env; set +a; fi
+SERVER="${DEPLOY_SERVER}"
+USER="${DEPLOY_USER:-root}"
+KEY="${DEPLOY_SSH_KEY}"
+REMOTE_DIR="${DEPLOY_REMOTE:-/var/www/kaktusa}"
 STANDALONE_DIR=".next/standalone/kaktusa.ru"
 
-cd "$(dirname "$0")/.."
+if [ -z "$SERVER" ] || [ -z "$KEY" ]; then
+  echo "❌ Задайте DEPLOY_SERVER и DEPLOY_SSH_KEY в .env (см. .env.example)."
+  exit 1
+fi
 
 echo "=== 1/5 Building Next.js (standalone) ==="
 npm run build

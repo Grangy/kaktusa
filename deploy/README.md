@@ -1,27 +1,31 @@
-# Деплой КАКТУСА на 89.125.37.62
+# Деплой КАКТУСА
 
-Домены: **kaktusa.ru**, www.kaktusa.ru, tusa.grangy.ru (все на одном проекте)
+Домены: **kaktusa.ru**, www.kaktusa.ru, tusa.grangy.ru (все на одном проекте).
+
+**Локально** в `.env` нужны для деплоя: **DEPLOY_SERVER**, **DEPLOY_SSH_KEY** (путь к приватному ключу), **NEXT_SERVER_ACTIONS_ENCRYPTION_KEY**. Опционально: DEPLOY_USER (по умолчанию root), DEPLOY_REMOTE (по умолчанию /var/www/kaktusa). См. `.env.example`.
 
 ## 1. Первичная настройка сервера (один раз)
 
 ```bash
-ssh -i ~/.ssh/shared_server_key root@89.125.37.62
-scp -i ~/.ssh/shared_server_key deploy/server-setup.sh root@89.125.37.62:/root/
-ssh -i ~/.ssh/shared_server_key root@89.125.37.62 "chmod +x /root/server-setup.sh && /root/server-setup.sh"
+# Сначала: source .env или export DEPLOY_SERVER, DEPLOY_SSH_KEY (и опционально DEPLOY_USER, по умолчанию root)
+ssh -i "$DEPLOY_SSH_KEY" "${DEPLOY_USER:-root}"@$DEPLOY_SERVER
+scp -i "$DEPLOY_SSH_KEY" deploy/server-setup.sh "${DEPLOY_USER:-root}"@$DEPLOY_SERVER:/root/
+ssh -i "$DEPLOY_SSH_KEY" "${DEPLOY_USER:-root}"@$DEPLOY_SERVER "chmod +x /root/server-setup.sh && /root/server-setup.sh"
 ```
+(Или запустите `./deploy/full-setup.sh` — он подхватит переменные из .env.)
 
 ## 2. Настройка Nginx
 
 ```bash
-scp -i ~/.ssh/shared_server_key deploy/nginx-tusa.conf root@89.125.37.62:/etc/nginx/sites-available/tusa.grangy.ru
-ssh -i ~/.ssh/shared_server_key root@89.125.37.62 "ln -sf /etc/nginx/sites-available/tusa.grangy.ru /etc/nginx/sites-enabled/ && nginx -t && systemctl reload nginx"
+scp -i "$DEPLOY_SSH_KEY" deploy/nginx-tusa.conf "${DEPLOY_USER:-root}"@$DEPLOY_SERVER:/etc/nginx/sites-available/tusa.grangy.ru
+ssh -i "$DEPLOY_SSH_KEY" "${DEPLOY_USER:-root}"@$DEPLOY_SERVER "ln -sf /etc/nginx/sites-available/tusa.grangy.ru /etc/nginx/sites-enabled/ && nginx -t && systemctl reload nginx"
 ```
 
 ## 3. Деплой через Git (https://github.com/Grangy/kaktusa)
 
 **Первый раз на сервере** — клонировать репозиторий и собрать проект:
 ```bash
-ssh -i ~/.ssh/shared_server_key root@89.125.37.62 'bash -s' < deploy/setup-server-git.sh
+ssh -i "$DEPLOY_SSH_KEY" "${DEPLOY_USER:-root}"@$DEPLOY_SERVER 'bash -s' < deploy/setup-server-git.sh
 ```
 
 **Далее деплой:** пушим в GitHub, затем на сервере делаем pull и пересборку:
@@ -35,9 +39,9 @@ npm run deploy
 
 ## 4. DNS для kaktusa.ru
 
-В панели регистратора домена добавьте A-записи:
-- `kaktusa.ru` → `89.125.37.62`
-- `www.kaktusa.ru` → `89.125.37.62`
+В панели регистратора домена добавьте A-записи на IP вашего сервера (значение **DEPLOY_SERVER**, если это IP):
+- `kaktusa.ru` → ваш_сервер
+- `www.kaktusa.ru` → ваш_сервер
 
 ## 5. SSL (один раз, после привязки доменов к серверу)
 

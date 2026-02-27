@@ -27,10 +27,14 @@ try {
   }
 } catch {}
 
-const SERVER = process.env.DEPLOY_SERVER || "89.125.37.62";
+const SERVER = process.env.DEPLOY_SERVER;
 const USER = process.env.DEPLOY_USER || "root";
 const REMOTE = process.env.DEPLOY_REMOTE || "/var/www/kaktusa";
-const KEY = process.env.DEPLOY_SSH_KEY || process.env.HOME + "/.ssh/shared_server_key";
+const KEY = process.env.DEPLOY_SSH_KEY;
+if (!SERVER || !KEY) {
+  console.error("❌ Задайте DEPLOY_SERVER и DEPLOY_SSH_KEY в .env (см. .env.example).");
+  process.exit(1);
+}
 const SSH_OPTS = `-i ${KEY} -o StrictHostKeyChecking=no -o ConnectTimeout=30`;
 const DATABASE_URL = `file:${REMOTE}/prisma/dev.db`;
 const SERVER_ACTIONS_KEY = process.env.NEXT_SERVER_ACTIONS_ENCRYPTION_KEY;

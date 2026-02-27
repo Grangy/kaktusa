@@ -1,7 +1,7 @@
 #!/bin/bash
 # Один раз выполнить на сервере: клонирует GitHub в /var/www/kaktusa, ставит зависимости, билдит, запускает PM2.
-# Локально: scp deploy/setup-server-git.sh root@89.125.37.62:/root/ && ssh root@89.125.37.62 "chmod +x /root/setup-server-git.sh && /root/setup-server-git.sh"
-# Или: ssh root@89.125.37.62 'bash -s' < deploy/setup-server-git.sh
+# Локально: scp deploy/setup-server-git.sh $DEPLOY_USER@$DEPLOY_SERVER:/root/ && ssh -i "$DEPLOY_SSH_KEY" $DEPLOY_USER@$DEPLOY_SERVER "chmod +x /root/setup-server-git.sh && /root/setup-server-git.sh"
+# Или: ssh -i "$DEPLOY_SSH_KEY" $DEPLOY_USER@$DEPLOY_SERVER 'bash -s' < deploy/setup-server-git.sh
 
 set -e
 REPO="https://github.com/Grangy/kaktusa.git"

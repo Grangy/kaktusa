@@ -29,11 +29,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
   const artists = event?.artists?.length ? event.artists : DEFAULT_ARTISTS;
   const aboutParagraphs = event?.aboutParagraphs?.filter(Boolean).length
     ? event.aboutParagraphs.filter(Boolean)
-    : [
-        "В ночь, когда оживают самые смелые фантазии, двери ночного клуба Foster распахнулись для того самого бала.",
-        "Роскошь, искушение и музыка переплелись в один единый поток.",
-        "Музыкальную магию сотворили D&G (Dobrov & Gar1sson) — московский дуэт, образованный в 2019 году двумя диджеями с международным опытом.",
-      ];
+    : [];
   const heroSubline = event ? `${event.dateDisplay} | ${locationShort}` : "1.11. | Mriya Resort | Ноябрь 2025";
   const age = event?.age ?? "18+";
   const heroTagline = event?.heroTagline?.trim();
@@ -221,7 +217,8 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
         </div>
       </section>
 
-      {/* Event Details */}
+      {/* Event Details — блок «О мероприятии» только если заполнен в админке */}
+      {aboutParagraphs.length > 0 && (
       <section className="py-16 md:py-24 px-6 md:px-12">
         <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-lg shadow-black/30`}>
           <motion.h2
@@ -267,6 +264,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
           </ul>
         </div>
       </section>
+      )}
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
@@ -318,7 +316,9 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
         </div>
       </section>
 
-      {/* Past Events */}
+      <GallerySection photos={event?.gallery} hideIfEmpty />
+
+      {/* Прошедшие мероприятия — внизу, чтобы сначала была галерея этого события */}
       {pastEvents.length > 0 && (
         <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
           <div className={EVENT_CONTAINER}>
@@ -371,8 +371,6 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
           </div>
         </section>
       )}
-
-      <GallerySection photos={event?.gallery} hideIfEmpty />
 
       <Footer />
     </main>
