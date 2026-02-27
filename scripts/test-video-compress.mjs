@@ -60,7 +60,7 @@ async function main() {
     console.log("\n✅ Тест сжатия пройден.\n");
   } catch (err) {
     console.error("Ошибка ffmpeg:", err.message);
-    if (existsSync(optPath)) try { unlinkSync(optPath); } catch (_) {}
+    if (existsSync(optPath)) try { unlinkSync(optPath); } catch {}
     process.exit(1);
   }
 }

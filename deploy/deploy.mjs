@@ -25,7 +25,7 @@ try {
       if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
     }
   }
-} catch (_) {}
+} catch {}
 
 const SERVER = process.env.DEPLOY_SERVER || "89.125.37.62";
 const USER = process.env.DEPLOY_USER || "root";

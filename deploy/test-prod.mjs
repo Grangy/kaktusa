@@ -43,7 +43,7 @@ async function main() {
       console.log(`❌ Главная / → ${code1}`);
       fail++;
     }
-  } catch (e) {
+  } catch {
     console.log("❌ Главная: запрос failed");
     fail++;
   }

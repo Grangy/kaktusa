@@ -29,9 +29,9 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const update = (patch: Partial<MainContent>) => {
+  const update = useCallback((patch: Partial<MainContent>) => {
     setForm((f) => ({ ...f, ...patch }));
-  };
+  }, []);
 
   const updateHero = (patch: Partial<MainContent["hero"]>) => {
     setForm((f) => ({ ...f, hero: { ...f.hero, ...patch } }));

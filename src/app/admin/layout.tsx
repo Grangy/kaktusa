@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { auth } from "@/auth";
 import Link from "next/link";
 import { LayoutDashboard, Calendar, FileText, Tag, ExternalLink } from "lucide-react";
@@ -72,9 +73,11 @@ export default async function AdminLayout({
                 <RevalidateCacheButton />
               </div>
               <div className="hidden md:block pt-4 mt-4 border-t border-white/10 space-y-3">
-                <img
+                <Image
                   src="/photos/image_1772103405970.png"
                   alt="КАКТУСА"
+                  width={128}
+                  height={128}
                   className="w-full max-w-32 mx-auto rounded-lg object-cover"
                 />
                 <a
@@ -93,9 +96,11 @@ export default async function AdminLayout({
               {children}
               </main>
               <footer className="md:hidden shrink-0 p-4 border-t border-white/10 flex flex-col items-center gap-2">
-                <img
+                <Image
                   src="/photos/image_1772103405970.png"
                   alt="КАКТУСА"
+                  width={80}
+                  height={80}
                   className="w-20 h-20 rounded-lg object-cover"
                 />
                 <a

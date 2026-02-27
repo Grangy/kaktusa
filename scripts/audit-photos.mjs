@@ -21,7 +21,7 @@ function walk(dir, list = []) {
       if (st.isDirectory()) walk(full, list);
       else if (EXTS.has(extname(name).toLowerCase())) list.push({ path: full, size: st.size });
     }
-  } catch (_) {}
+  } catch {}
   return list;
 }
 

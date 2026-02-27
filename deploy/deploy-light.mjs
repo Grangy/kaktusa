@@ -22,7 +22,7 @@ try {
       if (m && !process.env[m[1]]) process.env[m[1]] = m[2].replace(/^["']|["']$/g, "").trim();
     }
   }
-} catch (_) {}
+} catch {}
 
 const SERVER = process.env.DEPLOY_SERVER || "89.125.37.62";
 const USER = process.env.DEPLOY_USER || "root";
@@ -69,14 +69,14 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 1/4 Git pull ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && cp -a prisma/dev.db /tmp/kaktusa-dev.db.bak 2>/dev/null || true && git fetch origin && git reset --hard origin/main && cp -a /tmp/kaktusa-dev.db.bak prisma/dev.db 2>/dev/null || true"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && PREV_REF=\\$(git rev-parse HEAD) && cp -a prisma/dev.db /tmp/kaktusa-dev.db.bak 2>/dev/null || true && git fetch origin && git reset --hard origin/main && echo \\\"\\$PREV_REF\\\" > /tmp/kaktusa_prev_ref && cp -a /tmp/kaktusa-dev.db.bak prisma/dev.db 2>/dev/null || true"`
   );
   audit.push({ name: "1. Git pull", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
   console.log("=== 2/4 Prisma db push + Build ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && npm ci --no-audit --no-fund --include=dev && node node_modules/prisma/build/index.js db push && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && export NODE_ENV=production && export DATABASE_URL='${DATABASE_URL}' && export NEXT_SERVER_ACTIONS_ENCRYPTION_KEY='${SERVER_ACTIONS_KEY}' && (PREV=\\\$(cat /tmp/kaktusa_prev_ref 2>/dev/null); DEPS=\\\$(git diff --name-only \\\"\\$PREV\\\" HEAD 2>/dev/null | grep -E 'package(-lock)?\\\\.json' || true); if [ -n \\\"\\$DEPS\\\" ] || [ ! -d node_modules ]; then npm ci --no-audit --no-fund --include=dev; fi) && node node_modules/prisma/build/index.js db push && node node_modules/prisma/build/index.js generate && npm run db:seed && npm run build && mkdir -p public/photos && cp -r .next/static .next/standalone/.next/ && cp -r public .next/standalone/ && rm -rf .next/standalone/public/photos && ln -sfn ${REMOTE}/public/photos .next/standalone/public/photos"`
   );
   audit.push({ name: "2. Prisma migrate + build", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 

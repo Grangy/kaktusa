@@ -16,7 +16,7 @@ export function shouldOptimize(file: File): boolean {
 export async function optimizeImage(file: File): Promise<File> {
   if (!shouldOptimize(file)) return file;
 
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const img = new Image();
     const url = URL.createObjectURL(file);
     img.onload = () => {

@@ -124,7 +124,7 @@ export function EventEditForm({
     }
   }
 
-  const update = (patch: Partial<Event>) => setForm((f) => ({ ...f, ...patch }));
+  const update = useCallback((patch: Partial<Event>) => setForm((f) => ({ ...f, ...patch })), []);
 
   const [paraDragged, setParaDragged] = useState<number | null>(null);
   const [paraDragOver, setParaDragOver] = useState<number | null>(null);

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 interface PreloaderShellProps {
@@ -20,12 +21,12 @@ export default function PreloaderShell({ preloaderLogo }: PreloaderShellProps) {
       aria-hidden="true"
       className={hideOnNonHome ? "preloader-done" : undefined}
     >
-      <img
+      <Image
         src={preloaderLogo}
         alt=""
         width={96}
         height={96}
-        fetchPriority="high"
+        priority
         style={{ width: "7rem", height: "7rem", objectFit: "contain" }}
       />
     </div>
