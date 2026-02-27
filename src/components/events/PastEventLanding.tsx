@@ -18,6 +18,7 @@ const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
 export default function PastEventLanding({ event, pastEvents = [] }: { event?: Event | null; pastEvents?: Event[] }) {
   const title = event?.title ?? "ТОТ САМЫЙ БАЛ";
   const heroImage = event?.heroImage || "/avisha/telegram-cloud-photo-size-2-5415889954678109345-y.jpg";
+  const heroVideo = event?.heroVideo?.trim();
   const subtitle = event?.subtitle ?? undefined;
   const dateDisplay = event?.dateDisplay ?? "1 ноября 2025";
   const timeDisplay = event?.time ?? "22:00";
@@ -60,10 +61,14 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
             <motion.div
               className="absolute inset-0 origin-center min-w-full min-h-full"
               style={{ scale: 1.15 }}
-              animate={{
-                x: [0, 18, -14, 10, 0],
-                y: [0, -12, 14, -8, 0],
-              }}
+              animate={
+                heroVideo
+                  ? undefined
+                  : {
+                      x: [0, 18, -14, 10, 0],
+                      y: [0, -12, 14, -8, 0],
+                    }
+              }
               transition={{
                 duration: 14,
                 repeat: Infinity,
@@ -72,14 +77,25 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
                 type: "tween",
               }}
             >
-              <Image
-                src={getOptimizedPhotoUrl(heroImage)}
-                alt={title}
-                fill
-                className="object-cover object-center md:object-[center_35%] opacity-55 size-full"
-                sizes="100vw"
-                priority
-              />
+              {heroVideo ? (
+                <video
+                  src={heroVideo}
+                  className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_35%] opacity-55"
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <Image
+                  src={getOptimizedPhotoUrl(heroImage)}
+                  alt={title}
+                  fill
+                  className="object-cover object-center md:object-[center_35%] opacity-55 size-full"
+                  sizes="100vw"
+                  priority
+                />
+              )}
             </motion.div>
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/25 to-black/70" />

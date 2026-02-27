@@ -58,6 +58,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
   const heroRef = useRef<HTMLElement>(null);
   const title = event?.title ?? "BLOOM OF ENERGY";
   const heroImage = event?.heroImage || "/avisha/IMG_2657.PNG";
+  const heroVideo = event?.heroVideo?.trim();
   const dateDisplay = event?.dateDisplay ?? "28 марта 2026";
   const timeDisplay = event?.time ?? "22:00";
   const locationShort = event?.locationShort ?? event?.location ?? "Foster Night Club";
@@ -101,10 +102,14 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             <motion.div
               className="absolute inset-0 origin-center min-w-full min-h-full"
               style={{ scale: 1.15 }}
-              animate={{
-                x: [0, 18, -14, 10, 0],
-                y: [0, -12, 14, -8, 0],
-              }}
+              animate={
+                heroVideo
+                  ? undefined
+                  : {
+                      x: [0, 18, -14, 10, 0],
+                      y: [0, -12, 14, -8, 0],
+                    }
+              }
               transition={{
                 duration: 14,
                 repeat: Infinity,
@@ -113,14 +118,25 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                 type: "tween",
               }}
             >
-              <Image
-                src={getOptimizedPhotoUrl(heroImage)}
-                alt={title}
-                fill
-                className="object-cover object-center md:object-[center_35%] opacity-50 size-full"
-                sizes="100vw"
-                priority
-              />
+              {heroVideo ? (
+                <video
+                  src={heroVideo}
+                  className="absolute inset-0 w-full h-full object-cover object-center md:object-[center_35%] opacity-50"
+                  muted
+                  loop
+                  autoPlay
+                  playsInline
+                />
+              ) : (
+                <Image
+                  src={getOptimizedPhotoUrl(heroImage)}
+                  alt={title}
+                  fill
+                  className="object-cover object-center md:object-[center_35%] opacity-50 size-full"
+                  sizes="100vw"
+                  priority
+                />
+              )}
             </motion.div>
           </motion.div>
           <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/25 to-black/70" />

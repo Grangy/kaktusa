@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Event } from "@/types/data";
 import { HeroImageEditor } from "./HeroImageEditor";
+import { HeroVideoEditor } from "./HeroVideoEditor";
 import { GalleryEditor } from "@/app/admin/main/GalleryEditor";
 import { RichTextEditor } from "@/components/admin/RichTextEditor";
 import { useToast } from "@/components/admin/ToastProvider";
@@ -41,6 +42,7 @@ const defaultEvent: Partial<Event> = {
   rules: "",
   gallery: [],
   logoScrolled: "",
+  heroVideo: "",
 };
 
 function inputClass() {
@@ -288,6 +290,10 @@ export function EventEditForm({
           onChange={(logoScrolled) => update({ logoScrolled })}
           label="Логотип после hero (квадратный)"
           compact
+        />
+        <HeroVideoEditor
+          value={form.heroVideo ?? ""}
+          onChange={(heroVideo) => update({ heroVideo })}
         />
         <GalleryEditor
           title="Галерея мероприятия"

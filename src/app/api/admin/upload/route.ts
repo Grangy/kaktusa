@@ -3,17 +3,22 @@ import { auth } from "@/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
-const ALLOWED_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
-const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
-const UPLOAD_DIR = "photos"; // under public
+const ALLOWED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/gif"];
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime", "video/x-msvideo"];
+const MAX_IMAGE_SIZE = 10 * 1024 * 1024; // 10 MB
+const MAX_VIDEO_SIZE = 150 * 1024 * 1024; // 150 MB
+const UPLOAD_DIR = "photos"; // under public (фото и видео)
 
 /** Всегда пишем в project root / public / photos — постоянное хранилище. Deploy делает symlink в standalone. */
 function getUploadDir(): string {
   return path.join(process.cwd(), "public", UPLOAD_DIR);
 }
 
-function safeName(original: string): string {
-  const ext = path.extname(original).toLowerCase() || ".jpg";
+function safeName(original: string, mime: string): string {
+  let ext = path.extname(original).toLowerCase();
+  if (!ext || !/^\.(jpg|jpeg|png|webp|gif|mp4|webm|mov|avi)$/i.test(ext)) {
+    ext = mime.startsWith("video/") ? ".mp4" : ".jpg";
+  }
   let base = path.basename(original, path.extname(original))
     .replace(/[^a-zA-Z0-9_-]/g, "_")
     .replace(/_+/g, "_")
@@ -48,19 +53,22 @@ export async function POST(req: Request) {
     const paths: string[] = [];
     for (const file of list) {
       if (!file?.size || !file?.name) continue;
-      if (!ALLOWED_TYPES.includes(file.type)) {
+      const isVideo = ALLOWED_VIDEO_TYPES.includes(file.type);
+      const isImage = ALLOWED_IMAGE_TYPES.includes(file.type);
+      if (!isImage && !isVideo) {
         return NextResponse.json(
-          { error: `Disallowed type: ${file.type}. Use JPEG, PNG, WebP or GIF.` },
+          { error: `Неверный тип: ${file.type}. Разрешены: изображения (JPEG, PNG, WebP, GIF) и видео (MP4, WebM, MOV, AVI).` },
           { status: 400 }
         );
       }
-      if (file.size > MAX_SIZE) {
+      const maxSize = isVideo ? MAX_VIDEO_SIZE : MAX_IMAGE_SIZE;
+      if (file.size > maxSize) {
         return NextResponse.json(
-          { error: `File ${file.name} exceeds 10 MB` },
+          { error: `Файл ${file.name} превышает лимит (${isVideo ? "150 MB" : "10 MB"}).` },
           { status: 400 }
         );
       }
-      const name = safeName(file.name);
+      const name = safeName(file.name, file.type);
       const filePath = path.join(dir, name);
       const buffer = Buffer.from(await file.arrayBuffer());
       await writeFile(filePath, buffer);

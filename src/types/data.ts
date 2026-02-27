@@ -40,6 +40,7 @@ export interface Event {
   subtitle?: string; // for past events
   gallery?: string[]; // фото мероприятия
   logoScrolled?: string; // логотип после hero (квадратный) для страницы мероприятия
+  heroVideo?: string; // видео-превью: показывается в шапке при скролле
 }
 
 export interface MainContent {
