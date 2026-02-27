@@ -200,7 +200,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                             От <span className="font-semibold">{event.price.replace(/^От\s/, "")}</span>
                           </p>
                         ) : (
-                          <span />
+                          <span className="block min-h-[1.5rem]" aria-hidden />
                         )}
                         <span className="shrink-0 w-[110px]" />
                       </div>
