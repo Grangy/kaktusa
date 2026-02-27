@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Camera } from "lucide-react";
 import Image from "next/image";
 import { useLogo } from "@/contexts/LogoContext";
+import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
 const SCROLL_THRESHOLD = 20; // как только скролл начался
 const LOGO_SWITCH_DURATION = 1; // плавная смена
@@ -28,7 +29,12 @@ interface HeaderProps {
 export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrolledProp }: HeaderProps = {}) {
   const { logoHero: logoHeroCtx, logoScrolled: logoScrolledCtx } = useLogo();
   const logoHero = logoHeroProp ?? logoHeroCtx;
-  const logoScrolled = logoScrolledProp ?? logoScrolledCtx;
+  const rawLogo = logoScrolledProp ?? logoScrolledCtx;
+  // Только валидный путь /photos/имя — иначе 400 от /api/photos
+  const logoScrolled =
+    rawLogo && rawLogo.startsWith("/photos/") && rawLogo.length > "/photos/".length
+      ? getOptimizedPhotoUrl(rawLogo)
+      : rawLogo || "/logo.png";
   const [menuOpen, setMenuOpen] = useState(false);
   const pathname = usePathname();
   const router = useRouter();

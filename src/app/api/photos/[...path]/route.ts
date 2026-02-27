@@ -15,17 +15,18 @@ const MIME: Record<string, string> = {
 
 export async function GET(request: NextRequest, { params }: { params: Promise<{ path: string[] }> }) {
   const { path: pathSegments } = await params;
-  if (!pathSegments?.length) {
-    return NextResponse.json({ error: "Path required" }, { status: 400 });
+  const filtered = pathSegments?.filter((p) => p?.trim()) ?? [];
+  if (!filtered.length) {
+    return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   // Безопасность: запрет path traversal (../)
-  const fileName = pathSegments[pathSegments.length - 1];
-  if (fileName.includes("..") || pathSegments.some((p) => p.includes(".."))) {
+  const fileName = filtered[filtered.length - 1];
+  if (fileName.includes("..") || filtered.some((p) => p.includes(".."))) {
     return NextResponse.json({ error: "Invalid path" }, { status: 400 });
   }
 
-  const filePath = path.join(PHOTOS_DIR, ...pathSegments);
+  const filePath = path.join(PHOTOS_DIR, ...filtered);
   if (!filePath.startsWith(PHOTOS_DIR)) {
     return NextResponse.json({ error: "Invalid path" }, { status: 400 });
   }
