@@ -2,8 +2,9 @@
 
 /**
  * Кастомный loader для next/image:
- * - /api/photos/* → запрос к нашему API с ?w=&q= (ресайз на сервере через sharp)
- * - остальное → встроенный оптимизатор Next.js
+ * - /api/photos/* → наш API с ?w=&q= (ресайз через sharp)
+ * - остальные локальные пути (/) → как есть (standalone не отдаёт /_next/image, 404)
+ * - внешние URL → как есть (браузер грузит напрямую)
  */
 type ImageLoaderProps = { src: string; width: number; quality?: number };
 
@@ -12,5 +13,9 @@ export default function imageLoader({ src, width, quality = 75 }: ImageLoaderPro
     const sep = src.includes("?") ? "&" : "?";
     return `${src}${sep}w=${width}&q=${quality}`;
   }
-  return `/_next/image?url=${encodeURIComponent(src)}&w=${width}&q=${quality}`;
+  // Локальные пути: в standalone /_next/image даёт 404 — отдаём путь как есть, статика из public/
+  if (src.startsWith("/") && !src.startsWith("//")) {
+    return src;
+  }
+  return src;
 }

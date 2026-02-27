@@ -37,4 +37,6 @@ console.log("> 500 KB:", over500.length);
 console.log("> 1 MB:", over1m.length);
 if (files.length) console.log("Средний размер KB:", Math.round((total / files.length) / 1024));
 console.log("\nAPI /api/photos/*?w=... отдаёт ресайз через sharp (webp).");
-console.log("Карусель галереи: priority только для первых 2 фото, остальные lazy.\n");
+console.log("Карусель галереи: priority только для первых 2 фото, остальные lazy.");
+console.log("\nПрод: loader для локальных путей (/, /avisha/, /new-logo.png) отдаёт URL как есть,");
+console.log("т.к. standalone не поддерживает /_next/image → иначе 404.\n");

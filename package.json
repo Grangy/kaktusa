@@ -23,6 +23,7 @@
     "db:push": "node scripts/db-push.mjs",
     "db:seed": "node scripts/seed.mjs",
     "audit:prod": "node scripts/audit-prod.mjs",
+    "audit:photos": "node scripts/audit-photos.mjs",
     "sync:prod": "node scripts/sync-from-prod.mjs"
   },
   "dependencies": {
