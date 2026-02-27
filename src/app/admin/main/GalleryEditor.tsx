@@ -134,30 +134,33 @@ export function GalleryEditor({
                 }}
               />
             </div>
-            <div className="absolute top-2 right-2 flex items-center gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto">
-              <span
-                className="cursor-grab active:cursor-grabbing p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
-                title="Перетащите для изменения порядка"
-              >
-                <GripVertical size={16} />
-              </span>
+            <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-auto">
+              <div className="flex items-center gap-1">
+                <span
+                  className="cursor-grab active:cursor-grabbing p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
+                  title="Перетащите для изменения порядка"
+                >
+                  <GripVertical size={16} />
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setLightboxPath(path)}
+                  className="p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
+                  title="Увеличить"
+                >
+                  <ZoomIn size={16} />
+                </button>
+              </div>
               <button
                 type="button"
-                onClick={() => setLightboxPath(path)}
-                className="p-1.5 rounded bg-black/60 text-white/80 hover:text-white"
-                title="Увеличить"
+                onClick={() => remove(index)}
+                className="p-1.5 rounded bg-red-500/90 text-white hover:bg-red-500"
+                title="Удалить"
+                aria-label="Удалить"
               >
-                <ZoomIn size={16} />
+                <X size={14} />
               </button>
             </div>
-            <button
-              type="button"
-              onClick={() => remove(index)}
-              className="absolute top-2 right-2 p-1.5 rounded-full bg-red-500/90 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-500"
-              aria-label="Удалить"
-            >
-              <X size={14} />
-            </button>
             <span className="absolute bottom-2 left-2 text-[10px] text-white/70 bg-black/60 px-2 py-0.5 rounded truncate max-w-[calc(100%-2rem)]">
               {path}
             </span>

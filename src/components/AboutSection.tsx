@@ -41,7 +41,7 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="font-display text-3xl md:text-4xl font-bold uppercase mb-12 text-center"
+          className="font-display text-3xl md:text-4xl font-bold mb-12 text-center"
         >
           {heading}
         </motion.h2>
@@ -51,7 +51,7 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="relative p-8 md:p-12 bg-gradient-to-b from-white/[0.04] to-transparent backdrop-blur-sm overflow-hidden"
+          className="relative w-full overflow-hidden"
         >
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none" aria-hidden>
             <motion.div
@@ -61,7 +61,7 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
               <Image src={logo} alt="" fill className="object-contain" sizes="448px" />
             </motion.div>
           </div>
-          <div className="relative space-y-6 text-left w-full">
+          <div className="relative space-y-6 text-left w-full max-w-none">
             {lines.map((text, i) => (
               <motion.p
                 key={i}

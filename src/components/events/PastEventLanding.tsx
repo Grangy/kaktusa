@@ -176,9 +176,9 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
+            className="text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-lg shadow-black/30"
           >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Когда</h3>
+            <h3 className="font-display text-xs uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <Calendar size={18} />
               <span>{dateDisplay}</span>
@@ -193,9 +193,9 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-center md:text-left p-6 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]"
+            className="text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-lg shadow-black/30"
           >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-4">Локация</h3>
+            <h3 className="font-display text-xs uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
               <MapPin size={18} />
               <span>{locationShort}</span>
@@ -207,7 +207,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
 
       {/* Event Details */}
       <section className="py-16 md:py-24 px-6 md:px-12">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-lg shadow-black/30`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -254,7 +254,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)]`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-lg shadow-black/30`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -273,6 +273,32 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
             <p className="text-white/70">{venueAddress}</p>
             <p className="text-white/50 text-sm">{venueCity}</p>
           </motion.div>
+        </div>
+      </section>
+
+      {/* Event Info */}
+      <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-lg shadow-black/30 space-y-8`}>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
+            <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Возраст</h3>
+            <p className="flex items-center gap-2 text-white">
+              <Users size={18} /> {age}
+            </p>
+          </motion.div>
+          {subtitle && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+            >
+              <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Тема</h3>
+              <p className="text-white/80 italic">{subtitle}</p>
+            </motion.div>
+          )}
         </div>
       </section>
 
@@ -300,24 +326,24 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
                 >
                   <Link
                     href={`/events/${ev.slug}`}
-                    className="block overflow-hidden group rounded-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]"
+                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25)] transition-all duration-300"
                   >
-                    <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
+                    <div className="relative aspect-[3/4] min-h-[200px] md:min-h-[240px] overflow-hidden">
                       <Image
                         src={getOptimizedPhotoUrl(ev.heroImage)}
                         alt={ev.title}
                         fill
-                        className="object-cover object-top group-hover:scale-[1.02] transition-transform duration-500"
+                        className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
                         sizes="(max-width: 768px) 100vw, 320px"
                       />
-                      <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-black/80 to-transparent" />
-                    </div>
-                    <div className="bg-black px-6 py-5 md:px-7 md:py-6 -mt-1">
-                      <span className="inline-block px-3 py-1 bg-white/10 text-white/90 text-xs border border-white/20 mb-2">
+                      <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.78)_22%,rgba(0,0,0,0.5)_45%,transparent_80%)]" />
+                      <span className="absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-gray-600/90 text-white">
                         Прошло
                       </span>
-                      <h3 className="font-display text-xl md:text-2xl font-bold text-white">{ev.title}</h3>
-                      <p className="text-white/80 text-sm mt-1">{ev.dateDisplay}</p>
+                    </div>
+                    <div className="absolute bottom-[0.5rem] left-0 right-0 px-3.5 py-3 pb-8 pt-16">
+                      <h3 className="font-display text-xl font-bold text-white drop-shadow-[0_2px_6px_rgba(0,0,0,0.9)]">{ev.title}</h3>
+                      <p className="text-white/90 text-sm mt-1">{ev.dateDisplay}</p>
                       <span className="inline-block mt-2 text-[var(--accent)] text-sm font-medium uppercase">
                         Подробнее →
                       </span>
@@ -329,32 +355,6 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
           </div>
         </section>
       )}
-
-      {/* Event Info */}
-      <section className="py-16 md:py-24 px-6 md:px-12">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl border border-white/10 bg-white/[0.03] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.3)] space-y-8`}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-          >
-            <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Возраст</h3>
-            <p className="flex items-center gap-2 text-white">
-              <Users size={18} /> {age}
-            </p>
-          </motion.div>
-          {subtitle && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            >
-              <h3 className="font-display text-xs  uppercase text-white/50 mb-2">Тема</h3>
-              <p className="text-white/80 italic">{subtitle}</p>
-            </motion.div>
-          )}
-        </div>
-      </section>
 
       <GallerySection photos={event?.gallery} hideIfEmpty />
 
