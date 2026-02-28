@@ -29,6 +29,27 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
   const [activeIndex, setActiveIndex] = useState(0);
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
+  // Прогресс и стрелки только по реально видимому слайду (IntersectionObserver)
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container || !photos.length) return;
+    const items = container.querySelectorAll("[data-gallery-item]");
+    if (items.length === 0) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.intersectionRatio < 0.5) continue;
+          const i = parseInt((e.target as HTMLElement).getAttribute("data-gallery-item") ?? "0", 10);
+          setActiveIndex(i);
+          break;
+        }
+      },
+      { root: container, threshold: [0.25, 0.5, 0.75], rootMargin: "0px" }
+    );
+    items.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [photos.length]);
+
   useEffect(() => {
     if (lightboxIndex === null) return;
     const onKey = (e: KeyboardEvent) => {
@@ -75,12 +96,6 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
           ref={scrollRef}
           className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 md:-mx-4 px-2 md:px-4 scrollbar-hide"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-          onScroll={() => {
-            const el = scrollRef.current;
-            if (!el) return;
-            const index = Math.round(el.scrollLeft / (el.offsetWidth * 0.85 + 16));
-            setActiveIndex(Math.min(index, photos.length - 1));
-          }}
         >
           {photos.map((src, i) => (
             <motion.div
@@ -151,21 +166,21 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
         </div>
       </div>
 
-      {/* Лайтбокс: полный показ картинки */}
+      {/* Лайтбокс: одна картинка в фокусе, фон сильнее размыт; переключение без лагов */}
       <AnimatePresence>
         {lightboxIndex !== null && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
-            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-md flex items-center justify-center p-4 sm:p-8 md:p-12"
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-xl flex items-center justify-center p-4 sm:p-8 md:p-12"
             onClick={() => setLightboxIndex(null)}
           >
             <button
               type="button"
               onClick={() => setLightboxIndex(null)}
-              className="absolute top-3 right-3 sm:top-6 sm:right-6 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-10"
+              className="absolute top-3 right-3 sm:top-6 sm:right-6 w-11 h-11 sm:w-12 sm:h-12 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-[110] pointer-events-auto"
               aria-label="Закрыть"
             >
               <X size={26} className="sm:w-7 sm:h-7" />
@@ -173,8 +188,8 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
             {lightboxIndex > 0 && (
               <button
                 type="button"
-                onClick={(e) => (e.stopPropagation(), setLightboxIndex(lightboxIndex - 1))}
-                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-10"
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); setLightboxIndex(lightboxIndex - 1); }}
+                className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-[110] pointer-events-auto"
                 aria-label="Назад"
               >
                 <ChevronLeft size={28} className="sm:w-8 sm:h-8" />
@@ -183,23 +198,25 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
             {lightboxIndex < photos.length - 1 && (
               <button
                 type="button"
-                onClick={(e) => (e.stopPropagation(), setLightboxIndex(lightboxIndex + 1))}
-                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-10"
+                onClick={(e) => { e.stopPropagation(); e.preventDefault(); setLightboxIndex(lightboxIndex + 1); }}
+                className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2 w-12 h-12 sm:w-14 sm:h-14 flex items-center justify-center text-white/80 hover:text-white rounded-full hover:bg-white/10 active:bg-white/20 transition-colors z-[110] pointer-events-auto"
                 aria-label="Вперёд"
               >
                 <ChevronRight size={28} className="sm:w-8 sm:h-8" />
               </button>
             )}
             <motion.div
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.96, opacity: 0 }}
-              transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="relative max-w-[88vw] max-h-[75vh] sm:max-w-[82vw] sm:max-h-[78vh] md:max-w-[75vw] md:max-h-[80vh] w-full flex items-center justify-center"
+              key={lightboxIndex}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="relative max-w-[88vw] max-h-[75vh] sm:max-w-[82vw] sm:max-h-[78vh] md:max-w-[75vw] md:max-h-[80vh] w-full flex items-center justify-center z-[105]"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06)] ring-1 ring-white/5">
                 <Image
+                  key={lightboxIndex}
                   src={getOptimizedPhotoUrl(photos[lightboxIndex])}
                   alt=""
                   width={1920}

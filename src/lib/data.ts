@@ -37,6 +37,7 @@ function rowToEvent(row: {
   gallery?: string | null;
   logoScrolled?: string | null;
   heroVideo?: string | null;
+  sortOrder?: number | null;
 }): Event {
   return {
     id: row.id,
@@ -72,12 +73,20 @@ function rowToEvent(row: {
     gallery: row.gallery ? (JSON.parse(row.gallery) as string[]) : undefined,
     logoScrolled: row.logoScrolled ?? undefined,
     heroVideo: row.heroVideo ?? undefined,
+    sortOrder: row.sortOrder ?? undefined,
   };
 }
 
 export async function getEvents(): Promise<Event[]> {
-  const rows = await prisma.event.findMany({ orderBy: { date: "desc" } });
-  return rows.map(rowToEvent);
+  const rows = await prisma.event.findMany();
+  const events = rows.map(rowToEvent);
+  events.sort((a, b) => {
+    const aOrder = a.sortOrder ?? 1e9;
+    const bOrder = b.sortOrder ?? 1e9;
+    if (aOrder !== bOrder) return aOrder - bOrder;
+    return b.date.localeCompare(a.date);
+  });
+  return events;
 }
 
 export async function getEventBySlug(slug: string): Promise<Event | undefined> {
@@ -119,6 +128,7 @@ const eventToUpsert = (e: Event) => ({
   gallery: e.gallery?.length ? JSON.stringify(e.gallery) : null,
   logoScrolled: e.logoScrolled ?? null,
   heroVideo: e.heroVideo ?? null,
+  sortOrder: e.sortOrder ?? null,
 });
 
 export async function createEvent(event: Event): Promise<void> {
@@ -136,6 +146,14 @@ export async function updateEvent(slug: string, event: Event): Promise<void> {
 
 export async function deleteEvent(slug: string): Promise<void> {
   await prisma.event.delete({ where: { slug } });
+}
+
+export async function updateEventsOrder(slugs: string[]): Promise<void> {
+  await prisma.$transaction(
+    slugs.map((slug, index) =>
+      prisma.event.update({ where: { slug }, data: { sortOrder: index } })
+    )
+  );
 }
 
 export const getMain = cache(async (): Promise<MainContent> => {

@@ -318,10 +318,10 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
 
       <GallerySection photos={event?.gallery} hideIfEmpty />
 
-      {/* Прошедшие мероприятия — внизу, чтобы сначала была галерея этого события */}
+      {/* Прошедшие мероприятия — горизонтальный свайп, внизу страницы */}
       {pastEvents.length > 0 && (
         <section id="past" className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10 bg-black/30 scroll-mt-20">
-          <div className={EVENT_CONTAINER}>
+          <div className="w-full max-w-6xl mx-auto">
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -330,15 +330,18 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
             >
               Прошедшие мероприятия
             </motion.h2>
-            <div className="flex flex-wrap justify-center gap-6">
+            <div
+              className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 px-2 scrollbar-hide"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
               {pastEvents.map((ev, i) => (
                 <motion.div
                   key={ev.id}
-                  initial={{ opacity: 0, y: 30 }}
+                  initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: 0.1 * i }}
-                  className="w-full max-w-[280px] md:max-w-[320px]"
+                  transition={{ delay: 0.05 * i }}
+                  className="flex-shrink-0 w-[280px] md:w-[320px] snap-center"
                 >
                   <Link
                     href={`/events/${ev.slug}`}
@@ -350,7 +353,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
                         alt={ev.title}
                         fill
                         className="object-cover object-center group-hover:scale-[1.03] transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 320px"
+                        sizes="(max-width: 768px) 280px, 320px"
                       />
                       <div className="absolute inset-0 bg-[linear-gradient(to_top,rgba(0,0,0,0.98)_0%,rgba(0,0,0,0.78)_22%,rgba(0,0,0,0.5)_45%,transparent_80%)]" />
                       <span className="absolute top-3 right-3 inline-flex px-3 py-1 rounded-full text-[10px] font-semibold uppercase tracking-wider bg-gray-600/90 text-white">

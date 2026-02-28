@@ -82,7 +82,15 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
                 className="absolute inset-0"
                 aria-hidden={showMinimal}
               >
-                <Image src={logoHero} alt="?КАКТУСА" fill className="object-contain object-left" sizes="144px" priority />
+                <Image
+                  src={logoHero}
+                  alt="?КАКТУСА"
+                  fill
+                  className="object-contain object-left"
+                  sizes="144px"
+                  priority={isHome}
+                  loading={isHome ? "eager" : "lazy"}
+                />
               </motion.div>
               <motion.div
                 animate={{ opacity: showMinimal ? 1 : 0 }}
@@ -90,7 +98,14 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
                 className="absolute inset-0"
                 aria-hidden={!showMinimal}
               >
-                <Image src={logoScrolled} alt="?КАКТУСА" fill className="object-contain object-left" sizes="160px" />
+                <Image
+                  src={logoScrolled}
+                  alt="?КАКТУСА"
+                  fill
+                  className="object-contain object-left"
+                  sizes="160px"
+                  loading="lazy"
+                />
               </motion.div>
             </div>
           </div>

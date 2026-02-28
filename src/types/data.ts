@@ -41,6 +41,7 @@ export interface Event {
   gallery?: string[]; // фото мероприятия
   logoScrolled?: string; // логотип после hero (квадратный) для страницы мероприятия
   heroVideo?: string; // видео-превью: показывается в шапке при скролле
+  sortOrder?: number; // порядок в админке (меньше = выше)
 }
 
 export interface MainContent {
