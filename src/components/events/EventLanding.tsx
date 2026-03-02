@@ -505,7 +505,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                 >
                   <Link
                     href={`/events/${ev.slug}`}
-                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_40px_-10px_rgba(255,255,255,0.14)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_50px_-8px_rgba(255,255,255,0.16)] transition-all duration-300"
+                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_22px_-2px_rgba(255,255,255,0.24)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.28),0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_24px_-2px_rgba(255,255,255,0.28)] transition-all duration-300"
                   >
                     <div className="relative aspect-[3/4] min-h-[200px] md:min-h-[240px] overflow-hidden">
                       <Image
