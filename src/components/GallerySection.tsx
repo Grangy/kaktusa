@@ -107,18 +107,20 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
               <button
                 type="button"
                 onClick={() => setLightboxIndex(i)}
-                className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
+                className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent] p-[2px]"
               >
-                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),1px_1px_14px_-1px_rgba(145,145,145,0.67)] group-hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4),1px_1px_14px_-1px_rgba(145,145,145,0.67)]">
-                  <Image
-                    src={getOptimizedPhotoUrl(src)}
-                    alt=""
-                    fill
-                    sizes="(max-width: 640px) 85vw, (max-width: 768px) 75vw, 420px"
-                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
-                    priority={i < 2}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="relative aspect-[4/5] rounded-2xl transition-all duration-300 cursor-pointer shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_14px_-1px_rgba(145,145,145,0.67)] group-hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_14px_-1px_rgba(145,145,145,0.67)]">
+                  <div className="absolute inset-0 overflow-hidden rounded-2xl bg-black/50">
+                    <Image
+                      src={getOptimizedPhotoUrl(src)}
+                      alt=""
+                      fill
+                      sizes="(max-width: 640px) 85vw, (max-width: 768px) 75vw, 420px"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+                      priority={i < 2}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  </div>
                 </div>
               </button>
             </motion.div>
