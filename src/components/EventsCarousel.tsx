@@ -111,7 +111,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
       <div className="max-w-5xl mx-auto">
         <div
           ref={scrollRef}
-          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 px-6 md:px-0 md:mx-0 scrollbar-hide items-stretch"
+          className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-6 pl-6 pr-6 md:mx-0 md:pl-6 md:pr-6 scrollbar-hide items-stretch"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {cards.map((event) => (

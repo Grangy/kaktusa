@@ -91,7 +91,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
         {/* Карусель */}
         <div
           ref={scrollRef}
-          className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 md:-mx-4 px-2 md:px-4 scrollbar-hide"
+          className="flex gap-4 md:gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 md:-mx-4 pl-4 pr-4 md:pl-6 md:pr-6 scrollbar-hide"
           style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         >
           {photos.map((src, i) => (

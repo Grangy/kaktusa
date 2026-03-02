@@ -491,7 +491,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
               Прошедшие мероприятия
             </motion.h2>
             <div
-              className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 px-2 scrollbar-hide"
+              className="flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4 -mx-2 pl-6 pr-6 scrollbar-hide"
               style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
               {pastEvents.map((ev, i) => (
