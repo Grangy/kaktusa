@@ -122,7 +122,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
               initial={false}
               className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
-              <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),inset_0_1px_0_rgba(255,255,255,0.02)]">
+              <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_48px_-6px_rgba(255,255,255,0.14),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_36px_-8px_rgba(255,255,255,0.1),inset_0_1px_0_rgba(255,255,255,0.02)]">
                 <TransitionLink
                   href={event.link}
                   className="block"
