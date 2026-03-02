@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { MainContent } from "@/types/data";
 import { GalleryEditor } from "./GalleryEditor";
 import { HeroImageEditor } from "@/app/admin/events/[slug]/HeroImageEditor";
+import { HeroVideoEditor } from "@/app/admin/events/[slug]/HeroVideoEditor";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
 import { Loader2, GripVertical } from "lucide-react";
@@ -24,6 +25,8 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
       ...initial.hero,
       logoHero: initial.hero?.logoHero ?? "/new-logo.png",
       logoScrolled: initial.hero?.logoScrolled ?? "/logo.png",
+      videoFull: initial.hero?.videoFull ?? "/intro.mp4",
+      videoLite: initial.hero?.videoLite ?? "/intro-lite.mp4",
     },
   }));
   const [saving, setSaving] = useState(false);
@@ -150,6 +153,27 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
             onChange={(pcImages) => updateHero({ pcImages })}
             emptyLabel="Добавьте пути к фото или загрузите файлы"
           />
+        </div>
+        <div className="mt-6 space-y-4">
+          <p className="text-white/50 text-xs">
+            Видео в hero на главной: на мобилках показывается одно из двух (полное или облегчённое — по сети). На десктопе поверх подложки показываются фото ПК.
+          </p>
+          <div className="grid gap-6 sm:grid-cols-2">
+            <div>
+              <label className="block text-white/70 text-sm mb-2">Видео главной (полное)</label>
+              <HeroVideoEditor
+                value={form.hero.videoFull ?? "/intro.mp4"}
+                onChange={(videoFull) => updateHero({ videoFull })}
+              />
+            </div>
+            <div>
+              <label className="block text-white/70 text-sm mb-2">Видео главной (облегчённое, для мобилок)</label>
+              <HeroVideoEditor
+                value={form.hero.videoLite ?? "/intro-lite.mp4"}
+                onChange={(videoLite) => updateHero({ videoLite })}
+              />
+            </div>
+          </div>
         </div>
       </section>
 
