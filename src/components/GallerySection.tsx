@@ -112,7 +112,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
                 onClick={() => setLightboxIndex(i)}
                 className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
               >
-                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_4px_20px_-4px_rgba(0,0,0,0.45),0_0_22px_-2px_rgba(255,255,255,0.24)] ${i === activeIndex ? "shadow-[0_0_0_1px_rgba(255,255,255,0.28),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_24px_-2px_rgba(255,255,255,0.28)]" : "group-hover:shadow-[0_0_0_1px_rgba(255,255,255,0.28),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_24px_-2px_rgba(255,255,255,0.28)]"}`}>
+                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_4px_20px_-4px_rgba(0,0,0,0.45),0_0_14px_-1px_rgba(145,145,145,0.67)] ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(145,145,145,0.7)]" : "group-hover:shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(145,145,145,0.7)]"}`}>
                   <Image
                     src={getOptimizedPhotoUrl(src)}
                     alt=""
@@ -214,7 +214,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
               className="relative max-w-[88vw] max-h-[75vh] sm:max-w-[82vw] sm:max-h-[78vh] md:max-w-[75vw] md:max-h-[80vh] w-full flex items-center justify-center z-[105]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.2),0_0_24px_-2px_rgba(255,255,255,0.24)] ring-1 ring-white/5">
+              <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_14px_-1px_rgba(145,145,145,0.67)]">
                 <Image
                   key={lightboxIndex}
                   src={getOptimizedPhotoUrl(photos[lightboxIndex])}

@@ -98,7 +98,7 @@ export default function ReviewsSection({ reviews: reviewsProp }: ReviewsSectionP
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] p-6 rounded-2xl bg-white/5 shadow-[0_0_0_1px_rgba(255,255,255,0.2),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_22px_-2px_rgba(255,255,255,0.24)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.28),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_24px_-2px_rgba(255,255,255,0.28)] transition-all duration-200 min-h-[140px] flex flex-col snap-center"
+            className="flex-shrink-0 w-[280px] sm:w-[300px] md:w-[320px] p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_20px_-2px_rgba(145,145,145,0.7)] transition-all duration-200 min-h-[140px] flex flex-col snap-center"
           >
             <p className="text-white/90 text-sm leading-relaxed mb-4 flex-1">&ldquo;{review.text}&rdquo;</p>
             <p className="text-[var(--accent)] text-xs uppercase">{review.author}</p>
