@@ -63,11 +63,13 @@ async function main() {
   });
   if (hasChanges) {
     await run(`git commit -m ${JSON.stringify(commitMsg)}`);
-    await run("git push");
-    console.log("   ✓ Изменения запушены");
+    console.log("   ✓ Коммит создан");
   } else {
     console.log("   Нет изменений для коммита");
   }
+  // Всегда пушим — иначе уже закоммиченные коммиты не попадут на сервер (один запуск = полный деплой)
+  await run("git push");
+  console.log("   ✓ Push выполнен");
   audit.push({ name: "0. Git push", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
   stepStart = Date.now();
