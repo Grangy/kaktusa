@@ -112,7 +112,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
                 onClick={() => setLightboxIndex(i)}
                 className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
               >
-                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 cursor-pointer ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-8px_rgba(255,255,255,0.12)]" : "border border-white/10 shadow-[0_0_32px_-8px_rgba(255,255,255,0.08)] group-hover:shadow-[0_0_40px_-6px_rgba(255,255,255,0.12),0_4px_24px_-4px_rgba(0,0,0,0.5)]"}`}>
+                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_4px_20px_-4px_rgba(0,0,0,0.45),0_0_40px_-10px_rgba(255,255,255,0.14)] ${i === activeIndex ? "shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_48px_-8px_rgba(255,255,255,0.16)]" : "group-hover:shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_48px_-8px_rgba(255,255,255,0.16)]"}`}>
                   <Image
                     src={getOptimizedPhotoUrl(src)}
                     alt=""
@@ -214,7 +214,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
               className="relative max-w-[88vw] max-h-[75vh] sm:max-w-[82vw] sm:max-h-[78vh] md:max-w-[75vw] md:max-h-[80vh] w-full flex items-center justify-center z-[105]"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06)] ring-1 ring-white/5">
+              <div className="relative rounded-2xl overflow-hidden shadow-[0_25px_80px_-12px_rgba(0,0,0,0.8),0_0_0_1px_rgba(255,255,255,0.06),0_0_48px_-8px_rgba(255,255,255,0.12)] ring-1 ring-white/5">
                 <Image
                   key={lightboxIndex}
                   src={getOptimizedPhotoUrl(photos[lightboxIndex])}

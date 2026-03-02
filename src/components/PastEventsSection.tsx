@@ -38,7 +38,7 @@ export default function PastEventsSection() {
             viewport={{ once: true }}
             transition={{ delay: 0.1 * i }}
           >
-            <TransitionLink href={event.link} className="block overflow-hidden group rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_36px_-8px_rgba(255,255,255,0.1)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_48px_-6px_rgba(255,255,255,0.14)] transition-all duration-300">
+            <TransitionLink href={event.link} className="block overflow-hidden group rounded-2xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.12),0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_40px_-10px_rgba(255,255,255,0.14)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.15),0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_50px_-8px_rgba(255,255,255,0.16)] transition-all duration-300">
               {/* Картинка 1:1 */}
               <div className="relative aspect-square min-h-[200px] md:min-h-[240px] overflow-hidden">
                 <Image
