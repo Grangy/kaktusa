@@ -263,7 +263,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
-            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
           >
             <h3 className="font-display text-xs uppercase text-white/50 mb-4">Когда</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
@@ -281,7 +281,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
-            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
           >
             <h3 className="font-display text-xs uppercase text-white/50 mb-4">Локация</h3>
             <div className="flex items-center justify-center md:justify-start gap-2 text-white">
@@ -296,7 +296,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
             whileHover={{ scale: 1.02, boxShadow: "0 8px 32px -8px rgba(74,222,128,0.15)" }}
-            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
+            className="relative overflow-hidden text-center md:text-left p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)] transition-shadow duration-300"
           >
             <h3 className="font-display text-xs uppercase text-white/50 mb-4">Цена</h3>
             <p className="text-[var(--accent)] font-semibold text-lg">{price}</p>
@@ -309,7 +309,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
 
       {/* Event Details */}
       <section id="about-event" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)]`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)]`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -348,7 +348,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
 
       {/* Venue */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)]`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)]`}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -406,7 +406,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 * i }}
-                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)]"
+                className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)]"
               >
                 <div>
                   <div className="flex items-center gap-2">
@@ -434,7 +434,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mt-8 p-6 rounded-2xl bg-[var(--accent)]/5 flex items-start gap-3 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)]"
+            className="mt-8 p-6 rounded-2xl bg-[var(--accent)]/5 flex items-start gap-3 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)]"
           >
             <Gift size={20} className="shrink-0 text-[var(--accent)]" />
             <div>
@@ -446,7 +446,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">
-        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_14px_-1px_rgba(145,145,145,0.67)] space-y-8`}>
+        <div className={`${EVENT_CONTAINER} p-8 md:p-10 rounded-2xl bg-white/5 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.5),1px_1px_14px_-1px_rgba(145,145,145,0.67)] space-y-8`}>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -505,7 +505,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                 >
                   <Link
                     href={`/events/${ev.slug}`}
-                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_14px_-1px_rgba(145,145,145,0.67)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_20px_-2px_rgba(145,145,145,0.7)] transition-all duration-300"
+                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),1px_1px_14px_-1px_rgba(145,145,145,0.67)] hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4),1px_1px_14px_-1px_rgba(145,145,145,0.67)] transition-all duration-300"
                   >
                     <div className="relative aspect-[3/4] min-h-[200px] md:min-h-[240px] overflow-hidden">
                       <Image
