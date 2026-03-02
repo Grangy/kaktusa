@@ -27,7 +27,7 @@ html {
 }
 
 body {
-  background: linear-gradient(180deg, #0a0a0a 0%, #070807 20%, #060706 40%, #070807 60%, #080908 80%, #090a09 100%);
+  background: transparent;
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;

@@ -90,7 +90,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
   const parallaxY = useTransform(scrollYProgress, [0, 0.5, 1], [0, 60, 180]);
 
   return (
-    <main className="min-h-screen bg-[var(--background)] text-[var(--foreground)]">
+    <main className="min-h-screen bg-transparent text-[var(--foreground)]">
       <Header logoScrolled={event?.logoScrolled} />
       {/* Hero */}
       <section ref={heroRef} className="relative min-h-screen flex flex-col items-center justify-center pt-24 pb-20 px-6 overflow-hidden">

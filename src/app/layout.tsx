@@ -68,7 +68,7 @@ export default async function RootLayout({
   const preloaderLogo = logoScrolled === "/logo.png" ? "/logo-preloader.png" : logoScrolled;
 
   return (
-    <html lang="ru" style={{ background: "#000" }}>
+    <html lang="ru" style={{ background: "transparent" }}>
       <head>
         <link rel="preload" href={preloaderLogo} as="image" fetchPriority="high" />
         {logoScrolled !== "/logo.png" && <link rel="preload" href={logoScrolled} as="image" />}
@@ -79,7 +79,7 @@ export default async function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased bg-[var(--background)] text-[var(--foreground)] relative" style={{ background: "#000" }}>
+      <body className="antialiased bg-transparent text-[var(--foreground)] relative">
         <PreloaderShell preloaderLogo={preloaderLogo} />
         <PolygonBackground />
         <div className="relative z-10">
