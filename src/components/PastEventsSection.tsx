@@ -37,6 +37,7 @@ export default function PastEventsSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 * i }}
+            className="shadow-[0_28px_56px_-16px_rgba(74,222,128,0.18),0_48px_90px_-28px_rgba(74,222,128,0.08)]"
           >
             <TransitionLink href={event.link} className="block overflow-hidden group rounded-none focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)]">
               {/* Картинка 1:1 */}
