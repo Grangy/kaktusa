@@ -103,27 +103,6 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
       id="upcoming"
       className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20 relative overflow-hidden bg-transparent"
     >
-      {/* Лёгкий акцент без резкого перехода */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden opacity-40">
-        <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1200 800" preserveAspectRatio="xMidYMid slice">
-          <defs>
-            <linearGradient id="events-poly-1" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="rgba(74,222,128,0.14)" />
-              <stop offset="100%" stopColor="transparent" />
-            </linearGradient>
-            <linearGradient id="events-poly-2" x1="100%" y1="100%" x2="0%" y2="0%">
-              <stop offset="0%" stopColor="rgba(74,222,128,0.1)" />
-              <stop offset="100%" stopColor="transparent" />
-            </linearGradient>
-          </defs>
-          <polygon points="0,0 500,0 300,200 0,150" fill="url(#events-poly-1)" />
-          <polygon points="1200,800 700,800 900,500 1200,600" fill="url(#events-poly-2)" />
-          <polygon points="600,250 1050,180 1000,450 550,520 200,400" fill="none" stroke="rgba(74,222,128,0.12)" strokeWidth="1" />
-        </svg>
-      </div>
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/4 blur-3xl rounded-3xl" />
-      </div>
       <div className="relative">
       <h2 className="font-display text-2xl md:text-4xl font-bold uppercase mb-8 md:mb-10 text-center text-white/95 drop-shadow-sm">
         Мероприятия
@@ -143,7 +122,7 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
               initial={false}
               className="flex-shrink-0 w-[300px] md:w-[320px] snap-center flex"
             >
-              <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),0_28px_56px_-16px_rgba(74,222,128,0.2),0_48px_90px_-28px_rgba(74,222,128,0.1),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),0_28px_56px_-16px_rgba(74,222,128,0.18),0_48px_90px_-28px_rgba(74,222,128,0.08),inset_0_1px_0_rgba(255,255,255,0.02)]">
+              <div className="group relative block w-full rounded-3xl overflow-hidden transition-all duration-300 hover:scale-[1.02] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),inset_0_1px_0_rgba(255,255,255,0.05)] focus-within:ring-2 focus-within:ring-[var(--accent)]/30 focus-within:ring-offset-2 focus-within:ring-offset-[#080908] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),inset_0_1px_0_rgba(255,255,255,0.02)]">
                 <TransitionLink
                   href={event.link}
                   className="block"

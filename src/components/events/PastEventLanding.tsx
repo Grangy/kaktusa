@@ -345,7 +345,7 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
                 >
                   <Link
                     href={`/events/${ev.slug}`}
-                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12),0_28px_56px_-16px_rgba(74,222,128,0.18),0_48px_90px_-28px_rgba(74,222,128,0.08)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25),0_28px_56px_-16px_rgba(74,222,128,0.2),0_48px_90px_-28px_rgba(74,222,128,0.1)] transition-all duration-300"
+                    className="relative block overflow-hidden group rounded-3xl focus:outline-none focus:ring-2 focus:ring-[var(--accent)] focus:ring-offset-2 focus:ring-offset-[var(--background)] shadow-[0_0_0_1px_rgba(255,255,255,0.06),0_4px_24px_-4px_rgba(0,0,0,0.5),0_0_40px_-10px_rgba(74,222,128,0.12)] hover:shadow-[0_0_0_1px_rgba(255,255,255,0.1),0_8px_32px_-8px_rgba(0,0,0,0.5),0_0_60px_-8px_rgba(74,222,128,0.25)] transition-all duration-300"
                   >
                     <div className="relative aspect-[3/4] min-h-[200px] md:min-h-[240px] overflow-hidden">
                       <Image

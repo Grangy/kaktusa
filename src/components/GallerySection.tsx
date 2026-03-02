@@ -112,7 +112,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
                 onClick={() => setLightboxIndex(i)}
                 className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
               >
-                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 cursor-pointer ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(255,255,255,0.15),0_24px_48px_-12px_rgba(74,222,128,0.2),0_40px_80px_-24px_rgba(74,222,128,0.1)]" : "border border-white/10 shadow-[0_24px_48px_-12px_rgba(74,222,128,0.15),0_40px_80px_-24px_rgba(74,222,128,0.06)] group-hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.12),0_24px_48px_-12px_rgba(74,222,128,0.18),0_40px_80px_-24px_rgba(74,222,128,0.08)]"}`}>
+                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 shadow-xl shadow-black/50 transition-all duration-300 cursor-pointer ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(255,255,255,0.15)]" : "border border-white/10 group-hover:shadow-[0_4px_24px_-4px_rgba(255,255,255,0.12)]"}`}>
                   <Image
                     src={getOptimizedPhotoUrl(src)}
                     alt=""
