@@ -81,7 +81,6 @@ export default function PastEventLanding({ event, pastEvents = [] }: { event?: E
                   loop
                   autoPlay
                   playsInline
-                  preload="none"
                 />
               ) : (
                 <Image

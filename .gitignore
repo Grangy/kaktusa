@@ -50,6 +50,12 @@ next-env.d.ts
 /public/intro-new.mp4
 /public/IMG_5316 (online-video-cutter.com).mp4
 
+# Большие видео с локалки не грузим в git (на проде заливаются через админку)
+/public/photos/*.mp4
+/public/photos/*.webm
+/public/photos/*.mov
+/public/photos/*.avi
+
 # База SQLite — не в git (на проде хранится локально, при деплое сохраняется)
 /prisma/*.db
 /prisma/prisma/
