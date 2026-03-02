@@ -76,9 +76,6 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
 
   return (
     <section id="gallery" className="py-14 md:py-20 px-6 md:px-12 overflow-hidden scroll-mt-20 bg-transparent relative">
-      <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-x-4 md:inset-x-8 top-8 bottom-8 bg-[var(--accent)]/5 blur-3xl rounded-3xl" />
-      </div>
       <div className="relative">
       <motion.h2
         initial={{ opacity: 0, y: 30 }}
@@ -112,7 +109,7 @@ export default function GallerySection({ photos: photosProp, hideIfEmpty }: Gall
                 onClick={() => setLightboxIndex(i)}
                 className="w-full text-left focus:outline-none rounded-2xl [-webkit-tap-highlight-color:transparent]"
               >
-                <div className={`relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_4px_20px_-4px_rgba(0,0,0,0.45),0_0_14px_-1px_rgba(145,145,145,0.67)] ${i === activeIndex ? "shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(145,145,145,0.7)]" : "group-hover:shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_20px_-2px_rgba(145,145,145,0.7)]"}`}>
+                <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-black/50 transition-all duration-300 cursor-pointer shadow-[0_4px_24px_-4px_rgba(0,0,0,0.45),0_0_14px_-1px_rgba(145,145,145,0.67)] group-hover:shadow-[0_8px_32px_-8px_rgba(0,0,0,0.4),0_0_20px_-2px_rgba(145,145,145,0.7)]">
                   <Image
                     src={getOptimizedPhotoUrl(src)}
                     alt=""

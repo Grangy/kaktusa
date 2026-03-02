@@ -126,6 +126,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                   loop
                   autoPlay
                   playsInline
+                  preload="none"
                 />
               ) : (
                 <Image
