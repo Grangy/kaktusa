@@ -56,9 +56,11 @@ model Main {
 }
 
 model Meta {
-  id          String   @id @default("meta")
-  title       String
-  description String
-  canonical   String?
-  updatedAt   DateTime @updatedAt
+  id             String   @id @default("meta")
+  title          String
+  description    String
+  canonical      String?
+  googleFontUrl  String?  // ссылка на CSS Google Fonts (прогрессивная загрузка)
+  fontFamily     String?  // имя шрифта для --font-sans, напр. "Manrope"
+  updatedAt      DateTime @updatedAt
 }

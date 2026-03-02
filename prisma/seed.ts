@@ -49,11 +49,15 @@ interface SeedMain {
   reviews: unknown[];
 }
 
-interface SeedMeta {
-  title: string;
-  description: string;
-  canonical?: string;
-}
+/** Мета только в БД; при первом создании — дефолты. Редактирование через админку. */
+const DEFAULT_META = {
+  title: "?КАКТУСА — Электронные ивенты с особым смыслом в Крыму",
+  description:
+    "?КАКТУСА — проект электронных ивентов с особым смыслом и звучанием в уникальных локациях Крыма. Объединяем людей с изысканным музыкальным вкусом.",
+  canonical: "https://kaktusa.ru" as string | null,
+  googleFontUrl: null as string | null,
+  fontFamily: null as string | null,
+};
 
 function eventToCreate(e: SeedEvent) {
   return {
@@ -92,9 +96,8 @@ function eventToCreate(e: SeedEvent) {
 }
 
 /**
- * На production (NODE_ENV=production): только добавляем новые события из events.json.
- * Main и Meta НЕ трогаем — данные на проде приоритетны.
- * Локально: полный seed (events + main + meta из data/*.json).
+ * Production: только добавляем новые события. Main/Meta создаём только если нет (не перезаписываем).
+ * Локально: events + main из JSON; Meta только создаём если нет (редактирование только из БД/админки).
  */
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -112,10 +115,8 @@ async function main() {
   }
 
   const mainData = readJson<SeedMain>("main.json");
-  const metaData = readJson<SeedMeta>("meta.json");
 
   if (isProduction) {
-    // На проде: только создаём Main/Meta если нет, не перезаписываем
     const existingMain = await prisma.main.findUnique({ where: { id: "main" } });
     if (!existingMain) {
       await prisma.main.create({
@@ -134,9 +135,11 @@ async function main() {
       await prisma.meta.create({
         data: {
           id: "meta",
-          title: metaData.title,
-          description: metaData.description,
-          canonical: metaData.canonical ?? null,
+          title: DEFAULT_META.title,
+          description: DEFAULT_META.description,
+          canonical: DEFAULT_META.canonical,
+          googleFontUrl: DEFAULT_META.googleFontUrl,
+          fontFamily: DEFAULT_META.fontFamily,
         },
       });
       console.log("Seed: Meta создана (новый сервер).");
@@ -145,7 +148,7 @@ async function main() {
     return;
   }
 
-  // Локально: полный upsert
+  // Локально: upsert Main из JSON; Meta только создаём если нет
   await prisma.main.upsert({
     where: { id: "main" },
     create: {
@@ -163,20 +166,20 @@ async function main() {
     },
   });
 
-  await prisma.meta.upsert({
-    where: { id: "meta" },
-    create: {
-      id: "meta",
-      title: metaData.title,
-      description: metaData.description,
-      canonical: metaData.canonical ?? null,
-    },
-    update: {
-      title: metaData.title,
-      description: metaData.description,
-      canonical: metaData.canonical ?? null,
-    },
-  });
+  const existingMeta = await prisma.meta.findUnique({ where: { id: "meta" } });
+  if (!existingMeta) {
+    await prisma.meta.create({
+      data: {
+        id: "meta",
+        title: DEFAULT_META.title,
+        description: DEFAULT_META.description,
+        canonical: DEFAULT_META.canonical,
+        googleFontUrl: DEFAULT_META.googleFontUrl,
+        fontFamily: DEFAULT_META.fontFamily,
+      },
+    });
+    console.log("Seed: Meta создана (далее редактируйте в админке).");
+  }
 
   console.log("Seed done.");
 }

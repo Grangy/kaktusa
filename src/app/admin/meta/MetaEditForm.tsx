@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { MetaContent } from "@/types/data";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
-import { Loader2 } from "lucide-react";
+import { Loader2, Type } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-2.5 bg-black/50 border border-white/20 text-white rounded-lg focus:outline-none focus:border-[var(--accent)] placeholder:text-white/40";
@@ -68,6 +68,52 @@ export function MetaEditForm({ initial }: { initial: MetaContent }) {
           className={inputClass}
         />
       </div>
+
+      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-6 space-y-4">
+        <h3 className="font-display text-lg uppercase text-white/90 flex items-center gap-2">
+          <Type size={18} /> Шрифт Google Fonts
+        </h3>
+        <p className="text-white/60 text-sm">
+          Вставьте ссылку на шрифт с Google Fonts — он будет подключаться прогрессивно (не блокирует загрузку страницы). Укажите имя шрифта для применения к сайту.
+        </p>
+        <div>
+          <label className="block text-white/80 text-sm mb-1">Ссылка на CSS (Google Fonts)</label>
+          <input
+            type="url"
+            value={form.googleFontUrl ?? ""}
+            onChange={(e) => setForm((f) => ({ ...f, googleFontUrl: e.target.value || undefined }))}
+            className={inputClass}
+            placeholder="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+          />
+        </div>
+        <div>
+          <label className="block text-white/80 text-sm mb-1">Имя шрифта (для применения)</label>
+          <div className="flex gap-2">
+            <input
+              value={form.fontFamily ?? ""}
+              onChange={(e) => setForm((f) => ({ ...f, fontFamily: e.target.value || undefined }))}
+              className={inputClass}
+              placeholder="Montserrat"
+            />
+            <button
+              type="button"
+              onClick={() =>
+                setForm((f) => ({
+                  ...f,
+                  googleFontUrl:
+                    "https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap",
+                  fontFamily: "Montserrat",
+                }))
+              }
+              className="shrink-0 px-4 py-2.5 rounded-lg border border-[var(--accent)]/50 text-[var(--accent)] text-sm font-medium hover:bg-[var(--accent)]/10 transition-colors"
+            >
+              Пример: Montserrat
+            </button>
+          </div>
+          <p className="text-white/50 text-xs mt-1">Точно как в Google Fonts. Кнопка подставляет тестовый шрифт <a href="https://fonts.google.com/specimen/Montserrat" target="_blank" rel="noopener noreferrer" className="text-[var(--accent)] hover:underline">Montserrat</a>.</p>
+        </div>
+      </div>
+
       <button
         type="submit"
         disabled={saving}

@@ -72,4 +72,6 @@ export interface MetaContent {
   title: string;
   description: string;
   canonical?: string;
+  googleFontUrl?: string;
+  fontFamily?: string;
 }

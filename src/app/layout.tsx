@@ -6,7 +6,8 @@ import "./globals.css";
 import { Providers } from "@/components/Providers";
 import PolygonBackground from "@/components/PolygonBackground";
 import PreloaderShell from "@/components/PreloaderShell";
-import { getMainSafe } from "@/lib/data";
+import { getMainSafe, getMetaSafe } from "@/lib/data";
+import { GoogleFontLoader } from "@/components/GoogleFontLoader";
 
 const SITE_URL = "https://kaktusa.ru";
 const defaultTitle = "?КАКТУСА — Электронные ивенты с особым смыслом в Крыму";
@@ -61,15 +62,23 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const main = await getMainSafe();
+  const [main, meta] = await Promise.all([getMainSafe(), getMetaSafe()]);
   const logoScrolled = main?.hero?.logoScrolled ?? "/logo.png";
   const logoHero = main?.hero?.logoHero ?? "/new-logo.png";
   // Для дефолтного лого — облегчённая версия (6KB vs 323KB)
   const preloaderLogo = logoScrolled === "/logo.png" ? "/logo-preloader.png" : logoScrolled;
+  const googleFontUrl = meta?.googleFontUrl?.trim() || undefined;
+  const fontFamily = meta?.fontFamily?.trim() || undefined;
 
   return (
     <html lang="ru" style={{ background: "transparent" }}>
       <head>
+        {googleFontUrl && (
+          <>
+            <link rel="preconnect" href="https://fonts.googleapis.com" />
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+          </>
+        )}
         <link rel="preload" href={preloaderLogo} as="image" fetchPriority="high" />
         {logoScrolled !== "/logo.png" && <link rel="preload" href={logoScrolled} as="image" />}
         {/* Критичные стили прелоадера — до загрузки globals.css */}
@@ -80,6 +89,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="antialiased bg-transparent text-[var(--foreground)] relative">
+        {googleFontUrl && <GoogleFontLoader href={googleFontUrl} fontFamily={fontFamily} />}
         <PreloaderShell preloaderLogo={preloaderLogo} />
         <PolygonBackground />
         <div className="relative z-10">

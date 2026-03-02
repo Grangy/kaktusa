@@ -201,7 +201,17 @@ export async function getMeta(): Promise<MetaContent> {
     title: row.title,
     description: row.description,
     canonical: row.canonical ?? undefined,
+    googleFontUrl: row.googleFontUrl ?? undefined,
+    fontFamily: row.fontFamily ?? undefined,
   };
+}
+
+export async function getMetaSafe(): Promise<MetaContent | null> {
+  try {
+    return await getMeta();
+  } catch {
+    return null;
+  }
 }
 
 export async function writeMeta(meta: MetaContent): Promise<void> {
@@ -212,11 +222,15 @@ export async function writeMeta(meta: MetaContent): Promise<void> {
       title: meta.title,
       description: meta.description,
       canonical: meta.canonical ?? null,
+      googleFontUrl: meta.googleFontUrl ?? null,
+      fontFamily: meta.fontFamily ?? null,
     },
     update: {
       title: meta.title,
       description: meta.description,
       canonical: meta.canonical ?? null,
+      googleFontUrl: meta.googleFontUrl ?? null,
+      fontFamily: meta.fontFamily ?? null,
     },
   });
 }
