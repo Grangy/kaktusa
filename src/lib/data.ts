@@ -310,6 +310,27 @@ export function normalizePhone(raw: string): string | null {
   return null;
 }
 
+const PHONE_TAG = /\[PHONE:(.+?)\]/g;
+const RUSSIAN_PHONE = /(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b\d{10,11}\b/g;
+
+export function extractPhonesFromText(text: string): string[] {
+  const normalized = new Set<string>();
+  for (const m of text.matchAll(PHONE_TAG)) {
+    const n = normalizePhone(m[1].trim());
+    if (n) normalized.add(n);
+  }
+  const digitBlocks = text.match(RUSSIAN_PHONE) ?? [];
+  for (const block of digitBlocks) {
+    const n = normalizePhone(block);
+    if (n) normalized.add(n);
+  }
+  return [...normalized];
+}
+
+export function stripPhoneTags(text: string): string {
+  return text.replace(/\s*\n?\[PHONE:.+?\]\s*/g, "").trim();
+}
+
 export async function createLeadPhone(sessionId: string, phone: string): Promise<void> {
   await prisma.leadPhone.create({
     data: { sessionId, phone },

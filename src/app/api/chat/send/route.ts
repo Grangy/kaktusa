@@ -4,9 +4,10 @@ import {
   isChatWithinWorkingHours,
   createChatMessage,
   getChatMessagesBySession,
-  normalizePhone,
   createLeadPhone,
   hasLeadPhone,
+  extractPhonesFromText,
+  stripPhoneTags,
 } from "@/lib/data";
 import {
   askGemini,
@@ -16,28 +17,6 @@ import {
 
 export const dynamic = "force-dynamic";
 const MAX_HISTORY = 10;
-
-const PHONE_TAG = /\[PHONE:(.+?)\]/g;
-const RUSSIAN_PHONE = /(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b\d{10,11}\b/g;
-
-function extractPhonesFromText(text: string): string[] {
-  const normalized = new Set<string>();
-  const tagMatch = text.matchAll(PHONE_TAG);
-  for (const m of tagMatch) {
-    const n = normalizePhone(m[1].trim());
-    if (n) normalized.add(n);
-  }
-  const digitBlocks = text.match(RUSSIAN_PHONE) ?? [];
-  for (const block of digitBlocks) {
-    const n = normalizePhone(block);
-    if (n) normalized.add(n);
-  }
-  return [...normalized];
-}
-
-function stripPhoneTags(text: string): string {
-  return text.replace(/\s*\n?\[PHONE:.+?\]\s*/g, "").trim();
-}
 
 async function sendPhoneToTelegram(token: string, chatId: string, phone: string, sessionId: string): Promise<void> {
   const msg = `📱 Номер из чата: ${phone}\nСессия: ${sessionId.slice(0, 12)}…`;
