@@ -25,6 +25,7 @@
     "audit:prod": "node scripts/audit-prod.mjs",
     "audit:photos": "node scripts/audit-photos.mjs",
     "test:video-compress": "node scripts/test-video-compress.mjs",
+    "test:gemini": "node scripts/test-gemini.mjs",
     "sync:prod": "node scripts/sync-from-prod.mjs"
   },
   "dependencies": {

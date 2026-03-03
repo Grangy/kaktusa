@@ -3,9 +3,16 @@ import {
   getChatSettings,
   isChatWithinWorkingHours,
   createChatMessage,
+  getChatMessagesBySession,
 } from "@/lib/data";
+import {
+  askGemini,
+  getGeminiKeysFromSettings,
+  type GeminiMessage,
+} from "@/lib/gemini";
 
 export const dynamic = "force-dynamic";
+const MAX_HISTORY = 10;
 
 export async function POST(req: Request) {
   try {
@@ -36,12 +43,61 @@ export async function POST(req: Request) {
       );
     }
 
+    const mode = settings.chatMode === "gemini" ? "gemini" : "telegram";
+
+    if (mode === "gemini") {
+      const keys = getGeminiKeysFromSettings(settings.geminiApiKeys);
+      const prompt =
+        settings.geminiPrompt?.trim() ||
+        "Ты помощник на сайте мероприятия. Отвечай кратко и по делу на вопросы гостей.";
+      if (keys.length === 0) {
+        return NextResponse.json(
+          { error: "Не настроены ключи Gemini. Укажите ключи в админке." },
+          { status: 503 }
+        );
+      }
+      const recent = await getChatMessagesBySession(sessionId);
+      const msg = await createChatMessage({
+        sessionId,
+        text,
+        fromAdmin: false,
+      });
+      try {
+        const history: GeminiMessage[] = recent.slice(-MAX_HISTORY).map((m) => ({
+          role: m.fromAdmin ? ("model" as const) : ("user" as const),
+          parts: [{ text: m.text }],
+        }));
+        const replyText = await askGemini(keys, prompt, text, history);
+        const replyMsg = await createChatMessage({
+          sessionId,
+          text: replyText,
+          fromAdmin: true,
+        });
+        return NextResponse.json({
+          id: msg.id,
+          createdAt: msg.createdAt,
+          reply: {
+            id: replyMsg.id,
+            text: replyMsg.text,
+            fromAdmin: true,
+            createdAt: replyMsg.createdAt.toISOString(),
+          },
+        });
+      } catch (geminiErr) {
+        console.error("Gemini error:", geminiErr);
+        return NextResponse.json(
+          { error: "Ошибка ответа бота. Попробуйте позже." },
+          { status: 502 }
+        );
+      }
+    }
+
+    // Режим Telegram
     const msg = await createChatMessage({
       sessionId,
       text,
       fromAdmin: false,
     });
-
     const token = settings.botToken?.trim();
     const chatId = settings.telegramChatId?.trim();
     if (token && chatId) {
@@ -53,7 +109,6 @@ export async function POST(req: Request) {
             [{ text: "Ответить", callback_data: `reply:${sessionId}` }],
           ],
         };
-        // chat_id как строка — корректно для групп (например -5135295224)
         await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -246,6 +246,9 @@ export async function getChatSettings(): Promise<ChatSettingsContent> {
       telegramChatId: null,
       workStartMsk: "09:00",
       workEndMsk: "21:00",
+      chatMode: "telegram",
+      geminiPrompt: null,
+      geminiApiKeys: null,
     };
   }
   return {
@@ -254,6 +257,9 @@ export async function getChatSettings(): Promise<ChatSettingsContent> {
     telegramChatId: row.telegramChatId ?? null,
     workStartMsk: row.workStartMsk ?? null,
     workEndMsk: row.workEndMsk ?? null,
+    chatMode: (row.chatMode as ChatSettingsContent["chatMode"]) ?? "telegram",
+    geminiPrompt: row.geminiPrompt ?? null,
+    geminiApiKeys: row.geminiApiKeys ?? null,
   };
 }
 
@@ -275,6 +281,9 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
       telegramChatId: s.telegramChatId ?? null,
       workStartMsk: s.workStartMsk ?? null,
       workEndMsk: s.workEndMsk ?? null,
+      chatMode: s.chatMode ?? null,
+      geminiPrompt: s.geminiPrompt ?? null,
+      geminiApiKeys: s.geminiApiKeys ?? null,
     },
     update: {
       enabled: s.enabled,
@@ -282,6 +291,9 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
       telegramChatId: s.telegramChatId ?? null,
       workStartMsk: s.workStartMsk ?? null,
       workEndMsk: s.workEndMsk ?? null,
+      chatMode: s.chatMode ?? null,
+      geminiPrompt: s.geminiPrompt ?? null,
+      geminiApiKeys: s.geminiApiKeys ?? null,
     },
   });
 }

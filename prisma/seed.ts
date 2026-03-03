@@ -154,6 +154,9 @@ async function main() {
           telegramChatId: null,
           workStartMsk: "09:00",
           workEndMsk: "21:00",
+          chatMode: "telegram",
+          geminiPrompt: null,
+          geminiApiKeys: null,
         },
       });
       console.log("Seed: ChatSettings созданы.");
@@ -205,6 +208,9 @@ async function main() {
         telegramChatId: null,
         workStartMsk: "09:00",
         workEndMsk: "21:00",
+        chatMode: "telegram",
+        geminiPrompt: null,
+        geminiApiKeys: null,
       },
     });
     console.log("Seed: ChatSettings созданы.");

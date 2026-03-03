@@ -31,6 +31,9 @@ export async function PUT(req: Request) {
       telegramChatId: body.telegramChatId ?? null,
       workStartMsk: body.workStartMsk?.trim() || null,
       workEndMsk: body.workEndMsk?.trim() || null,
+      chatMode: body.chatMode ?? "telegram",
+      geminiPrompt: body.geminiPrompt?.trim() || null,
+      geminiApiKeys: body.geminiApiKeys?.trim() || null,
     });
     revalidatePath("/");
     revalidatePath("/api/chat/config");

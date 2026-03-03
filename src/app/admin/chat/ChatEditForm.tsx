@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import type { ChatSettingsContent } from "@/types/data";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
-import { Loader2, MessageCircle, Webhook } from "lucide-react";
+import { Loader2, MessageCircle, Webhook, Bot, KeyRound } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-2.5 bg-black/50 border border-white/20 text-white rounded-lg focus:outline-none focus:border-[var(--accent)] placeholder:text-white/40";
@@ -16,6 +16,7 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
   const [form, setForm] = useState<ChatSettingsContent>(initial);
   const [saving, setSaving] = useState(false);
   const [webhooking, setWebhooking] = useState(false);
+  const [testingGemini, setTestingGemini] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -57,6 +58,31 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
     }
   }
 
+  async function testGeminiKeys() {
+    setTestingGemini(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/chat/test-gemini", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ keys: form.geminiApiKeys ?? "" }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.ok) {
+        toast("success", data.message || "Ключи работают");
+      } else {
+        toast("error", data.message || "Нет рабочего ключа");
+        setError(data.message);
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Ошибка";
+      setError(msg);
+      toast("error", msg);
+    } finally {
+      setTestingGemini(false);
+    }
+  }
+
   return (
     <form onSubmit={handleSubmit} className="max-w-2xl space-y-6">
       {error && <AlertBanner variant="error" message={error} onDismiss={() => setError(null)} />}
@@ -78,6 +104,32 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
           />
           <span className="text-white/80 text-sm">Чат включён</span>
         </label>
+
+        <div>
+          <label className="block text-white/80 text-sm mb-2">Режим ответов</label>
+          <div className="flex flex-wrap gap-4">
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="chatMode"
+                checked={(form.chatMode ?? "telegram") === "telegram"}
+                onChange={() => setForm((f) => ({ ...f, chatMode: "telegram" }))}
+                className="text-[var(--accent)] focus:ring-[var(--accent)]"
+              />
+              <span className="text-white/80 text-sm">Telegram — сообщения в ТГ, ответы вручную</span>
+            </label>
+            <label className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="chatMode"
+                checked={(form.chatMode ?? "telegram") === "gemini"}
+                onChange={() => setForm((f) => ({ ...f, chatMode: "gemini" }))}
+                className="text-[var(--accent)] focus:ring-[var(--accent)]"
+              />
+              <span className="text-white/80 text-sm">Gemini — бот отвечает автоматически</span>
+            </label>
+          </div>
+        </div>
 
         <div>
           <label className="block text-white/80 text-sm mb-1">Токен бота Telegram</label>
@@ -139,6 +191,50 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
           <p className="text-white/50 text-xs self-center">
             Нужно после смены токена, чтобы бот получал ответы.
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-6 space-y-4">
+        <h3 className="font-display text-lg uppercase text-white/90 flex items-center gap-2">
+          <Bot size={18} /> Чат-бот Gemini
+        </h3>
+        <p className="text-white/60 text-sm">
+          В режиме «Gemini» ответы в мини-чате генерирует ИИ по промпту. Укажите контекст (о мероприятии, локации, билетах) и ключи API. Если один ключ не сработает — используется следующий.
+        </p>
+
+        <div>
+          <label className="block text-white/80 text-sm mb-1">Промпт (контекст для бота)</label>
+          <textarea
+            value={form.geminiPrompt ?? ""}
+            onChange={(e) => setForm((f) => ({ ...f, geminiPrompt: e.target.value || undefined }))}
+            className={inputClass}
+            rows={5}
+            placeholder="Информация о мероприятии, дата, место, как добраться, билеты, контакты — всё, что должен знать бот для ответов гостям."
+          />
+        </div>
+
+        <div>
+          <label className="block text-white/80 text-sm mb-1 flex items-center gap-2">
+            <KeyRound size={16} /> Ключи Gemini API (по одному на строку)
+          </label>
+          <textarea
+            value={form.geminiApiKeys ?? ""}
+            onChange={(e) => setForm((f) => ({ ...f, geminiApiKeys: e.target.value || undefined }))}
+            className={inputClass}
+            rows={3}
+            placeholder="AIzaSy..."
+            autoComplete="off"
+          />
+          <p className="text-white/50 text-xs mt-1">Ключи из Google AI Studio. Проверка: кнопка ниже.</p>
+          <button
+            type="button"
+            onClick={testGeminiKeys}
+            disabled={testingGemini || !form.geminiApiKeys?.trim()}
+            className="mt-2 inline-flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/20 text-white/80 text-sm hover:bg-white/10 hover:text-white disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {testingGemini ? <Loader2 size={16} className="animate-spin" /> : <KeyRound size={16} />}
+            {testingGemini ? "Проверка…" : "Проверить ключи"}
+          </button>
         </div>
       </div>
 

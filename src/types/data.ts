@@ -76,12 +76,17 @@ export interface MetaContent {
   fontFamily?: string;
 }
 
+export type ChatMode = "telegram" | "gemini";
+
 export interface ChatSettingsContent {
   enabled: boolean;
   botToken?: string | null;
   telegramChatId?: string | null;
   workStartMsk?: string | null;
   workEndMsk?: string | null;
+  chatMode?: ChatMode | null;
+  geminiPrompt?: string | null;
+  geminiApiKeys?: string | null; // JSON array или ключи через перевод строки
 }
 
 export interface ChatMessageItem {

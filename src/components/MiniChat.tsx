@@ -98,11 +98,22 @@ export function MiniChat() {
       });
       const data = await r.json().catch(() => ({}));
       if (r.ok) {
-        setMessages((prev) => [
-          ...prev,
-          { id: data.id ?? "tmp", text, fromAdmin: false, createdAt: new Date().toISOString() },
-        ]);
-        fetchMessages();
+        setMessages((prev) => {
+          const next = [
+            ...prev,
+            { id: data.id ?? "tmp", text, fromAdmin: false, createdAt: (data.createdAt as string) ?? new Date().toISOString() },
+          ];
+          if (data.reply) {
+            next.push({
+              id: data.reply.id,
+              text: data.reply.text,
+              fromAdmin: true,
+              createdAt: data.reply.createdAt ?? new Date().toISOString(),
+            });
+          }
+          return next;
+        });
+        if (!data.reply) fetchMessages();
       }
     } finally {
       setSending(false);

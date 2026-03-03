@@ -69,9 +69,12 @@ model ChatSettings {
   id              String   @id @default("chat")
   enabled         Boolean  @default(true)
   botToken        String?
-  telegramChatId  String?
+  telegramChatId String?
   workStartMsk    String?
   workEndMsk      String?
+  chatMode        String?  // "telegram" | "gemini"
+  geminiPrompt    String?  // контекст/инфа о мероприятии для бота
+  geminiApiKeys   String?  // JSON array строк ключей
   updatedAt       DateTime @updatedAt
 }
 
