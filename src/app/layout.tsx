@@ -9,6 +9,7 @@ import PolygonBackground from "@/components/PolygonBackground";
 import PreloaderShell from "@/components/PreloaderShell";
 import { getMainSafe, getMetaSafe } from "@/lib/data";
 import { GoogleFontLoader } from "@/components/GoogleFontLoader";
+import { MiniChat } from "@/components/MiniChat";
 
 const SITE_URL = "https://kaktusa.ru";
 const defaultTitle = "?КАКТУСА — Электронные ивенты с особым смыслом в Крыму";
@@ -109,6 +110,7 @@ export default async function RootLayout({
           }}
         />
         <Providers logo={{ logoHero, logoScrolled }}>{children}</Providers>
+        <MiniChat />
         </div>
         <Script id="yandex-metrika" strategy="afterInteractive">
           {`(function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};m[i].l=1*new Date();for(var j=0;j<document.scripts.length;j++){if(document.scripts[j].src===r){return;}}k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})(window,document,'script','https://mc.yandex.ru/metrika/tag.js?id=107081337','ym');ym(107081337,'init',{ssr:true,webvisor:true,clickmap:true,ecommerce:'dataLayer',referrer:document.referrer,url:location.href,accurateTrackBounce:true,trackLinks:true});`}

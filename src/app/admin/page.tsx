@@ -31,6 +31,13 @@ export default async function AdminDashboardPage() {
           <h2 className="font-display text-lg font-bold uppercase mb-1">Метатеги</h2>
           <p className="text-white/60 text-sm">Title, description, canonical для SEO</p>
         </Link>
+        <Link
+          href="/admin/chat"
+          className="block p-6 border border-white/20 hover:border-[var(--accent)] transition-colors"
+        >
+          <h2 className="font-display text-lg font-bold uppercase mb-1">Чат и Telegram</h2>
+          <p className="text-white/60 text-sm">Мини-чат на сайте, бот, время работы (МСК)</p>
+        </Link>
       </div>
     </div>
   );

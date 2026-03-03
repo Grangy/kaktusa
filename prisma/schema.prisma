@@ -64,3 +64,29 @@ model Meta {
   fontFamily     String?  // имя шрифта для --font-sans, напр. "Manrope"
   updatedAt      DateTime @updatedAt
 }
+
+model ChatSettings {
+  id              String   @id @default("chat")
+  enabled         Boolean  @default(true)
+  botToken        String?
+  telegramChatId  String?
+  workStartMsk    String?
+  workEndMsk      String?
+  updatedAt       DateTime @updatedAt
+}
+
+model ChatMessage {
+  id                String   @id @default(cuid())
+  sessionId         String
+  text              String
+  fromAdmin         Boolean  @default(false)
+  telegramMessageId Int?
+  createdAt         DateTime @default(now())
+}
+
+model ChatReplyState {
+  id             String   @id @default(cuid())
+  telegramUserId String   @unique
+  sessionId      String
+  createdAt      DateTime @default(now())
+}

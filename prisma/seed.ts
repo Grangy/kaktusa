@@ -144,6 +144,20 @@ async function main() {
       });
       console.log("Seed: Meta создана (новый сервер).");
     }
+    const existingChat = await prisma.chatSettings.findUnique({ where: { id: "chat" } });
+    if (!existingChat) {
+      await prisma.chatSettings.create({
+        data: {
+          id: "chat",
+          enabled: false,
+          botToken: null,
+          telegramChatId: null,
+          workStartMsk: "09:00",
+          workEndMsk: "21:00",
+        },
+      });
+      console.log("Seed: ChatSettings созданы.");
+    }
     console.log("Seed done. (production: Main/Meta не перезаписаны)");
     return;
   }
@@ -179,6 +193,21 @@ async function main() {
       },
     });
     console.log("Seed: Meta создана (далее редактируйте в админке).");
+  }
+
+  const existingChat = await prisma.chatSettings.findUnique({ where: { id: "chat" } });
+  if (!existingChat) {
+    await prisma.chatSettings.create({
+      data: {
+        id: "chat",
+        enabled: false,
+        botToken: null,
+        telegramChatId: null,
+        workStartMsk: "09:00",
+        workEndMsk: "21:00",
+      },
+    });
+    console.log("Seed: ChatSettings созданы.");
   }
 
   console.log("Seed done.");

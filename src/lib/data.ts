@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/lib/db";
-import type { Event, MainContent, MetaContent } from "@/types/data";
+import type { Event, MainContent, MetaContent, ChatSettingsContent, ChatMessageItem } from "@/types/data";
 import type { TicketOption } from "@/types/data";
 
 function rowToEvent(row: {
@@ -233,4 +233,125 @@ export async function writeMeta(meta: MetaContent): Promise<void> {
       fontFamily: meta.fontFamily ?? null,
     },
   });
+}
+
+// ——— Chat ———
+
+export async function getChatSettings(): Promise<ChatSettingsContent> {
+  const row = await prisma.chatSettings.findUnique({ where: { id: "chat" } });
+  if (!row) {
+    return {
+      enabled: false,
+      botToken: null,
+      telegramChatId: null,
+      workStartMsk: "09:00",
+      workEndMsk: "21:00",
+    };
+  }
+  return {
+    enabled: row.enabled,
+    botToken: row.botToken ?? null,
+    telegramChatId: row.telegramChatId ?? null,
+    workStartMsk: row.workStartMsk ?? null,
+    workEndMsk: row.workEndMsk ?? null,
+  };
+}
+
+export async function getChatSettingsSafe(): Promise<ChatSettingsContent | null> {
+  try {
+    return await getChatSettings();
+  } catch {
+    return null;
+  }
+}
+
+export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
+  await prisma.chatSettings.upsert({
+    where: { id: "chat" },
+    create: {
+      id: "chat",
+      enabled: s.enabled,
+      botToken: s.botToken ?? null,
+      telegramChatId: s.telegramChatId ?? null,
+      workStartMsk: s.workStartMsk ?? null,
+      workEndMsk: s.workEndMsk ?? null,
+    },
+    update: {
+      enabled: s.enabled,
+      botToken: s.botToken ?? null,
+      telegramChatId: s.telegramChatId ?? null,
+      workStartMsk: s.workStartMsk ?? null,
+      workEndMsk: s.workEndMsk ?? null,
+    },
+  });
+}
+
+/** Проверка: сейчас по МСК попадаем в рабочие часы? */
+export function isChatWithinWorkingHours(workStartMsk: string | null | undefined, workEndMsk: string | null | undefined): boolean {
+  if (!workStartMsk || !workEndMsk) return true;
+  const now = new Date();
+  const msk = new Date(now.toLocaleString("en-US", { timeZone: "Europe/Moscow" }));
+  const minutes = msk.getHours() * 60 + msk.getMinutes();
+  const [sh, sm] = workStartMsk.split(":").map(Number);
+  const [eh, em] = workEndMsk.split(":").map(Number);
+  const startMin = (sh ?? 0) * 60 + (sm ?? 0);
+  let endMin = (eh ?? 23) * 60 + (em ?? 59);
+  if (endMin <= startMin) endMin += 24 * 60; // через полночь
+  let curr = minutes;
+  if (curr < startMin) curr += 24 * 60;
+  return curr >= startMin && curr < endMin;
+}
+
+export async function createChatMessage(data: {
+  sessionId: string;
+  text: string;
+  fromAdmin: boolean;
+  telegramMessageId?: number;
+}): Promise<ChatMessageItem> {
+  const row = await prisma.chatMessage.create({
+    data: {
+      sessionId: data.sessionId,
+      text: data.text,
+      fromAdmin: data.fromAdmin,
+      telegramMessageId: data.telegramMessageId ?? null,
+    },
+  });
+  return {
+    id: row.id,
+    sessionId: row.sessionId,
+    text: row.text,
+    fromAdmin: row.fromAdmin,
+    createdAt: row.createdAt,
+  };
+}
+
+export async function getChatMessagesBySession(sessionId: string): Promise<ChatMessageItem[]> {
+  const rows = await prisma.chatMessage.findMany({
+    where: { sessionId },
+    orderBy: { createdAt: "asc" },
+  });
+  return rows.map((r) => ({
+    id: r.id,
+    sessionId: r.sessionId,
+    text: r.text,
+    fromAdmin: r.fromAdmin,
+    createdAt: r.createdAt,
+  }));
+}
+
+export async function setChatReplyState(telegramUserId: string, sessionId: string): Promise<void> {
+  await prisma.chatReplyState.upsert({
+    where: { telegramUserId },
+    create: { telegramUserId, sessionId },
+    update: { sessionId },
+  });
+}
+
+export async function getChatReplyState(telegramUserId: string): Promise<{ sessionId: string } | null> {
+  const row = await prisma.chatReplyState.findUnique({ where: { telegramUserId } });
+  return row ? { sessionId: row.sessionId } : null;
+}
+
+export async function deleteChatReplyState(telegramUserId: string): Promise<void> {
+  await prisma.chatReplyState.deleteMany({ where: { telegramUserId } });
 }

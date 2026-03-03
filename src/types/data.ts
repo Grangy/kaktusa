@@ -75,3 +75,19 @@ export interface MetaContent {
   googleFontUrl?: string;
   fontFamily?: string;
 }
+
+export interface ChatSettingsContent {
+  enabled: boolean;
+  botToken?: string | null;
+  telegramChatId?: string | null;
+  workStartMsk?: string | null;
+  workEndMsk?: string | null;
+}
+
+export interface ChatMessageItem {
+  id: string;
+  sessionId: string;
+  text: string;
+  fromAdmin: boolean;
+  createdAt: Date;
+}
