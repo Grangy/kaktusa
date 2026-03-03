@@ -86,7 +86,8 @@ export interface ChatSettingsContent {
   workEndMsk?: string | null;
   chatMode?: ChatMode | null;
   geminiPrompt?: string | null;
-  geminiApiKeys?: string | null; // JSON array или ключи через перевод строки
+  geminiApiKeys?: string | null;
+  welcomeMessage?: string | null;
 }
 
 export interface ChatMessageItem {

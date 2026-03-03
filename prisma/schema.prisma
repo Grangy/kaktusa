@@ -75,6 +75,7 @@ model ChatSettings {
   chatMode        String?  // "telegram" | "gemini"
   geminiPrompt    String?  // контекст/инфа о мероприятии для бота
   geminiApiKeys   String?  // JSON array строк ключей
+  welcomeMessage  String?  // приветствие при открытии чата («Общение»)
   updatedAt       DateTime @updatedAt
 }
 
@@ -92,4 +93,11 @@ model ChatReplyState {
   telegramUserId String   @unique
   sessionId      String
   createdAt      DateTime @default(now())
+}
+
+model LeadPhone {
+  id        String   @id @default(cuid())
+  sessionId String
+  phone     String   // E.164 нормализованный
+  createdAt DateTime @default(now())
 }

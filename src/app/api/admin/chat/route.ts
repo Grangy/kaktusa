@@ -34,6 +34,7 @@ export async function PUT(req: Request) {
       chatMode: body.chatMode ?? "telegram",
       geminiPrompt: body.geminiPrompt?.trim() || null,
       geminiApiKeys: body.geminiApiKeys?.trim() || null,
+      welcomeMessage: body.welcomeMessage?.trim() || null,
     });
     revalidatePath("/");
     revalidatePath("/api/chat/config");

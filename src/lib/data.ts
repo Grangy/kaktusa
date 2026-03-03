@@ -249,6 +249,7 @@ export async function getChatSettings(): Promise<ChatSettingsContent> {
       chatMode: "telegram",
       geminiPrompt: null,
       geminiApiKeys: null,
+      welcomeMessage: null,
     };
   }
   return {
@@ -260,6 +261,7 @@ export async function getChatSettings(): Promise<ChatSettingsContent> {
     chatMode: (row.chatMode as ChatSettingsContent["chatMode"]) ?? "telegram",
     geminiPrompt: row.geminiPrompt ?? null,
     geminiApiKeys: row.geminiApiKeys ?? null,
+    welcomeMessage: row.welcomeMessage ?? null,
   };
 }
 
@@ -284,6 +286,7 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
       chatMode: s.chatMode ?? null,
       geminiPrompt: s.geminiPrompt ?? null,
       geminiApiKeys: s.geminiApiKeys ?? null,
+      welcomeMessage: s.welcomeMessage ?? null,
     },
     update: {
       enabled: s.enabled,
@@ -294,8 +297,35 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
       chatMode: s.chatMode ?? null,
       geminiPrompt: s.geminiPrompt ?? null,
       geminiApiKeys: s.geminiApiKeys ?? null,
+      welcomeMessage: s.welcomeMessage ?? null,
     },
   });
+}
+
+/** Нормализация номера телефона в E.164 (РФ: +7...) */
+export function normalizePhone(raw: string): string | null {
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length === 10 && digits.startsWith("9")) return `+7${digits}`;
+  if (digits.length === 11 && (digits.startsWith("7") || digits.startsWith("8"))) return `+7${digits.slice(1)}`;
+  return null;
+}
+
+export async function createLeadPhone(sessionId: string, phone: string): Promise<void> {
+  await prisma.leadPhone.create({
+    data: { sessionId, phone },
+  });
+}
+
+export async function getLeadPhones(): Promise<Array<{ id: string; sessionId: string; phone: string; createdAt: Date }>> {
+  const rows = await prisma.leadPhone.findMany({ orderBy: { createdAt: "desc" } });
+  return rows.map((r) => ({ id: r.id, sessionId: r.sessionId, phone: r.phone, createdAt: r.createdAt }));
+}
+
+export async function hasLeadPhone(sessionId: string, phone: string): Promise<boolean> {
+  const existing = await prisma.leadPhone.findFirst({
+    where: { sessionId, phone },
+  });
+  return !!existing;
 }
 
 /** Проверка: сейчас по МСК попадаем в рабочие часы? */

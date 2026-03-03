@@ -72,6 +72,7 @@ interface ChatConfig {
   workStartMsk: string;
   workEndMsk: string;
   available: boolean;
+  welcomeMessage?: string | null;
 }
 
 interface ChatMessage {
@@ -200,7 +201,9 @@ export function MiniChat() {
           aria-label="Мини-чат"
         >
           <div className="p-3 border-b border-white/10 flex items-center justify-between shrink-0">
-            <span className="font-display text-sm uppercase text-white/90">Чат</span>
+            <span className="font-display text-sm uppercase text-white/90">
+              {config?.welcomeMessage ? "Общение" : "Чат"}
+            </span>
             <button
               type="button"
               onClick={() => setOpen(false)}
@@ -220,7 +223,13 @@ export function MiniChat() {
                 className="flex-1 overflow-y-auto p-3 space-y-3 min-h-[120px]"
               >
                 {messages.length === 0 && !sending ? (
-                  <p className="text-white/40 text-sm text-center py-4">Напишите сообщение — мы ответим в Telegram.</p>
+                  <div className="py-4 px-2">
+                    {config?.welcomeMessage ? (
+                      <p className="text-white/80 text-sm whitespace-pre-wrap">{config.welcomeMessage}</p>
+                    ) : (
+                      <p className="text-white/40 text-sm text-center">Напишите сообщение — мы ответим.</p>
+                    )}
+                  </div>
                 ) : (
                   <>
                     {messages.map((m) => (

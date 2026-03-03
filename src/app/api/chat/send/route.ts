@@ -4,6 +4,9 @@ import {
   isChatWithinWorkingHours,
   createChatMessage,
   getChatMessagesBySession,
+  normalizePhone,
+  createLeadPhone,
+  hasLeadPhone,
 } from "@/lib/data";
 import {
   askGemini,
@@ -13,6 +16,37 @@ import {
 
 export const dynamic = "force-dynamic";
 const MAX_HISTORY = 10;
+
+const PHONE_TAG = /\[PHONE:(.+?)\]/g;
+const RUSSIAN_PHONE = /(?:\+7|8)[\s\-]?\(?\d{3}\)?[\s\-]?\d{3}[\s\-]?\d{2}[\s\-]?\d{2}|\b\d{10,11}\b/g;
+
+function extractPhonesFromText(text: string): string[] {
+  const normalized = new Set<string>();
+  const tagMatch = text.matchAll(PHONE_TAG);
+  for (const m of tagMatch) {
+    const n = normalizePhone(m[1].trim());
+    if (n) normalized.add(n);
+  }
+  const digitBlocks = text.match(RUSSIAN_PHONE) ?? [];
+  for (const block of digitBlocks) {
+    const n = normalizePhone(block);
+    if (n) normalized.add(n);
+  }
+  return [...normalized];
+}
+
+function stripPhoneTags(text: string): string {
+  return text.replace(/\s*\n?\[PHONE:.+?\]\s*/g, "").trim();
+}
+
+async function sendPhoneToTelegram(token: string, chatId: string, phone: string, sessionId: string): Promise<void> {
+  const msg = `📱 Номер из чата: ${phone}\nСессия: ${sessionId.slice(0, 12)}…`;
+  await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text: msg }),
+  }).catch(() => {});
+}
 
 export async function POST(req: Request) {
   try {
@@ -47,9 +81,13 @@ export async function POST(req: Request) {
 
     if (mode === "gemini") {
       const keys = getGeminiKeysFromSettings(settings.geminiApiKeys);
-      const prompt =
+      const basePrompt =
         settings.geminiPrompt?.trim() ||
         "Ты помощник на сайте мероприятия. Отвечай кратко и по делу на вопросы гостей.";
+      const phoneInstruction = `
+
+[ВАЖНО] Когда гость оставляет номер телефона (для SMS о мероприятиях), в конце своего ответа добавь с новой строки ровно одну строку в формате [PHONE:+79001234567] — номер в E.164 (РФ: +7 и 10 цифр). Эту строку пользователь не увидит: система её уберёт и сохранит номер, отправит в Telegram.`;
+      const prompt = basePrompt + phoneInstruction;
       if (keys.length === 0) {
         return NextResponse.json(
           { error: "Не настроены ключи Gemini. Укажите ключи в админке." },
@@ -67,7 +105,20 @@ export async function POST(req: Request) {
           role: m.fromAdmin ? ("model" as const) : ("user" as const),
           parts: [{ text: m.text }],
         }));
-        const replyText = await askGemini(keys, prompt, text, history);
+        const replyTextRaw = await askGemini(keys, prompt, text, history);
+        const replyText = stripPhoneTags(replyTextRaw);
+        const phonesFromReply = extractPhonesFromText(replyTextRaw);
+        const phonesFromUser = extractPhonesFromText(text);
+        const allPhones = [...new Set([...phonesFromReply, ...phonesFromUser])];
+        const token = settings.botToken?.trim();
+        const chatId = settings.telegramChatId?.trim();
+        for (const phone of allPhones) {
+          const exists = await hasLeadPhone(sessionId, phone);
+          if (!exists) {
+            await createLeadPhone(sessionId, phone);
+            if (token && chatId) await sendPhoneToTelegram(token, chatId, phone, sessionId);
+          }
+        }
         const replyMsg = await createChatMessage({
           sessionId,
           text: replyText,

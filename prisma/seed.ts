@@ -157,6 +157,7 @@ async function main() {
           chatMode: "telegram",
           geminiPrompt: null,
           geminiApiKeys: null,
+          welcomeMessage: null,
         },
       });
       console.log("Seed: ChatSettings созданы.");
@@ -211,6 +212,7 @@ async function main() {
         chatMode: "telegram",
         geminiPrompt: null,
         geminiApiKeys: null,
+        welcomeMessage: null,
       },
     });
     console.log("Seed: ChatSettings созданы.");

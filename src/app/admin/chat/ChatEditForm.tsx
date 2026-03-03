@@ -1,14 +1,65 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import type { ChatSettingsContent } from "@/types/data";
 import { useToast } from "@/components/admin/ToastProvider";
 import { AlertBanner } from "@/components/admin/AlertBanner";
-import { Loader2, MessageCircle, Webhook, Bot, KeyRound } from "lucide-react";
+import { Loader2, MessageCircle, Webhook, Bot, KeyRound, Phone } from "lucide-react";
 
 const inputClass =
   "w-full px-4 py-2.5 bg-black/50 border border-white/20 text-white rounded-lg focus:outline-none focus:border-[var(--accent)] placeholder:text-white/40";
+
+function LeadPhonesSection() {
+  const [phones, setPhones] = useState<Array<{ id: string; phone: string; sessionId: string; createdAt: string }>>([]);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetch("/api/admin/chat/phones")
+      .then((r) => r.json())
+      .then((data) => {
+        if (Array.isArray(data)) setPhones(data);
+        else setPhones([]);
+      })
+      .catch(() => setPhones([]))
+      .finally(() => setLoading(false));
+  }, []);
+  return (
+    <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-6 space-y-4">
+      <h3 className="font-display text-lg uppercase text-white/90 flex items-center gap-2">
+        <Phone size={18} /> Собранные номера (из чата)
+      </h3>
+      <p className="text-white/60 text-sm">
+        Номера, которые гости оставили в мини-чате, сохраняются здесь и дублируются в Telegram.
+      </p>
+      {loading ? (
+        <p className="text-white/50 text-sm">Загрузка…</p>
+      ) : phones.length === 0 ? (
+        <p className="text-white/50 text-sm">Пока нет записей.</p>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead>
+              <tr className="border-b border-white/20">
+                <th className="py-2 pr-4 text-white/70">Телефон</th>
+                <th className="py-2 pr-4 text-white/70">Сессия</th>
+                <th className="py-2 text-white/70">Дата</th>
+              </tr>
+            </thead>
+            <tbody>
+              {phones.map((p) => (
+                <tr key={p.id} className="border-b border-white/10">
+                  <td className="py-2 pr-4 font-mono text-white/90">{p.phone}</td>
+                  <td className="py-2 pr-4 text-white/60 font-mono text-xs">{p.sessionId.slice(0, 12)}…</td>
+                  <td className="py-2 text-white/50 text-xs">{new Date(p.createdAt).toLocaleString("ru")}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
   const router = useRouter();
@@ -178,6 +229,17 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
         </div>
         <p className="text-white/50 text-xs">Вне этого интервала чат на сайте будет показывать «временно недоступен».</p>
 
+        <div>
+          <label className="block text-white/80 text-sm mb-1">Приветственное сообщение («Общение»)</label>
+          <textarea
+            value={form.welcomeMessage ?? ""}
+            onChange={(e) => setForm((f) => ({ ...f, welcomeMessage: e.target.value || undefined }))}
+            className={inputClass}
+            rows={2}
+            placeholder="Приветствую! Я Кактуса_бот… (показывается при открытии чата, когда сообщений ещё нет)"
+          />
+        </div>
+
         <div className="pt-2 flex flex-wrap gap-3">
           <button
             type="button"
@@ -237,6 +299,8 @@ export function ChatEditForm({ initial }: { initial: ChatSettingsContent }) {
           </button>
         </div>
       </div>
+
+      <LeadPhonesSection />
 
       <button
         type="submit"

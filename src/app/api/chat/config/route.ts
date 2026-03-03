@@ -13,11 +13,12 @@ export async function GET() {
       workStartMsk: settings.workStartMsk ?? "09:00",
       workEndMsk: settings.workEndMsk ?? "21:00",
       available,
+      welcomeMessage: settings.welcomeMessage ?? null,
     });
   } catch (e) {
     console.error(e);
     return NextResponse.json(
-      { enabled: false, workStartMsk: "09:00", workEndMsk: "21:00", available: false },
+      { enabled: false, workStartMsk: "09:00", workEndMsk: "21:00", available: false, welcomeMessage: null },
       { status: 200 }
     );
   }
