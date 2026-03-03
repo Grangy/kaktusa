@@ -133,42 +133,45 @@ export function MiniChat() {
   }, [open, sessionId, fetchMessages]);
 
   useEffect(() => {
-    if (messages.length) listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
-  }, [messages.length]);
+    if (messages.length || sending) listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: "smooth" });
+  }, [messages.length, sending]);
 
-  const sendMessage = async () => {
+  const sendMessage = () => {
     const text = input.trim();
     if (!text || !sessionId || !config?.available || sending) return;
-    setSending(true);
     setInput("");
-    try {
-      const r = await fetch("/api/chat/send", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, sessionId }),
-      });
-      const data = await r.json().catch(() => ({}));
-      if (r.ok) {
-        setMessages((prev) => {
-          const next = [
-            ...prev,
-            { id: data.id ?? "tmp", text, fromAdmin: false, createdAt: (data.createdAt as string) ?? new Date().toISOString() },
-          ];
-          if (data.reply) {
-            next.push({
-              id: data.reply.id,
-              text: data.reply.text,
-              fromAdmin: true,
-              createdAt: data.reply.createdAt ?? new Date().toISOString(),
-            });
-          }
-          return next;
-        });
+    setMessages((prev) => [
+      ...prev,
+      { id: `tmp-${Date.now()}`, text, fromAdmin: false, createdAt: new Date().toISOString() },
+    ]);
+    setSending(true);
+    fetch("/api/chat/send", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text, sessionId }),
+    })
+      .then((r) => r.json().catch(() => ({})))
+      .then((data) => {
+        if (data.id != null) {
+          setMessages((prev) => {
+            const next = prev.slice();
+            const idx = next.findIndex((m) => m.id.startsWith("tmp-") && m.text === text && !m.fromAdmin);
+            if (idx !== -1) next[idx] = { ...next[idx], id: data.id, createdAt: (data.createdAt as string) ?? next[idx].createdAt };
+            if (data.reply) {
+              next.push({
+                id: data.reply.id,
+                text: data.reply.text,
+                fromAdmin: true,
+                createdAt: data.reply.createdAt ?? new Date().toISOString(),
+              });
+            }
+            return next;
+          });
+        }
         if (!data.reply) fetchMessages();
-      }
-    } finally {
-      setSending(false);
-    }
+      })
+      .catch(() => {})
+      .finally(() => setSending(false));
   };
 
   if (pathname?.startsWith("/admin")) return null;
@@ -216,30 +219,40 @@ export function MiniChat() {
                 ref={listRef}
                 className="flex-1 overflow-y-auto p-3 space-y-3 min-h-[120px]"
               >
-                {messages.length === 0 ? (
+                {messages.length === 0 && !sending ? (
                   <p className="text-white/40 text-sm text-center py-4">Напишите сообщение — мы ответим в Telegram.</p>
                 ) : (
-                  messages.map((m) => (
-                    <div
-                      key={m.id}
-                      className={`flex ${m.fromAdmin ? "justify-start" : "justify-end"}`}
-                    >
+                  <>
+                    {messages.map((m) => (
                       <div
-                        className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
-                          m.fromAdmin
-                            ? "bg-white/10 text-white/90"
-                            : "bg-[var(--accent)]/20 text-white border border-[var(--accent)]/30"
-                        }`}
+                        key={m.id}
+                        className={`flex ${m.fromAdmin ? "justify-start" : "justify-end"}`}
                       >
-                        {m.fromAdmin && (
-                          <span className="block text-[10px] uppercase text-[var(--accent)]/80 mb-0.5">Ответ</span>
-                        )}
-                        <span className="whitespace-pre-wrap break-words">
-                          {m.fromAdmin ? formatChatText(m.text) : m.text}
-                        </span>
+                        <div
+                          className={`max-w-[85%] rounded-xl px-3 py-2 text-sm ${
+                            m.fromAdmin
+                              ? "bg-white/10 text-white/90"
+                              : "bg-[var(--accent)]/20 text-white border border-[var(--accent)]/30"
+                          }`}
+                        >
+                          {m.fromAdmin && (
+                            <span className="block text-[10px] uppercase text-[var(--accent)]/80 mb-0.5">Ответ</span>
+                          )}
+                          <span className="whitespace-pre-wrap break-words">
+                            {m.fromAdmin ? formatChatText(m.text) : m.text}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  ))
+                    ))}
+                    {sending && (
+                      <div className="flex justify-start">
+                        <div className="max-w-[85%] rounded-xl px-3 py-2 text-sm bg-white/10 text-white/60 italic">
+                          <span className="text-[10px] uppercase text-[var(--accent)]/80 mb-0.5 block">Ответ</span>
+                          Бот печатает…
+                        </div>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
               <div className="p-3 border-t border-white/10 flex gap-2 shrink-0">
