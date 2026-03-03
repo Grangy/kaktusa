@@ -40,7 +40,7 @@ interface TelegramUpdate {
   message?: {
     message_id: number;
     from?: { id: number; username?: string };
-    chat: { id: number };
+    chat: { id: number; type?: string };
     text?: string;
   };
   callback_query?: {
@@ -130,8 +130,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ ok: true });
     }
 
-    // Режим ИИ: отвечаем тем же ботом (тот же промпт) при письме в ТГ
-    if (settings?.chatMode === "gemini") {
+    // Режим ИИ: отвечаем только в личке, в группах не реагируем
+    const isPrivate = body.message.chat.type === "private";
+    if (isPrivate && settings?.chatMode === "gemini") {
       const keys = getGeminiKeysFromSettings(settings.geminiApiKeys);
       const prompt = buildChatPrompt(settings.geminiPrompt);
       if (keys.length > 0) {
