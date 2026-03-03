@@ -6,6 +6,57 @@ import { MessageCircle, X, Send } from "lucide-react";
 
 const CHAT_SESSION_KEY = "kaktusa_chat_session";
 
+/** Постобработка текста бота: **жирный**, *курсив*, @username → ссылка на t.me */
+function formatChatText(text: string): React.ReactNode {
+  if (!text || typeof text !== "string") return null;
+  const parts: React.ReactNode[] = [];
+  const boldSplit = text.split(/\*\*(.+?)\*\*/g);
+  for (let i = 0; i < boldSplit.length; i++) {
+    let segment = boldSplit[i];
+    if (i % 2 === 1) {
+      parts.push(<strong key={`b-${i}`}>{segment}</strong>);
+    } else {
+      const segmentParts: React.ReactNode[] = [];
+      const italicSplit = segment.split(/\*([^*]+)\*/g);
+      for (let j = 0; j < italicSplit.length; j++) {
+        const bit = italicSplit[j];
+        if (j % 2 === 1) {
+          segmentParts.push(<em key={`e-${i}-${j}`}>{bit}</em>);
+        } else {
+          const linkRegex = /@([a-zA-Z0-9_]{4,32})/g;
+          let lastEnd = 0;
+          let m;
+          let keyIdx = 0;
+          while ((m = linkRegex.exec(bit)) !== null) {
+            if (m.index > lastEnd) {
+              segmentParts.push(<span key={`t-${i}-${j}-${keyIdx}`}>{bit.slice(lastEnd, m.index)}</span>);
+              keyIdx++;
+            }
+            segmentParts.push(
+              <a
+                key={`a-${i}-${j}-${keyIdx}`}
+                href={`https://t.me/${m[1]}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-[var(--accent)] hover:underline"
+              >
+                @{m[1]}
+              </a>
+            );
+            keyIdx++;
+            lastEnd = linkRegex.lastIndex;
+          }
+          if (lastEnd < bit.length) {
+            segmentParts.push(<span key={`t-${i}-${j}-${keyIdx}`}>{bit.slice(lastEnd)}</span>);
+          }
+        }
+      }
+      parts.push(<span key={`s-${i}`}>{segmentParts}</span>);
+    }
+  }
+  return <>{parts}</>;
+}
+
 function getSessionId(): string {
   if (typeof window === "undefined") return "";
   let s = localStorage.getItem(CHAT_SESSION_KEY);
@@ -183,7 +234,9 @@ export function MiniChat() {
                         {m.fromAdmin && (
                           <span className="block text-[10px] uppercase text-[var(--accent)]/80 mb-0.5">Ответ</span>
                         )}
-                        {m.text}
+                        <span className="whitespace-pre-wrap break-words">
+                          {m.fromAdmin ? formatChatText(m.text) : m.text}
+                        </span>
                       </div>
                     </div>
                   ))
