@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       body: JSON.stringify({ chat_id: chatId, text, parse_mode: "HTML" }),
     }).catch(() => {});
 
-  // Нажатие инлайн-кнопки «Ответить»
+  // Нажатие инлайн-кнопки «Ответить» (работает и в личке, и в группе)
   if (body.callback_query) {
     const cq = body.callback_query;
     const data = cq.data ?? "";
@@ -65,7 +65,20 @@ export async function POST(req: Request) {
       if (sessionId) {
         await setChatReplyState(telegramUserId, sessionId);
         await answerCallback(cq.id, "Ожидаю ваш ответ");
-        await sendMessage(cq.from.id, "Напишите ответ. Он будет отправлен в чат на сайте.");
+        // В группе шлём в группу, чтобы ответ писали там; в личке — пользователю
+        const targetChatId = cq.message?.chat?.id ?? cq.from.id;
+        const replyToMsgId = cq.message?.message_id;
+        const text = "Напишите ответ — он будет отправлен в чат на сайте.";
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            chat_id: targetChatId,
+            text,
+            parse_mode: "HTML",
+            ...(replyToMsgId ? { reply_to_message_id: replyToMsgId } : {}),
+          }),
+        }).catch(() => {});
       }
     }
     return NextResponse.json({ ok: true });

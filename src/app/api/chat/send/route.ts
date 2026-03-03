@@ -53,6 +53,7 @@ export async function POST(req: Request) {
             [{ text: "Ответить", callback_data: `reply:${sessionId}` }],
           ],
         };
+        // chat_id как строка — корректно для групп (например -5135295224)
         await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
