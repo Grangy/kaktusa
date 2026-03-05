@@ -64,9 +64,11 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
             transition={{ delay: 0.2 }}
           >
             <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-4">
-              Контакты
+              Реквизиты
             </h4>
-            <p className="text-white/60 text-sm">kaktusa.ru</p>
+            <p className="text-white/60 text-sm">ИП Рожков Александр Олегович</p>
+            <p className="text-white/60 text-sm mt-1">ОГРНИП 325920000002004</p>
+            <p className="text-white/60 text-sm mt-1">ИНН 920357011816</p>
             <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-3 mt-6">
               Соцсети
             </h4>
@@ -101,14 +103,9 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
           viewport={{ once: true }}
           className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-8 border-t border-white/10"
         >
-          <div className="text-center md:text-left">
-            <p className="text-white/40 text-xs tracking-wider">
-              © 2025 ?КАКТУСА. Все права защищены.
-            </p>
-            <p className="text-white/40 text-xs mt-1.5">
-              ИП Рожков Александр Олегович · ОГРНИП 325920000002004 · ИНН 920357011816
-            </p>
-          </div>
+          <p className="text-white/40 text-xs tracking-wider text-center md:text-left">
+            © 2025 ?КАКТУСА. Все права защищены.
+          </p>
           <p className="text-white/40 text-xs text-center md:text-right shrink-0">
             FC/DC 18+
           </p>
