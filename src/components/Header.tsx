@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, Camera } from "lucide-react";
+import { X, Send } from "lucide-react";
 import Image from "next/image";
 import { useLogo } from "@/contexts/LogoContext";
 import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
@@ -117,9 +117,6 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
             <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[var(--accent)] transition-colors" aria-label="Telegram">
               <Send size={18} />
             </a>
-            <a href="https://www.instagram.com/kaktusa.project" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[var(--accent)] transition-colors" aria-label="Instagram">
-              <Camera size={18} />
-            </a>
           </div>
 
           <button
@@ -182,9 +179,6 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
             <div className="flex md:hidden gap-6 pt-4">
               <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/70 hover:text-[var(--accent)] transition-colors">
                 <Send size={20} /> Telegram
-              </a>
-              <a href="https://www.instagram.com/kaktusa.project" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/70 hover:text-[var(--accent)] transition-colors">
-                <Camera size={20} /> Instagram
               </a>
             </div>
           </motion.nav>
