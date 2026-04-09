@@ -37,6 +37,7 @@ const defaultEvent: Partial<Event> = {
   venueAddress: "",
   venueCity: "",
   buyTicketUrl: "",
+  buyTicketDisabled: false,
   age: "",
   dressCode: "",
   rules: "",
@@ -433,6 +434,17 @@ export function EventEditForm({
           className={inputClass()}
         />
       </div>
+      {form.type === "upcoming" && (
+        <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={form.buyTicketDisabled ?? false}
+            onChange={(e) => update({ buyTicketDisabled: e.target.checked })}
+            className="w-4 h-4 accent-[var(--accent)] shrink-0"
+          />
+          <span>Не показывать кнопки «Купить билет» (страница ивента и карусель на главной)</span>
+        </label>
+      )}
       <div>
         <label className="block text-white/80 text-sm mb-1">Билеты</label>
         {(form.tickets ?? []).map((t, i) => (

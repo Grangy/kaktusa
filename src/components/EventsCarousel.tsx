@@ -8,9 +8,26 @@ import { motion } from "framer-motion";
 import type { Event } from "@/types/data";
 import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
 
-const DEFAULT_UPCOMING = {
+type CardEvent = {
+  id: string;
+  type: "upcoming" | "past";
+  title: string;
+  date: string;
+  location: string;
+  locationShort?: string;
+  price?: string;
+  subtitle?: string;
+  image: string;
+  tag: string;
+  tagStyle: string;
+  link: string;
+  linkText: string;
+  hasTicketSales?: boolean;
+};
+
+const DEFAULT_UPCOMING: CardEvent = {
   id: "bloom",
-  type: "upcoming" as const,
+  type: "upcoming",
   title: "BLOOM OF ENERGY",
   date: "28 марта 2026",
   location: "Foster Night Club, Mriya Resort",
@@ -21,6 +38,7 @@ const DEFAULT_UPCOMING = {
   tagStyle: "bg-purple-500/90 text-white",
   link: "/events/bloom-of-energy",
   linkText: "Купить билет",
+  hasTicketSales: true,
 };
 
 const DEFAULT_PAST = [
@@ -37,25 +55,10 @@ const DEFAULT_PAST = [
     link: "/events/tot-samyj-bal",
     linkText: "Подробнее",
   },
-];
-
-type CardEvent = {
-  id: string;
-  type: "upcoming" | "past";
-  title: string;
-  date: string;
-  location: string;
-  locationShort?: string;
-  price?: string;
-  subtitle?: string;
-  image: string;
-  tag: string;
-  tagStyle: string;
-  link: string;
-  linkText: string;
-};
+] satisfies CardEvent[];
 
 function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
+  const hasTicketSales = type === "upcoming" && !e.buyTicketDisabled && !!e.buyTicketUrl?.trim();
   return {
     id: e.id,
     type,
@@ -69,7 +72,8 @@ function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
     tag: type === "upcoming" ? (e.tag ?? "Ближайшее") : "Прошло",
     tagStyle: type === "upcoming" ? (e.tagStyle ?? "bg-purple-500/90 text-white") : "bg-gray-600/90 text-white",
     link: `/events/${e.slug}`,
-    linkText: type === "upcoming" ? "Купить билет" : "Подробнее",
+    linkText: type === "upcoming" ? (hasTicketSales ? "Купить билет" : "Подробнее") : "Подробнее",
+    hasTicketSales: type === "upcoming" ? hasTicketSales : undefined,
   };
 }
 
@@ -174,7 +178,11 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                   </div>
                 </TransitionLink>
                 <TransitionLink
-                  href={event.type === "upcoming" ? `${event.link}#tickets` : event.link}
+                  href={
+                    event.type === "upcoming" && event.hasTicketSales
+                      ? `${event.link}#tickets`
+                      : event.link
+                  }
                   className={`absolute bottom-5 right-3 z-20 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 ${
                     event.type === "upcoming"
                       ? "border-2 border-[var(--accent)] text-[var(--accent)] bg-black/30 backdrop-blur-sm hover:bg-[var(--accent)]/20"

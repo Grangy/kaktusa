@@ -34,13 +34,23 @@ interface HeroSectionProps {
     videoFull: string;
     videoLite: string;
   } | null;
+  /** Кнопка под датой: по умолчанию ведёт на ближайший ивент с #tickets */
+  ticketCta?: { href: string; label: string };
   onVideoLoaded?: () => void;
   /** На мобилке вызывается, когда видео реально начало воспроизведение (событие playing). */
   onVideoPlaying?: () => void;
   isReady?: boolean;
 }
 
-export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isReady }: HeroSectionProps) {
+const DEFAULT_TICKET_CTA = { href: "/events/bloom-of-energy#tickets", label: "Купить билет" };
+
+export default function HeroSection({
+  hero,
+  ticketCta = DEFAULT_TICKET_CTA,
+  onVideoLoaded,
+  onVideoPlaying,
+  isReady,
+}: HeroSectionProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const videoFull = hero?.videoFull ?? DEFAULT_VIDEO_FULL;
   const videoLite = hero?.videoLite ?? DEFAULT_VIDEO_LITE;
@@ -207,11 +217,11 @@ export default function HeroSection({ hero, onVideoLoaded, onVideoPlaying, isRea
           whileTap={{ scale: 0.98 }}
         >
           <TransitionLink
-            href="/events/bloom-of-energy#tickets"
+            href={ticketCta.href}
             prefetch
             className="inline-block px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
           >
-            Купить билет
+            {ticketCta.label}
           </TransitionLink>
         </motion.div>
       </div>

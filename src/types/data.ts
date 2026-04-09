@@ -34,6 +34,8 @@ export interface Event {
   venueAddress: string;
   venueCity: string;
   buyTicketUrl?: string;
+  /** Скрыть кнопки «Купить билет» на странице ивента и в карусели на главной */
+  buyTicketDisabled?: boolean;
   age?: string;
   dressCode?: string;
   rules?: string;

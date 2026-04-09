@@ -35,6 +35,7 @@ interface SeedEvent {
   venueAddress: string;
   venueCity: string;
   buyTicketUrl?: string;
+  buyTicketDisabled?: boolean;
   age?: string;
   dressCode?: string;
   rules?: string;
@@ -87,6 +88,7 @@ function eventToCreate(e: SeedEvent) {
     venueAddress: e.venueAddress,
     venueCity: e.venueCity,
     buyTicketUrl: e.buyTicketUrl ?? null,
+    buyTicketDisabled: e.buyTicketDisabled ?? false,
     age: e.age ?? null,
     dressCode: e.dressCode ?? null,
     rules: e.rules ?? null,

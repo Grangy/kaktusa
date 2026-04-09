@@ -75,7 +75,9 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
         "Приглашаем Вас на BLOOM OF ENERGY — вечер, где каждый ощутит внутренний рассвет весенней энергии в изысканной атмосфере.",
         "Специально для Вас мы везем WILYAMDELOVE & NOBE — творческий тандем, основатели лейбла Bassmatic Records, релизы которого регулярно попадают в топ мировых площадок.",
       ];
-  const buyTicketUrl = event?.buyTicketUrl ?? "https://llava.ru/e/73a93efa2e7b750ff16a2cedc1c69c56";
+  const buyTicketUrl = event?.buyTicketUrl?.trim() ?? "";
+  const buyTicketDisabled = event?.buyTicketDisabled === true;
+  const showTicketsSection = !buyTicketDisabled && buyTicketUrl.length > 0;
   const age = event?.age ?? "18+";
   const dressCode = event?.dressCode ?? "Яркие оттенки в образе и макияже, необычные фактуры";
   const rules = event?.rules ?? "Уважайте площадку и других гостей";
@@ -222,17 +224,19 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
             ))}
           </motion.div>
 
-          <motion.a
-            href="#tickets"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.6 }}
-            whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(74,222,128,0.5)" }}
-            whileTap={{ scale: 0.98 }}
-            className="inline-block px-10 py-4 rounded-xl border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/20 transition-all backdrop-blur-sm"
-          >
-            Купить билет
-          </motion.a>
+          {showTicketsSection && (
+            <motion.a
+              href="#tickets"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.6 }}
+              whileHover={{ scale: 1.05, boxShadow: "0 0 30px rgba(74,222,128,0.5)" }}
+              whileTap={{ scale: 0.98 }}
+              className="inline-block px-10 py-4 rounded-xl border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/20 transition-all backdrop-blur-sm"
+            >
+              Купить билет
+            </motion.a>
+          )}
         </div>
 
         {/* Scroll indicator: привязка к низу hero, как на главной */}
@@ -371,8 +375,9 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
       </section>
 
       {/* Tickets */}
-      <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
-        <div className={EVENT_CONTAINER}>
+      {showTicketsSection && (
+        <section id="tickets" className="py-16 md:py-24 px-6 md:px-12 scroll-mt-20">
+          <div className={EVENT_CONTAINER}>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -441,8 +446,9 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
               <p className="font-medium text-white">Акция 4+1: детали уточняйте у организаторов</p>
             </div>
           </motion.div>
-        </div>
-      </section>
+          </div>
+        </section>
+      )}
 
       {/* Event Info */}
       <section className="py-16 md:py-24 px-6 md:px-12 border-t border-white/10">

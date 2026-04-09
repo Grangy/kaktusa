@@ -34,6 +34,7 @@ model Event {
   venueAddress     String
   venueCity        String
   buyTicketUrl     String?
+  buyTicketDisabled Boolean @default(false)
   age              String?
   dressCode        String?
   rules            String?

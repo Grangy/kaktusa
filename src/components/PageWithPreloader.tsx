@@ -73,12 +73,34 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
     return () => clearTimeout(t);
   }, [isReady]);
 
+  const upcomingList = (events ?? [])
+    .filter((e) => e.type === "upcoming")
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const firstUpcoming = upcomingList[0];
+  const firstUpcomingHasTicketSales =
+    firstUpcoming != null && !firstUpcoming.buyTicketDisabled && !!firstUpcoming.buyTicketUrl?.trim();
+  const ticketCta =
+    firstUpcoming != null
+      ? {
+          href: firstUpcomingHasTicketSales
+            ? `/events/${firstUpcoming.slug}#tickets`
+            : `/events/${firstUpcoming.slug}`,
+          label: firstUpcomingHasTicketSales ? "Купить билет" : "Подробнее",
+        }
+      : { href: "/events/bloom-of-energy#tickets", label: "Купить билет" };
+
   return (
     <>
       <Preloader isVisible={!isReady} logo={main?.hero?.logoScrolled} />
       <main className="min-h-screen bg-transparent">
         <Header logoHero={main?.hero?.logoHero} logoScrolled={main?.hero?.logoScrolled} />
-        <HeroSection hero={main?.hero} onVideoLoaded={handleVideoLoaded} onVideoPlaying={handleVideoPlaying} isReady={isReady} />
+        <HeroSection
+          hero={main?.hero}
+          ticketCta={ticketCta}
+          onVideoLoaded={handleVideoLoaded}
+          onVideoPlaying={handleVideoPlaying}
+          isReady={isReady}
+        />
         <EventsCarousel events={events ?? undefined} />
         <AboutSection about={main?.about} logo={main?.hero?.logoScrolled} />
         <GallerySection photos={main?.gallery?.photos} />
