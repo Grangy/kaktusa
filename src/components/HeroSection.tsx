@@ -14,6 +14,7 @@ const DEFAULT_PC_IMAGES = ["/pc/IMG_9884.JPG", "/pc/IMG_9881.JPG"];
 const SWITCH_INTERVAL = 20000;
 const DEFAULT_VIDEO_FULL = "/intro.mp4";
 const DEFAULT_VIDEO_LITE = "/intro-lite.mp4";
+const DEFAULT_HERO_IMAGE = "/avisha/IMG_2657.PNG";
 
 function getVideoSrc(full: string, lite: string): string {
   if (typeof navigator === "undefined") return full;
@@ -33,6 +34,14 @@ interface HeroSectionProps {
     pcImages: string[];
     videoFull: string;
     videoLite: string;
+    mediaSync?: boolean;
+    desktopMediaType?: "video" | "image";
+    mobileMediaType?: "video" | "image";
+    desktopImage?: string;
+    mobileImage?: string;
+    mobileVideoFull?: string;
+    mobileVideoLite?: string;
+    desktopImageSlideshow?: boolean;
   } | null;
   /** Кнопка под датой: по умолчанию ведёт на ближайший ивент с #tickets */
   ticketCta?: { href: string; label: string };
@@ -51,15 +60,35 @@ export default function HeroSection({
   onVideoPlaying,
   isReady,
 }: HeroSectionProps) {
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const videoFull = hero?.videoFull ?? DEFAULT_VIDEO_FULL;
-  const videoLite = hero?.videoLite ?? DEFAULT_VIDEO_LITE;
-  const [videoSrc] = useState(() => getVideoSrc(videoFull, videoLite));
-  const pcImages = hero?.pcImages?.length ? hero.pcImages : DEFAULT_PC_IMAGES;
-  const [pcImageIndex, setPcImageIndex] = useState(0);
   const isMobile = useIsMobile();
+  const mediaSync = hero?.mediaSync ?? true;
+  const desktopMediaType = hero?.desktopMediaType ?? "video";
+  const mobileMediaType = mediaSync ? desktopMediaType : (hero?.mobileMediaType ?? "video");
+  const mediaType = isMobile ? mobileMediaType : desktopMediaType;
+
+  const pcImages = hero?.pcImages?.length ? hero.pcImages : DEFAULT_PC_IMAGES;
+  const desktopImageSlideshow = hero?.desktopImageSlideshow ?? false;
+  const [pcImageIndex, setPcImageIndex] = useState(0);
+
+  const desktopImage = hero?.desktopImage ?? pcImages[0] ?? DEFAULT_HERO_IMAGE;
+  const mobileImage = mediaSync ? desktopImage : (hero?.mobileImage ?? desktopImage);
+
+  const desktopVideoFull = hero?.videoFull ?? DEFAULT_VIDEO_FULL;
+  const desktopVideoLite = hero?.videoLite ?? DEFAULT_VIDEO_LITE;
+  const mobileVideoFull = mediaSync ? desktopVideoFull : (hero?.mobileVideoFull ?? desktopVideoFull);
+  const mobileVideoLite = mediaSync ? desktopVideoLite : (hero?.mobileVideoLite ?? desktopVideoLite);
+
+  const selectedVideoFull = isMobile ? mobileVideoFull : desktopVideoFull;
+  const selectedVideoLite = isMobile ? mobileVideoLite : desktopVideoLite;
+  const [videoSrc] = useState(() => getVideoSrc(selectedVideoFull, selectedVideoLite));
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   useEffect(() => {
+    if (mediaType !== "video") {
+      onVideoLoaded?.();
+      onVideoPlaying?.();
+      return;
+    }
     const video = videoRef.current;
     if (!video) {
       onVideoLoaded?.();
@@ -99,16 +128,19 @@ export default function HeroSection({
   useEffect(() => {
     if (!isReady) return;
     const video = videoRef.current;
-    if (video) {
+    if (mediaType === "video" && video) {
       video.currentTime = 15;
       video.play().catch(() => {});
     }
-  }, [isReady]);
+  }, [isReady, mediaType]);
 
   useEffect(() => {
+    if (mediaType !== "image") return;
+    if (!desktopImageSlideshow) return;
+    if (!pcImages.length) return;
     const t = setInterval(() => setPcImageIndex((i) => (i + 1) % pcImages.length), SWITCH_INTERVAL);
     return () => clearInterval(t);
-  }, [pcImages.length]);
+  }, [pcImages.length, mediaType, desktopImageSlideshow]);
 
   const heroRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
@@ -120,63 +152,73 @@ export default function HeroSection({
 
   return (
     <section ref={heroRef} className="relative min-h-screen flex flex-col justify-between overflow-hidden">
-      {/* Фон: видео с усиленным параллаксом (все устройства) */}
+      {/* Фон: видео или картинка */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div style={{ y: yVideo }} className="absolute inset-0 -top-[30%] -bottom-[30%] scale-110">
-          <video
-            ref={videoRef}
-            poster="/intro-poster.jpg"
-            playsInline
-            muted
-            loop
-            preload="metadata"
-            className="absolute inset-0 w-full h-full object-cover"
-          >
-            {videoSrc === DEFAULT_VIDEO_FULL ? (
-              <>
-                <source src="/intro.webm" type="video/webm" />
-                <source src="/intro.mp4" type="video/mp4" />
-              </>
-            ) : (
-              <source src={videoSrc} type="video/mp4" />
-            )}
-          </video>
+          {mediaType === "video" ? (
+            <video
+              ref={videoRef}
+              poster="/intro-poster.jpg"
+              playsInline
+              muted
+              loop
+              preload="metadata"
+              className="absolute inset-0 w-full h-full object-cover"
+            >
+              {videoSrc === DEFAULT_VIDEO_FULL ? (
+                <>
+                  <source src="/intro.webm" type="video/webm" />
+                  <source src="/intro.mp4" type="video/mp4" />
+                </>
+              ) : (
+                <source src={videoSrc} type="video/mp4" />
+              )}
+            </video>
+          ) : (
+            <motion.div
+              className="absolute inset-0 origin-center"
+              style={{ scale: 1.15 }}
+              animate={{
+                x: [0, 18, -14, 10, 0],
+                y: [0, -12, 14, -8, 0],
+              }}
+              transition={{
+                duration: 14,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: [0.4, 0, 0.2, 1],
+                type: "tween",
+              }}
+            >
+              {desktopImageSlideshow && !isMobile ? (
+                <Image
+                  src={getOptimizedPhotoUrl(pcImages[pcImageIndex] ?? desktopImage)}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="100vw"
+                />
+              ) : (
+                <Image
+                  src={getOptimizedPhotoUrl(isMobile ? mobileImage : desktopImage)}
+                  alt=""
+                  fill
+                  className="object-cover"
+                  priority
+                  sizes="100vw"
+                />
+              )}
+            </motion.div>
+          )}
         </motion.div>
         <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90 pointer-events-none" />
       </div>
 
-      {/* Desktop: поверх видео — два фото по очереди + блуждание */}
-      <div className="absolute inset-0 hidden md:block overflow-hidden pointer-events-none">
-        <motion.div style={{ y }} className="absolute inset-0 -top-[40%] -bottom-[40%] -left-[15%] -right-[15%]">
-          <motion.div
-            className="absolute inset-0 origin-center"
-            style={{ scale: 1.2 }}
-            animate={{
-              x: [0, 18, -14, 10, 0],
-              y: [0, -12, 14, -8, 0],
-            }}
-            transition={{
-              duration: 14,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: [0.4, 0, 0.2, 1],
-              type: "tween",
-            }}
-          >
-            <div className="absolute inset-0">
-              <Image src="/avisha/IMG_2657.PNG" alt="" fill className="object-cover" priority sizes="100vw" />
-            </div>
-            {pcImages.map((src, i) => (
-              <div
-                key={src}
-                className={`absolute inset-0 transition-opacity duration-1000 ${i === pcImageIndex ? "opacity-100" : "opacity-0"}`}
-              >
-                <Image src={getOptimizedPhotoUrl(src)} alt="" fill className="object-cover" priority={i === 0} sizes="100vw" loading={i === 0 ? undefined : "lazy"} />
-              </div>
-            ))}
-          </motion.div>
-        </motion.div>
-        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/90 pointer-events-none" />
+      {/* Desktop extra gradient for readability */}
+      <div className="absolute inset-0 hidden md:block pointer-events-none">
+        <motion.div style={{ y }} className="absolute inset-0 -top-[40%] -bottom-[40%]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/75 via-black/55 to-black/90" />
       </div>
 
       {/* Content */}

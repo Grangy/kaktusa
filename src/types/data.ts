@@ -56,8 +56,21 @@ export interface MainContent {
     heroVenue: string;
     heroVenueEn: string;
     pcImages: string[];
+    /** Legacy: desktop video sources (kept for backwards compatibility) */
     videoFull: string;
     videoLite: string;
+    /** Hero media config */
+    mediaSync?: boolean; // mobile = desktop
+    desktopMediaType?: "video" | "image";
+    mobileMediaType?: "video" | "image";
+    /** Single images (used when mediaType = image) */
+    desktopImage?: string;
+    mobileImage?: string;
+    /** Mobile video sources (optional overrides) */
+    mobileVideoFull?: string;
+    mobileVideoLite?: string;
+    /** Desktop image slideshow */
+    desktopImageSlideshow?: boolean;
     logoHero?: string;
     logoScrolled?: string;
   };

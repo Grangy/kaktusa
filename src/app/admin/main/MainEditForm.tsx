@@ -27,6 +27,18 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
       logoScrolled: initial.hero?.logoScrolled ?? "/logo.png",
       videoFull: initial.hero?.videoFull ?? "/intro.mp4",
       videoLite: initial.hero?.videoLite ?? "/intro-lite.mp4",
+      mediaSync: initial.hero?.mediaSync ?? true,
+      desktopMediaType: initial.hero?.desktopMediaType ?? "video",
+      mobileMediaType: initial.hero?.mobileMediaType ?? "video",
+      desktopImage: initial.hero?.desktopImage ?? initial.hero?.pcImages?.[0] ?? "/avisha/IMG_2657.PNG",
+      mobileImage:
+        initial.hero?.mobileImage ??
+        initial.hero?.desktopImage ??
+        initial.hero?.pcImages?.[0] ??
+        "/avisha/IMG_2657.PNG",
+      mobileVideoFull: initial.hero?.mobileVideoFull ?? initial.hero?.videoFull ?? "/intro.mp4",
+      mobileVideoLite: initial.hero?.mobileVideoLite ?? initial.hero?.videoLite ?? "/intro-lite.mp4",
+      desktopImageSlideshow: initial.hero?.desktopImageSlideshow ?? false,
     },
   }));
   const [saving, setSaving] = useState(false);
@@ -154,24 +166,117 @@ export function MainEditForm({ initial }: { initial: MainContent }) {
             emptyLabel="Добавьте пути к фото или загрузите файлы"
           />
         </div>
-        <div className="mt-6 space-y-4">
+        <div className="mt-6 space-y-5">
           <p className="text-white/50 text-xs">
-            Видео в hero на главной: на мобилках показывается одно из двух (полное или облегчённое — по сети). На десктопе поверх подложки показываются фото ПК.
+            Можно выбрать, что показывать в hero отдельно для десктопа и мобилки: видео или картинку. Если включить «Одинаково», на мобилке будет то же, что и на десктопе.
           </p>
+
+          <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={form.hero.mediaSync ?? true}
+              onChange={(e) => updateHero({ mediaSync: e.target.checked })}
+              className="w-4 h-4 accent-[var(--accent)] shrink-0"
+            />
+            <span>Одинаково на мобилке и десктопе</span>
+          </label>
+
           <div className="grid gap-6 sm:grid-cols-2">
-            <div>
-              <label className="block text-white/70 text-sm mb-2">Видео главной (полное)</label>
-              <HeroVideoEditor
-                value={form.hero.videoFull ?? "/intro.mp4"}
-                onChange={(videoFull) => updateHero({ videoFull })}
-              />
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+              <p className="text-white/70 text-xs uppercase tracking-wider mb-3">Десктоп</p>
+              <label className="block text-white/60 text-sm mb-1">Тип</label>
+              <select
+                value={form.hero.desktopMediaType ?? "video"}
+                onChange={(e) => updateHero({ desktopMediaType: e.target.value as "video" | "image" })}
+                className={inputClass}
+              >
+                <option value="video">Видео</option>
+                <option value="image">Картинка</option>
+              </select>
+
+              {(form.hero.desktopMediaType ?? "video") === "video" ? (
+                <div className="mt-4 grid gap-4">
+                  <div>
+                    <label className="block text-white/70 text-sm mb-2">Видео (полное)</label>
+                    <HeroVideoEditor
+                      value={form.hero.videoFull ?? "/intro.mp4"}
+                      onChange={(videoFull) => updateHero({ videoFull })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-white/70 text-sm mb-2">Видео (облегчённое)</label>
+                    <HeroVideoEditor
+                      value={form.hero.videoLite ?? "/intro-lite.mp4"}
+                      onChange={(videoLite) => updateHero({ videoLite })}
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-4 space-y-4">
+                  <HeroImageEditor
+                    value={form.hero.desktopImage ?? "/avisha/IMG_2657.PNG"}
+                    onChange={(desktopImage) => updateHero({ desktopImage })}
+                    label="Картинка (одна)"
+                    compact
+                  />
+                  <label className="flex items-center gap-3 text-white/80 text-sm cursor-pointer select-none">
+                    <input
+                      type="checkbox"
+                      checked={form.hero.desktopImageSlideshow ?? false}
+                      onChange={(e) => updateHero({ desktopImageSlideshow: e.target.checked })}
+                      className="w-4 h-4 accent-[var(--accent)] shrink-0"
+                    />
+                    <span>Слайдшоу из «Фото ПК» (если включено — картинка выше не используется)</span>
+                  </label>
+                </div>
+              )}
             </div>
-            <div>
-              <label className="block text-white/70 text-sm mb-2">Видео главной (облегчённое, для мобилок)</label>
-              <HeroVideoEditor
-                value={form.hero.videoLite ?? "/intro-lite.mp4"}
-                onChange={(videoLite) => updateHero({ videoLite })}
-              />
+
+            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+              <p className="text-white/70 text-xs uppercase tracking-wider mb-3">Мобилка</p>
+              {(form.hero.mediaSync ?? true) ? (
+                <p className="text-white/50 text-sm">Используются настройки десктопа.</p>
+              ) : (
+                <>
+                  <label className="block text-white/60 text-sm mb-1">Тип</label>
+                  <select
+                    value={form.hero.mobileMediaType ?? "video"}
+                    onChange={(e) => updateHero({ mobileMediaType: e.target.value as "video" | "image" })}
+                    className={inputClass}
+                  >
+                    <option value="video">Видео</option>
+                    <option value="image">Картинка</option>
+                  </select>
+
+                  {(form.hero.mobileMediaType ?? "video") === "video" ? (
+                    <div className="mt-4 grid gap-4">
+                      <div>
+                        <label className="block text-white/70 text-sm mb-2">Видео (полное)</label>
+                        <HeroVideoEditor
+                          value={form.hero.mobileVideoFull ?? "/intro.mp4"}
+                          onChange={(mobileVideoFull) => updateHero({ mobileVideoFull })}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-white/70 text-sm mb-2">Видео (облегчённое)</label>
+                        <HeroVideoEditor
+                          value={form.hero.mobileVideoLite ?? "/intro-lite.mp4"}
+                          onChange={(mobileVideoLite) => updateHero({ mobileVideoLite })}
+                        />
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="mt-4">
+                      <HeroImageEditor
+                        value={form.hero.mobileImage ?? "/avisha/IMG_2657.PNG"}
+                        onChange={(mobileImage) => updateHero({ mobileImage })}
+                        label="Картинка (мобилка)"
+                        compact
+                      />
+                    </div>
+                  )}
+                </>
+              )}
             </div>
           </div>
         </div>
