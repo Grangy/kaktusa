@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Send, Camera } from "lucide-react";
+import { Send } from "lucide-react";
 import { useLogo } from "@/contexts/LogoContext";
 
 interface FooterProps {
@@ -82,16 +82,6 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
               >
                 <Send size={18} className="shrink-0" />
                 Telegram
-              </a>
-              <a
-                href="https://www.instagram.com/kaktusa.project"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-[var(--accent)] transition-colors"
-                aria-label="Instagram"
-              >
-                <Camera size={18} className="shrink-0" />
-                Instagram
               </a>
             </div>
           </motion.div>

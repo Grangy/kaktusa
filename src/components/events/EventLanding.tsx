@@ -78,6 +78,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
   const buyTicketUrl = event?.buyTicketUrl?.trim() ?? "";
   const buyTicketDisabled = event?.buyTicketDisabled === true;
   const showTicketsSection = !buyTicketDisabled && buyTicketUrl.length > 0;
+  const payHrefBase = event?.slug ? `/events/${event.slug}/pay` : "";
   const age = event?.age ?? "18+";
   const dressCode = event?.dressCode ?? "Яркие оттенки в образе и макияже, необычные фактуры";
   const rules = event?.rules ?? "Уважайте площадку и других гостей";
@@ -424,14 +425,12 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
                     От {ticket.price.replace(/^От\s?/, "")}
                   </p>
                 </div>
-                <a
-                  href={buyTicketUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                <Link
+                  href={`${payHrefBase}?ticket=${encodeURIComponent(ticket.id)}`}
                   className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold tracking-wide uppercase hover:bg-[var(--accent)]/15 transition-colors shrink-0"
                 >
                   <Ticket size={16} /> Купить билет
-                </a>
+                </Link>
               </motion.div>
             ))}
           </div>
