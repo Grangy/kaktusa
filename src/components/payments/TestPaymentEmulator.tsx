@@ -4,15 +4,15 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
-import { CreditCard, Apple, Smartphone, ShieldCheck, CircleCheck, CircleX, Loader2 } from "lucide-react";
+import { CreditCard, QrCode, Wallet, ShieldCheck, CircleCheck, CircleX, Loader2 } from "lucide-react";
 import type { Event } from "@/types/data";
 
-type MethodId = "card" | "apple" | "google";
+type MethodId = "card" | "sbp" | "yookassa";
 
 const METHODS: Array<{ id: MethodId; label: string; icon: React.ReactNode }> = [
-  { id: "card", label: "Банковская карта", icon: <CreditCard size={18} /> },
-  { id: "apple", label: "Apple Pay", icon: <Apple size={18} /> },
-  { id: "google", label: "Google Pay", icon: <Smartphone size={18} /> },
+  { id: "card", label: "Карта", icon: <CreditCard size={18} /> },
+  { id: "sbp", label: "СБП", icon: <QrCode size={18} /> },
+  { id: "yookassa", label: "Юкасса", icon: <Wallet size={18} /> },
 ];
 
 type Status = "idle" | "processing" | "success" | "error";
