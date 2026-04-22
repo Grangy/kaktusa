@@ -36,6 +36,8 @@ export interface Event {
   buyTicketUrl?: string;
   /** Скрыть кнопки «Купить билет» на странице ивента и в карусели на главной */
   buyTicketDisabled?: boolean;
+  /** Тестовая оплата на странице /pay (эмуляция) */
+  testPaymentEnabled?: boolean;
   age?: string;
   dressCode?: string;
   rules?: string;

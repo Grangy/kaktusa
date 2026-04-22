@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getEventBySlug } from "@/lib/data";
+import { TestPaymentEmulator } from "@/components/payments/TestPaymentEmulator";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,14 @@ export default async function EventPayPage({ params }: Props) {
   const event = await getEventBySlug(slug);
   if (!event) notFound();
   if (event.type !== "upcoming") notFound();
+
+  if (event.testPaymentEnabled) {
+    return (
+      <main className="min-h-screen px-6 md:px-12 pt-28 pb-28">
+        <TestPaymentEmulator event={event} />
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen px-6 md:px-12 pt-28 pb-20">

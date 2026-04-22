@@ -38,6 +38,7 @@ const defaultEvent: Partial<Event> = {
   venueCity: "",
   buyTicketUrl: "",
   buyTicketDisabled: false,
+  testPaymentEnabled: false,
   age: "",
   dressCode: "",
   rules: "",
@@ -443,6 +444,17 @@ export function EventEditForm({
             className="w-4 h-4 accent-[var(--accent)] shrink-0"
           />
           <span>Не показывать кнопки «Купить билет» (страница ивента и карусель на главной)</span>
+        </label>
+      )}
+      {form.type === "upcoming" && (
+        <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={form.testPaymentEnabled ?? false}
+            onChange={(e) => update({ testPaymentEnabled: e.target.checked })}
+            className="w-4 h-4 accent-[var(--accent)] shrink-0"
+          />
+          <span>Включить тестовую оплату (эмуляция) на странице оплаты</span>
         </label>
       )}
       <div>

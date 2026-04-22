@@ -31,6 +31,7 @@ function rowToEvent(row: {
   venueCity: string;
   buyTicketUrl: string | null;
   buyTicketDisabled: boolean;
+  testPaymentEnabled: boolean;
   age: string | null;
   dressCode: string | null;
   rules: string | null;
@@ -68,6 +69,7 @@ function rowToEvent(row: {
     venueCity: row.venueCity,
     buyTicketUrl: row.buyTicketUrl ?? undefined,
     buyTicketDisabled: row.buyTicketDisabled,
+    testPaymentEnabled: row.testPaymentEnabled,
     age: row.age ?? undefined,
     dressCode: row.dressCode ?? undefined,
     rules: row.rules ?? undefined,
@@ -124,6 +126,7 @@ const eventToUpsert = (e: Event) => ({
   venueCity: e.venueCity,
   buyTicketUrl: e.buyTicketUrl ?? null,
   buyTicketDisabled: e.buyTicketDisabled ?? false,
+  testPaymentEnabled: e.testPaymentEnabled ?? false,
   age: e.age ?? null,
   dressCode: e.dressCode ?? null,
   rules: e.rules ?? null,
