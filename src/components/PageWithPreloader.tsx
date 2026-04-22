@@ -78,7 +78,9 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
     .sort((a, b) => a.date.localeCompare(b.date));
   const firstUpcoming = upcomingList[0];
   const firstUpcomingHasTicketSales =
-    firstUpcoming != null && !firstUpcoming.buyTicketDisabled && !!firstUpcoming.buyTicketUrl?.trim();
+    firstUpcoming != null &&
+    !firstUpcoming.buyTicketDisabled &&
+    (!!firstUpcoming.buyTicketUrl?.trim() || firstUpcoming.testPaymentEnabled === true);
   const ticketCta =
     firstUpcoming != null
       ? {

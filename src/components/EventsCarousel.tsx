@@ -58,7 +58,8 @@ const DEFAULT_PAST = [
 ] satisfies CardEvent[];
 
 function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
-  const hasTicketSales = type === "upcoming" && !e.buyTicketDisabled && !!e.buyTicketUrl?.trim();
+  const hasTicketSales =
+    type === "upcoming" && !e.buyTicketDisabled && (!!e.buyTicketUrl?.trim() || e.testPaymentEnabled === true);
   return {
     id: e.id,
     type,

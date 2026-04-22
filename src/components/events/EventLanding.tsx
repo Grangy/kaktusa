@@ -77,7 +77,8 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
       ];
   const buyTicketUrl = event?.buyTicketUrl?.trim() ?? "";
   const buyTicketDisabled = event?.buyTicketDisabled === true;
-  const showTicketsSection = !buyTicketDisabled && buyTicketUrl.length > 0;
+  const testPaymentEnabled = event?.testPaymentEnabled === true;
+  const showTicketsSection = !buyTicketDisabled && (buyTicketUrl.length > 0 || testPaymentEnabled);
   const payHrefBase = event?.slug ? `/events/${event.slug}/pay` : "";
   const age = event?.age ?? "18+";
   const dressCode = event?.dressCode ?? "Яркие оттенки в образе и макияже, необычные фактуры";
