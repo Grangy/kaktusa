@@ -65,12 +65,25 @@ export async function POST(req: Request) {
           ? { type: "sbp" }
           : undefined; // "yookassa" = let YooKassa show available methods
 
-    const return_url = `${SITE_URL}/events/${event.slug}/pay?return=1`;
     const description = `Билет: ${event.title}${ticket?.name ? ` — ${ticket.name}` : ""}`;
 
     const idempotenceKey =
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
+
+    const auth = Buffer.from(`${shopId}:${secretKey}`).toString("base64");
+
+    const order = await createTicketOrder({
+      eventSlug: event.slug,
+      ticketId: ticket?.id ?? null,
+      ticketName: ticket?.name ?? null,
+      email: customerEmail,
+      amountValue: finalValue,
+      currency: "RUB",
+      method,
+    });
+
+    const return_url = `${SITE_URL}/events/${event.slug}/pay?return=1&order=${encodeURIComponent(order.id)}`;
 
     const payload: Record<string, unknown> = {
       amount: { value: finalValue, currency: "RUB" },
@@ -95,21 +108,10 @@ export async function POST(req: Request) {
         ticket_id: ticket?.id ?? null,
         ticket_name: ticket?.name ?? null,
         test_one_ruble: publicSettings.testOneRuble ? "1" : "0",
+        order_id: order.id,
       },
     };
     if (payment_method_data) payload.payment_method_data = payment_method_data;
-
-    const auth = Buffer.from(`${shopId}:${secretKey}`).toString("base64");
-
-    const order = await createTicketOrder({
-      eventSlug: event.slug,
-      ticketId: ticket?.id ?? null,
-      ticketName: ticket?.name ?? null,
-      email: customerEmail,
-      amountValue: finalValue,
-      currency: "RUB",
-      method,
-    });
 
     const res = await fetch("https://api.yookassa.ru/v3/payments", {
       method: "POST",
@@ -135,7 +137,7 @@ export async function POST(req: Request) {
 
     await setTicketOrderPaymentId(order.id, paymentId);
 
-    return NextResponse.json({ ok: true, paymentId, confirmationUrl });
+    return NextResponse.json({ ok: true, paymentId, orderId: order.id, confirmationUrl });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Failed to create payment" }, { status: 500 });

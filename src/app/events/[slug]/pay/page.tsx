@@ -2,10 +2,11 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getEventBySlug, getPaymentSettings } from "@/lib/data";
 import { YooKassaCheckout } from "@/components/payments/YooKassaCheckout";
+import { PaymentReturnWatcher } from "@/components/payments/PaymentReturnWatcher";
 
 export const dynamic = "force-dynamic";
 
-type Props = { params: Promise<{ slug: string }> };
+type Props = { params: Promise<{ slug: string }>; searchParams?: Promise<Record<string, string | string[] | undefined>> };
 
 export default async function EventPayPage({ params }: Props) {
   const { slug } = await params;
@@ -17,6 +18,7 @@ export default async function EventPayPage({ params }: Props) {
   if (paymentsConfigured) {
     return (
       <main className="min-h-screen px-6 md:px-12 pt-28 pb-28">
+        <PaymentReturnWatcher slug={event.slug} />
         <YooKassaCheckout event={event} />
       </main>
     );

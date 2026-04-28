@@ -315,7 +315,14 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
   const envShopId = process.env.SHOPID?.trim() || null;
   const envKey = process.env.YOUKASSA?.trim() || null;
   const envEnabled = !!(envShopId && envKey);
+  const envSmtpHost = process.env.SMTP_HOST?.trim() || null;
+  const envSmtpPortRaw = process.env.SMTP_PORT?.trim() || null;
+  const envSmtpPort = envSmtpPortRaw ? Number(envSmtpPortRaw) : null;
+  const envSmtpUser = process.env.SMTP_USER?.trim() || null;
+  const envSmtpPass = process.env.SMTP_PASS?.trim() || null;
+  const envSmtpFrom = process.env.SMTP_FROM?.trim() || null;
   if (!row) {
+    const smtpConfigured = !!(envSmtpHost && envSmtpUser && envSmtpPass);
     return {
       enabled: envEnabled,
       yookassaShopId: envShopId,
@@ -323,10 +330,21 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
       yookassaSecretKeyMasked: envKey ? "••••••••" : null,
       webhookToken: null,
       testOneRuble: false,
+      smtpHost: envSmtpHost,
+      smtpPort: envSmtpPort,
+      smtpUser: envSmtpUser,
+      smtpPassMasked: smtpConfigured ? "••••••••" : null,
+      smtpFrom: envSmtpFrom,
     };
   }
   const key = row.yookassaSecretKey?.trim() || envKey;
   const hasKey = !!(key && key.length > 6);
+  const smtpHost = row.smtpHost?.trim() || envSmtpHost;
+  const smtpPort = row.smtpPort ?? envSmtpPort;
+  const smtpUser = row.smtpUser?.trim() || envSmtpUser;
+  const smtpPass = row.smtpPass?.trim() || envSmtpPass;
+  const smtpFrom = row.smtpFrom?.trim() || envSmtpFrom;
+  const smtpConfigured = !!(smtpHost && smtpUser && smtpPass);
   return {
     enabled: row.enabled || envEnabled,
     yookassaShopId: row.yookassaShopId?.trim() || envShopId,
@@ -335,18 +353,46 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
     yookassaSecretKeyMasked: hasKey ? "••••••••" : null,
     webhookToken: row.webhookToken ?? null,
     testOneRuble: row.testOneRuble ?? false,
+    smtpHost,
+    smtpPort,
+    smtpUser,
+    smtpPassMasked: smtpConfigured ? "••••••••" : null,
+    smtpFrom,
   };
 }
 
-export async function getPaymentSettingsPrivate(): Promise<{ enabled: boolean; shopId: string | null; secretKey: string | null }> {
+export async function getPaymentSettingsPrivate(): Promise<{
+  enabled: boolean;
+  shopId: string | null;
+  secretKey: string | null;
+  webhookToken: string | null;
+  smtpHost: string | null;
+  smtpPort: number | null;
+  smtpUser: string | null;
+  smtpPass: string | null;
+  smtpFrom: string | null;
+}> {
   const row = await prisma.paymentSettings.findUnique({ where: { id: "payments" } });
   const envShopId = process.env.SHOPID?.trim() || null;
   const envKey = process.env.YOUKASSA?.trim() || null;
   const envEnabled = !!(envShopId && envKey);
+  const envWebhookToken = process.env.YOOKASSA_WEBHOOK_TOKEN?.trim() || null;
+  const envSmtpHost = process.env.SMTP_HOST?.trim() || null;
+  const envSmtpPortRaw = process.env.SMTP_PORT?.trim() || null;
+  const envSmtpPort = envSmtpPortRaw ? Number(envSmtpPortRaw) : null;
+  const envSmtpUser = process.env.SMTP_USER?.trim() || null;
+  const envSmtpPass = process.env.SMTP_PASS?.trim() || null;
+  const envSmtpFrom = process.env.SMTP_FROM?.trim() || null;
   return {
     enabled: (row?.enabled ?? false) || envEnabled,
     shopId: row?.yookassaShopId?.trim() || envShopId,
     secretKey: row?.yookassaSecretKey?.trim() || envKey,
+    webhookToken: row?.webhookToken?.trim() || envWebhookToken,
+    smtpHost: row?.smtpHost?.trim() || envSmtpHost,
+    smtpPort: row?.smtpPort ?? envSmtpPort,
+    smtpUser: row?.smtpUser?.trim() || envSmtpUser,
+    smtpPass: row?.smtpPass?.trim() || envSmtpPass,
+    smtpFrom: row?.smtpFrom?.trim() || envSmtpFrom,
   };
 }
 
@@ -356,6 +402,11 @@ export async function writePaymentSettings(p: {
   yookassaSecretKey: string | null;
   webhookToken?: string | null;
   testOneRuble?: boolean;
+  smtpHost?: string | null;
+  smtpPort?: number | null;
+  smtpUser?: string | null;
+  smtpPass?: string | null;
+  smtpFrom?: string | null;
 }): Promise<void> {
   await prisma.paymentSettings.upsert({
     where: { id: "payments" },
@@ -366,6 +417,11 @@ export async function writePaymentSettings(p: {
       yookassaSecretKey: p.yookassaSecretKey,
       webhookToken: p.webhookToken ?? null,
       testOneRuble: p.testOneRuble ?? false,
+      smtpHost: p.smtpHost ?? null,
+      smtpPort: p.smtpPort ?? null,
+      smtpUser: p.smtpUser ?? null,
+      smtpPass: p.smtpPass ?? null,
+      smtpFrom: p.smtpFrom ?? null,
     },
     update: {
       enabled: p.enabled,
@@ -373,6 +429,11 @@ export async function writePaymentSettings(p: {
       yookassaSecretKey: p.yookassaSecretKey,
       webhookToken: p.webhookToken ?? undefined,
       testOneRuble: p.testOneRuble ?? undefined,
+      smtpHost: p.smtpHost ?? undefined,
+      smtpPort: p.smtpPort ?? undefined,
+      smtpUser: p.smtpUser ?? undefined,
+      smtpPass: p.smtpPass ?? undefined,
+      smtpFrom: p.smtpFrom ?? undefined,
     },
   });
 }
@@ -409,6 +470,10 @@ export async function setTicketOrderPaymentId(orderId: string, paymentId: string
 
 export async function getTicketOrderByPaymentId(paymentId: string) {
   return await prisma.ticketOrder.findUnique({ where: { paymentId } });
+}
+
+export async function getTicketOrderById(id: string) {
+  return await prisma.ticketOrder.findUnique({ where: { id } });
 }
 
 export async function markTicketOrderSucceeded(opts: { id: string; ticketNumber: string; qrToken: string }) {

@@ -22,6 +22,11 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
   const [secretKey, setSecretKey] = useState<string>(""); // пусто = не менять
   const [testOneRuble, setTestOneRuble] = useState<boolean>(initial.testOneRuble ?? false);
   const [webhookToken, setWebhookToken] = useState<string>(initial.webhookToken ?? "");
+  const [smtpHost, setSmtpHost] = useState<string>(initial.smtpHost ?? "");
+  const [smtpPort, setSmtpPort] = useState<string>(initial.smtpPort ? String(initial.smtpPort) : "");
+  const [smtpUser, setSmtpUser] = useState<string>(initial.smtpUser ?? "");
+  const [smtpPass, setSmtpPass] = useState<string>(""); // пусто = не менять
+  const [smtpFrom, setSmtpFrom] = useState<string>(initial.smtpFrom ?? "");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -38,12 +43,18 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
           yookassaSecretKey: secretKey || null,
           webhookToken: webhookToken || null,
           testOneRuble,
+          smtpHost: smtpHost || null,
+          smtpPort: smtpPort.trim() ? Number(smtpPort.trim()) : null,
+          smtpUser: smtpUser || null,
+          smtpPass: smtpPass || null,
+          smtpFrom: smtpFrom || null,
         }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.error || "Ошибка сохранения");
       toast("success", "Настройки оплаты сохранены");
       setSecretKey("");
+      setSmtpPass("");
       router.refresh();
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Ошибка";
@@ -138,6 +149,73 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
           <p className="text-white/40 text-xs mt-2">
             Укажи этот URL в YooKassa → Интеграция → HTTP‑уведомления (payment.succeeded, payment.canceled).
           </p>
+        </div>
+      </div>
+
+      <div className="rounded-xl border border-[var(--accent)]/30 bg-[var(--accent)]/5 p-6 space-y-4">
+        <h3 className="font-display text-lg uppercase text-white/90">SMTP (отправка билетов)</h3>
+        <p className="text-white/60 text-sm">
+          Используется для отправки билетов после <span className="text-white/80">payment.succeeded</span> в webhook.
+        </p>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-white/80 text-sm mb-1">SMTP host</label>
+            <input
+              value={smtpHost}
+              onChange={(e) => setSmtpHost(e.target.value)}
+              className={inputClass}
+              placeholder="smtp.yandex.ru"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <label className="block text-white/80 text-sm mb-1">SMTP port</label>
+            <input
+              value={smtpPort}
+              onChange={(e) => setSmtpPort(e.target.value)}
+              className={inputClass}
+              placeholder="465"
+              autoComplete="off"
+              inputMode="numeric"
+            />
+            <p className="text-white/40 text-xs mt-1">465 = SSL, 587 = STARTTLS.</p>
+          </div>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <div>
+            <label className="block text-white/80 text-sm mb-1">SMTP user</label>
+            <input
+              value={smtpUser}
+              onChange={(e) => setSmtpUser(e.target.value)}
+              className={inputClass}
+              placeholder="example@yandex.ru"
+              autoComplete="off"
+            />
+          </div>
+          <div>
+            <label className="block text-white/80 text-sm mb-1">SMTP pass (пароль приложения)</label>
+            <input
+              type="password"
+              value={smtpPass}
+              onChange={(e) => setSmtpPass(e.target.value)}
+              className={inputClass}
+              placeholder={initial.smtpPassMasked ? "•••••••• (не менять)" : "пароль приложения"}
+              autoComplete="off"
+            />
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-white/80 text-sm mb-1">From</label>
+          <input
+            value={smtpFrom}
+            onChange={(e) => setSmtpFrom(e.target.value)}
+            className={inputClass}
+            placeholder='kaktusa.ru <m.dolia2017@yandex.ru>'
+            autoComplete="off"
+          />
         </div>
       </div>
 

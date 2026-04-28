@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
-import { getPaymentSettings, getPaymentSettingsPrivate, getTicketOrderByPaymentId, markTicketOrderCanceled, markTicketOrderSucceeded } from "@/lib/data";
-import { getEventBySlug } from "@/lib/data";
+import { getEventBySlug, getPaymentSettingsPrivate, getTicketOrderById, markTicketOrderCanceled, markTicketOrderSucceeded } from "@/lib/data";
 import QRCode from "qrcode";
 import nodemailer from "nodemailer";
 
@@ -21,7 +20,10 @@ function generateTicketNumber(eventSlug: string) {
 }
 
 function generateQrToken() {
-  return (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g, "");
+  return (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`).replace(
+    /[^a-zA-Z0-9_-]/g,
+    ""
+  );
 }
 
 async function sendTicketEmail(opts: { to: string; subject: string; html: string }) {
@@ -41,53 +43,46 @@ async function sendTicketEmail(opts: { to: string; subject: string; html: string
   await transporter.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
 }
 
-export async function POST(req: Request) {
+export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
-    const token = url.searchParams.get("token")?.trim() || "";
-    const publicSettings = await getPaymentSettings();
-    const privateSettings = await getPaymentSettingsPrivate();
-    const expected = publicSettings.webhookToken?.trim() || privateSettings.webhookToken?.trim() || "";
-    if (expected && token !== expected) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const orderId = url.searchParams.get("order")?.trim() || "";
+    if (!orderId) return NextResponse.json({ error: "Missing order" }, { status: 400 });
+
+    const order = await getTicketOrderById(orderId);
+    if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
+
+    if (order.status === "succeeded") return NextResponse.json({ ok: true, status: "succeeded" });
+    if (order.status === "canceled") return NextResponse.json({ ok: true, status: "canceled" });
+    if (!order.paymentId) return NextResponse.json({ ok: true, status: "pending" });
+
+    const settings = await getPaymentSettingsPrivate();
+    if (!settings.enabled || !settings.shopId || !settings.secretKey) {
+      return NextResponse.json({ ok: true, status: "pending" });
     }
 
-    const payload = (await req.json()) as any;
-    if (payload?.type !== "notification") return NextResponse.json({ ok: true });
-    const event = payload?.event as string | undefined;
-    const paymentId = payload?.object?.id as string | undefined;
-    if (!event || !paymentId) return NextResponse.json({ ok: true });
-
-    const order = await getTicketOrderByPaymentId(paymentId);
-    if (!order) return NextResponse.json({ ok: true });
-    if (order.status === "succeeded") return NextResponse.json({ ok: true });
-
-    if (!privateSettings.enabled || !privateSettings.shopId || !privateSettings.secretKey) return NextResponse.json({ ok: true });
-
-    // Recommended verification: fetch current payment status from YooKassa
-    const auth = Buffer.from(`${privateSettings.shopId}:${privateSettings.secretKey}`).toString("base64");
-    const pRes = await fetch(`https://api.yookassa.ru/v3/payments/${paymentId}`, {
+    const auth = Buffer.from(`${settings.shopId}:${settings.secretKey}`).toString("base64");
+    const pRes = await fetch(`https://api.yookassa.ru/v3/payments/${order.paymentId}`, {
       headers: { Authorization: `Basic ${auth}` },
+      cache: "no-store",
     });
     const pData = (await pRes.json().catch(() => null)) as any;
-    const status = pData?.status as string | undefined;
+    const status = (pData?.status as string | undefined) ?? "unknown";
 
-    if (event === "payment.canceled" || status === "canceled") {
+    if (status === "canceled") {
       await markTicketOrderCanceled(order.id);
-      return NextResponse.json({ ok: true });
+      return NextResponse.json({ ok: true, status: "canceled" });
     }
 
-    if (event !== "payment.succeeded" || status !== "succeeded") {
-      // not final yet
-      return NextResponse.json({ ok: true });
+    if (status !== "succeeded") {
+      return NextResponse.json({ ok: true, status: "pending" });
     }
 
     const ticketNumber = order.ticketNumber ?? generateTicketNumber(order.eventSlug);
     const qrToken = order.qrToken ?? generateQrToken();
-
     const updated = await markTicketOrderSucceeded({ id: order.id, ticketNumber, qrToken });
-
     const ev = await getEventBySlug(updated.eventSlug);
+
     const verifyUrl = `${SITE_URL}/ticket/${encodeURIComponent(qrToken)}`;
     const qrDataUrl = await QRCode.toDataURL(verifyUrl, { margin: 1, width: 420 });
 
@@ -129,10 +124,10 @@ export async function POST(req: Request) {
       html,
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, status: "succeeded" });
   } catch (e) {
     console.error(e);
-    return NextResponse.json({ error: "Webhook handler failed" }, { status: 500 });
+    return NextResponse.json({ error: "Failed to verify payment" }, { status: 500 });
   }
 }
 

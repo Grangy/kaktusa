@@ -88,6 +88,11 @@ model PaymentSettings {
   yookassaSecretKey String?
   webhookToken      String?
   testOneRuble      Boolean  @default(false)
+  smtpHost          String?
+  smtpPort          Int?
+  smtpUser          String?
+  smtpPass          String?
+  smtpFrom          String?
   updatedAt         DateTime @updatedAt
 }
 

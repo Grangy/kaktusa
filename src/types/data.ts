@@ -117,6 +117,13 @@ export interface PaymentSettingsContent {
   webhookToken?: string | null;
   /** Режим тестирования: любой билет за 1₽ */
   testOneRuble?: boolean;
+  /** SMTP для отправки билетов */
+  smtpHost?: string | null;
+  smtpPort?: number | null;
+  smtpUser?: string | null;
+  /** Маска/индикатор для UI */
+  smtpPassMasked?: string | null;
+  smtpFrom?: string | null;
 }
 
 export interface ChatMessageItem {

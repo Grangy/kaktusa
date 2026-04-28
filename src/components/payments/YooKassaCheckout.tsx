@@ -52,12 +52,24 @@ export function YooKassaCheckout({ event }: { event: Event }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: event.slug, ticketId: ticket?.id ?? null, method, customerEmail: email.trim() }),
       });
-      const data = await res.json().catch(() => ({}));
+      const raw = await res.text();
+      const data = (() => {
+        try {
+          return JSON.parse(raw) as any;
+        } catch {
+          return null;
+        }
+      })();
       if (!res.ok || !data?.confirmationUrl) {
-        throw new Error(data?.error || "Не удалось создать платёж");
+        const hint =
+          (data && typeof data.error === "string" && data.error.trim()) ||
+          (raw && raw.trim() ? raw.trim().slice(0, 280) : "") ||
+          "Не удалось создать платёж";
+        throw new Error(`${hint}${res.ok ? "" : ` (HTTP ${res.status})`}`);
       }
       try {
         localStorage.setItem(`kaktusa:last_payment:${event.slug}`, data.paymentId || "");
+        localStorage.setItem(`kaktusa:last_order:${event.slug}`, data.orderId || "");
       } catch {}
       window.location.href = data.confirmationUrl as string;
     } catch (e) {
