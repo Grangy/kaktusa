@@ -38,8 +38,15 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: true, messageId: info?.messageId ?? null });
   } catch (e) {
     console.error(e);
-    const msg = e instanceof Error ? e.message : "SMTP test failed";
-    return NextResponse.json({ error: msg }, { status: 500 });
+    const err = e as any;
+    const message = err?.message ? String(err.message) : "SMTP test failed";
+    const code = err?.code ? String(err.code) : null;
+    const name = err?.name ? String(err.name) : null;
+    const response = err?.response ? String(err.response) : null;
+    return NextResponse.json(
+      { error: [name, code, message, response].filter(Boolean).join(" · ") },
+      { status: 500 }
+    );
   }
 }
 
