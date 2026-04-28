@@ -60,6 +60,13 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
     };
   }, [enabled, orderId]);
 
+  useEffect(() => {
+    if (!enabled) return;
+    if (state.status !== "succeeded") return;
+    const t = window.setTimeout(() => setState({ status: "idle" }), 3500);
+    return () => window.clearTimeout(t);
+  }, [enabled, state.status]);
+
   if (!enabled) return null;
 
   return (
@@ -91,9 +98,16 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
             ) : state.status === "succeeded" ? (
               <div className="flex items-start gap-3">
                 <ShieldCheck size={20} className="shrink-0 text-[var(--accent)]" />
-                <div>
+                <div className="flex-1">
                   <p className="text-white font-medium">Оплата успешна</p>
-                  <p className="text-white/60 text-sm mt-1">Билет отправлен на email. Можно закрыть это окно.</p>
+                  <p className="text-white/60 text-sm mt-1">Билет отправлен на email.</p>
+                  <button
+                    type="button"
+                    className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition-colors text-sm"
+                    onClick={() => setState({ status: "idle" })}
+                  >
+                    Закрыть
+                  </button>
                 </div>
               </div>
             ) : state.status === "pending" ? (
@@ -104,6 +118,13 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
                   <p className="text-white/60 text-sm mt-1">
                     Если вы только что оплатили — подождите минуту и обновите страницу. Билет придёт после подтверждения.
                   </p>
+                  <button
+                    type="button"
+                    className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition-colors text-sm"
+                    onClick={() => setState({ status: "idle" })}
+                  >
+                    Закрыть
+                  </button>
                 </div>
               </div>
             ) : state.status === "canceled" ? (
@@ -112,6 +133,13 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
                 <div>
                   <p className="text-white font-medium">Оплата отменена</p>
                   <p className="text-white/60 text-sm mt-1">Если это ошибка — попробуйте ещё раз.</p>
+                  <button
+                    type="button"
+                    className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition-colors text-sm"
+                    onClick={() => setState({ status: "idle" })}
+                  >
+                    Закрыть
+                  </button>
                 </div>
               </div>
             ) : (
@@ -120,6 +148,13 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
                 <div>
                   <p className="text-white font-medium">Не удалось проверить оплату</p>
                   <p className="text-white/60 text-sm mt-1">{state.message || "Ошибка"}</p>
+                  <button
+                    type="button"
+                    className="mt-4 inline-flex items-center justify-center px-4 py-2 rounded-xl border border-white/15 text-white/80 hover:bg-white/10 transition-colors text-sm"
+                    onClick={() => setState({ status: "idle" })}
+                  >
+                    Закрыть
+                  </button>
                 </div>
               </div>
             )}
