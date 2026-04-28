@@ -15,7 +15,7 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
   const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [testEmailTo, setTestEmailTo] = useState<string>("m.dolia2017@yandex.ru");
+  const [testEmailTo, setTestEmailTo] = useState<string>("lololomik@gmail.com");
   const [testingEmail, setTestingEmail] = useState(false);
 
   // В UI никогда не показываем сохранённый ключ.
@@ -189,7 +189,7 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
               value={smtpHost}
               onChange={(e) => setSmtpHost(e.target.value)}
               className={inputClass}
-              placeholder="smtp.yandex.ru"
+              placeholder="smtp.gmail.com"
               autoComplete="off"
             />
           </div>
@@ -214,7 +214,7 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
               value={smtpUser}
               onChange={(e) => setSmtpUser(e.target.value)}
               className={inputClass}
-              placeholder="example@yandex.ru"
+              placeholder="you@gmail.com"
               autoComplete="off"
             />
           </div>
@@ -225,7 +225,7 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
               value={smtpPass}
               onChange={(e) => setSmtpPass(e.target.value)}
               className={inputClass}
-              placeholder={initial.smtpPassMasked ? "•••••••• (не менять)" : "пароль приложения"}
+              placeholder={initial.smtpPassMasked ? "•••••••• (не менять)" : "app password (16 символов)"}
               autoComplete="off"
             />
           </div>
@@ -237,7 +237,7 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
             value={smtpFrom}
             onChange={(e) => setSmtpFrom(e.target.value)}
             className={inputClass}
-            placeholder='kaktusa.ru <m.dolia2017@yandex.ru>'
+            placeholder="lololomik@gmail.com"
             autoComplete="off"
           />
         </div>
