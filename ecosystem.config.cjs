@@ -6,7 +6,8 @@ module.exports = {
   apps: [
     {
       name: "kaktusa",
-      script: ".next/standalone/server.js",
+      script: "node_modules/next/dist/bin/next",
+      args: "start -p 3000",
       cwd: "/var/www/kaktusa",
       instances: 1,
       exec_mode: "fork",
@@ -16,7 +17,6 @@ module.exports = {
       node_args: "-r dotenv/config",
       env: {
         NODE_ENV: "production",
-        PORT: 3000,
         HOSTNAME: "0.0.0.0",
         DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
         AUTH_TRUST_HOST: "true",
