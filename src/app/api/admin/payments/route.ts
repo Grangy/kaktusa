@@ -18,15 +18,23 @@ export async function PUT(req: Request) {
     const session = await auth();
     if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-    const body = (await req.json()) as { enabled?: boolean; yookassaShopId?: string | null; yookassaSecretKey?: string | null };
+    const body = (await req.json()) as {
+      enabled?: boolean;
+      yookassaShopId?: string | null;
+      yookassaSecretKey?: string | null;
+      webhookToken?: string | null;
+      testOneRuble?: boolean;
+    };
     const current = await getPaymentSettingsPrivate();
 
     const enabled = Boolean(body.enabled);
     const yookassaShopId = (body.yookassaShopId ?? "").toString().trim() || null;
     const incomingKey = typeof body.yookassaSecretKey === "string" ? body.yookassaSecretKey.trim() : null;
     const yookassaSecretKey = incomingKey ? incomingKey : current.secretKey; // пусто = не менять
+    const webhookToken = typeof body.webhookToken === "string" ? body.webhookToken.trim() : null;
+    const testOneRuble = Boolean(body.testOneRuble);
 
-    await writePaymentSettings({ enabled, yookassaShopId, yookassaSecretKey });
+    await writePaymentSettings({ enabled, yookassaShopId, yookassaSecretKey, webhookToken, testOneRuble });
     return NextResponse.json(await getPaymentSettings());
   } catch (e) {
     console.error(e);

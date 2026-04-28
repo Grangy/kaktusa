@@ -114,6 +114,9 @@ export interface PaymentSettingsContent {
   yookassaSecretKey?: string | null;
   /** Маска/индикатор для UI */
   yookassaSecretKeyMasked?: string | null;
+  webhookToken?: string | null;
+  /** Режим тестирования: любой билет за 1₽ */
+  testOneRuble?: boolean;
 }
 
 export interface ChatMessageItem {

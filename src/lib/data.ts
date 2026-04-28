@@ -321,6 +321,8 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
       yookassaShopId: envShopId,
       yookassaSecretKey: null,
       yookassaSecretKeyMasked: envKey ? "••••••••" : null,
+      webhookToken: null,
+      testOneRuble: false,
     };
   }
   const key = row.yookassaSecretKey?.trim() || envKey;
@@ -331,6 +333,8 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
     // не возвращаем ключ клиенту
     yookassaSecretKey: null,
     yookassaSecretKeyMasked: hasKey ? "••••••••" : null,
+    webhookToken: row.webhookToken ?? null,
+    testOneRuble: row.testOneRuble ?? false,
   };
 }
 
@@ -346,7 +350,13 @@ export async function getPaymentSettingsPrivate(): Promise<{ enabled: boolean; s
   };
 }
 
-export async function writePaymentSettings(p: { enabled: boolean; yookassaShopId: string | null; yookassaSecretKey: string | null }): Promise<void> {
+export async function writePaymentSettings(p: {
+  enabled: boolean;
+  yookassaShopId: string | null;
+  yookassaSecretKey: string | null;
+  webhookToken?: string | null;
+  testOneRuble?: boolean;
+}): Promise<void> {
   await prisma.paymentSettings.upsert({
     where: { id: "payments" },
     create: {
@@ -354,13 +364,62 @@ export async function writePaymentSettings(p: { enabled: boolean; yookassaShopId
       enabled: p.enabled,
       yookassaShopId: p.yookassaShopId,
       yookassaSecretKey: p.yookassaSecretKey,
+      webhookToken: p.webhookToken ?? null,
+      testOneRuble: p.testOneRuble ?? false,
     },
     update: {
       enabled: p.enabled,
       yookassaShopId: p.yookassaShopId,
       yookassaSecretKey: p.yookassaSecretKey,
+      webhookToken: p.webhookToken ?? undefined,
+      testOneRuble: p.testOneRuble ?? undefined,
     },
   });
+}
+
+export async function createTicketOrder(input: {
+  eventSlug: string;
+  ticketId?: string | null;
+  ticketName?: string | null;
+  email: string;
+  amountValue: string;
+  currency?: string;
+  method?: string | null;
+  paymentId?: string | null;
+}): Promise<{ id: string }> {
+  const row = await prisma.ticketOrder.create({
+    data: {
+      eventSlug: input.eventSlug,
+      ticketId: input.ticketId ?? null,
+      ticketName: input.ticketName ?? null,
+      email: input.email,
+      amountValue: input.amountValue,
+      currency: input.currency ?? "RUB",
+      method: input.method ?? null,
+      paymentId: input.paymentId ?? null,
+    },
+    select: { id: true },
+  });
+  return row;
+}
+
+export async function setTicketOrderPaymentId(orderId: string, paymentId: string): Promise<void> {
+  await prisma.ticketOrder.update({ where: { id: orderId }, data: { paymentId } });
+}
+
+export async function getTicketOrderByPaymentId(paymentId: string) {
+  return await prisma.ticketOrder.findUnique({ where: { paymentId } });
+}
+
+export async function markTicketOrderSucceeded(opts: { id: string; ticketNumber: string; qrToken: string }) {
+  return await prisma.ticketOrder.update({
+    where: { id: opts.id },
+    data: { status: "succeeded", ticketNumber: opts.ticketNumber, qrToken: opts.qrToken },
+  });
+}
+
+export async function markTicketOrderCanceled(id: string) {
+  return await prisma.ticketOrder.update({ where: { id }, data: { status: "canceled" } });
 }
 
 /** Нормализация номера телефона в E.164 (РФ: +7...) */

@@ -86,7 +86,26 @@ model PaymentSettings {
   enabled           Boolean  @default(false)
   yookassaShopId    String?
   yookassaSecretKey String?
+  webhookToken      String?
+  testOneRuble      Boolean  @default(false)
   updatedAt         DateTime @updatedAt
+}
+
+model TicketOrder {
+  id           String   @id @default(cuid())
+  eventSlug    String
+  ticketId     String?
+  ticketName   String?
+  email        String
+  amountValue  String   // "100.00"
+  currency     String   @default("RUB")
+  method       String?  // "card" | "sbp" | "yookassa"
+  paymentId    String?  @unique
+  status       String   @default("pending") // pending | succeeded | canceled
+  ticketNumber String?  @unique
+  qrToken      String?  @unique
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 }
 
 model ChatMessage {

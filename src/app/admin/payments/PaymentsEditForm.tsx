@@ -20,6 +20,8 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
   const [enabled, setEnabled] = useState<boolean>(initial.enabled);
   const [shopId, setShopId] = useState<string>(initial.yookassaShopId ?? "");
   const [secretKey, setSecretKey] = useState<string>(""); // пусто = не менять
+  const [testOneRuble, setTestOneRuble] = useState<boolean>(initial.testOneRuble ?? false);
+  const [webhookToken, setWebhookToken] = useState<string>(initial.webhookToken ?? "");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -34,6 +36,8 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
           yookassaShopId: shopId,
           // Отправляем только если введён новый ключ; иначе сервер оставит прежний.
           yookassaSecretKey: secretKey || null,
+          webhookToken: webhookToken || null,
+          testOneRuble,
         }),
       });
       const data = await res.json().catch(() => ({}));
@@ -98,6 +102,41 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
           </div>
           <p className="text-white/50 text-xs mt-1">
             Мы не показываем сохранённый ключ. Чтобы заменить — вставьте новый и сохраните.
+          </p>
+        </div>
+
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={testOneRuble}
+            onChange={(e) => setTestOneRuble(e.target.checked)}
+            className="w-4 h-4 rounded border-white/30 bg-black/50 text-[var(--accent)] focus:ring-[var(--accent)]"
+          />
+          <span className="text-white/80 text-sm">Режим теста: любой билет за 1 ₽</span>
+        </label>
+
+        <div className="rounded-lg border border-white/10 bg-black/30 p-4">
+          <p className="text-white/60 text-xs uppercase tracking-wider mb-2">Webhook URL</p>
+          <div className="grid gap-3">
+            <div>
+              <label className="block text-white/70 text-sm mb-1">Webhook token</label>
+              <input
+                value={webhookToken}
+                onChange={(e) => setWebhookToken(e.target.value)}
+                className={inputClass}
+                placeholder="любой секретный токен"
+                autoComplete="off"
+              />
+              <p className="text-white/40 text-xs mt-1">
+                Добавится к URL как <span className="text-white/60">?token=…</span> — защита от поддельных запросов.
+              </p>
+            </div>
+          </div>
+          <p className="text-white/80 text-sm break-all">
+            https://kaktusa.ru/api/payments/yookassa/webhook{webhookToken ? `?token=${webhookToken}` : ""}
+          </p>
+          <p className="text-white/40 text-xs mt-2">
+            Укажи этот URL в YooKassa → Интеграция → HTTP‑уведомления (payment.succeeded, payment.canceled).
           </p>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getEventBySlug, getPaymentSettingsPrivate } from "@/lib/data";
+import { createTicketOrder, getEventBySlug, getPaymentSettingsPrivate, getPaymentSettings, setTicketOrderPaymentId } from "@/lib/data";
 
 export const runtime = "nodejs";
 
@@ -39,7 +39,7 @@ export async function POST(req: Request) {
     if (!event) return NextResponse.json({ error: "Event not found" }, { status: 404 });
     if (event.type !== "upcoming") return NextResponse.json({ error: "Event is not upcoming" }, { status: 400 });
 
-    const settings = await getPaymentSettingsPrivate();
+    const [settings, publicSettings] = await Promise.all([getPaymentSettingsPrivate(), getPaymentSettings()]);
     if (!settings.enabled) return NextResponse.json({ error: "Payments are disabled" }, { status: 400 });
     const shopId = settings.shopId?.trim();
     const secretKey = settings.secretKey?.trim();
@@ -50,6 +50,7 @@ export async function POST(req: Request) {
     const priceRaw = ticket?.price ?? event.price ?? "";
     const value = parseRubleAmountToValue(priceRaw);
     if (!value) return NextResponse.json({ error: "Invalid ticket price" }, { status: 400 });
+    const finalValue = publicSettings.testOneRuble ? "1.00" : value;
 
     const customerEmail = (body.customerEmail ?? "").toString().trim();
     if (!customerEmail || !customerEmail.includes("@")) {
@@ -72,7 +73,7 @@ export async function POST(req: Request) {
       (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`);
 
     const payload: Record<string, unknown> = {
-      amount: { value, currency: "RUB" },
+      amount: { value: finalValue, currency: "RUB" },
       capture: true,
       confirmation: { type: "redirect", return_url },
       description: description.slice(0, 128),
@@ -82,7 +83,7 @@ export async function POST(req: Request) {
           {
             description: `Билет: ${event.title}${ticket?.name ? ` — ${ticket.name}` : ""}`.slice(0, 128),
             quantity: "1.00",
-            amount: { value, currency: "RUB" },
+            amount: { value: finalValue, currency: "RUB" },
             vat_code: 1, // без НДС
             payment_subject: "service",
             payment_mode: "full_payment",
@@ -93,11 +94,23 @@ export async function POST(req: Request) {
         event_slug: event.slug,
         ticket_id: ticket?.id ?? null,
         ticket_name: ticket?.name ?? null,
+        test_one_ruble: publicSettings.testOneRuble ? "1" : "0",
       },
     };
     if (payment_method_data) payload.payment_method_data = payment_method_data;
 
     const auth = Buffer.from(`${shopId}:${secretKey}`).toString("base64");
+
+    const order = await createTicketOrder({
+      eventSlug: event.slug,
+      ticketId: ticket?.id ?? null,
+      ticketName: ticket?.name ?? null,
+      email: customerEmail,
+      amountValue: finalValue,
+      currency: "RUB",
+      method,
+    });
+
     const res = await fetch("https://api.yookassa.ru/v3/payments", {
       method: "POST",
       headers: {
@@ -119,6 +132,8 @@ export async function POST(req: Request) {
     if (!confirmationUrl || !paymentId) {
       return NextResponse.json({ error: "Invalid response from YooKassa" }, { status: 502 });
     }
+
+    await setTicketOrderPaymentId(order.id, paymentId);
 
     return NextResponse.json({ ok: true, paymentId, confirmationUrl });
   } catch (e) {
