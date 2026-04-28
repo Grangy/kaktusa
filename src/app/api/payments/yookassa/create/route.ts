@@ -26,7 +26,12 @@ type Method = "card" | "sbp" | "yookassa";
 
 export async function POST(req: Request) {
   try {
-    const body = (await req.json()) as { slug?: string; ticketId?: string | null; method?: Method };
+    const body = (await req.json()) as {
+      slug?: string;
+      ticketId?: string | null;
+      method?: Method;
+      customerEmail?: string | null;
+    };
     const slug = (body.slug ?? "").trim();
     if (!slug) return NextResponse.json({ error: "Missing slug" }, { status: 400 });
 
@@ -45,6 +50,11 @@ export async function POST(req: Request) {
     const priceRaw = ticket?.price ?? event.price ?? "";
     const value = parseRubleAmountToValue(priceRaw);
     if (!value) return NextResponse.json({ error: "Invalid ticket price" }, { status: 400 });
+
+    const customerEmail = (body.customerEmail ?? "").toString().trim();
+    if (!customerEmail || !customerEmail.includes("@")) {
+      return NextResponse.json({ error: "Email is required for receipt" }, { status: 400 });
+    }
 
     const method = (body.method ?? "yookassa") as Method;
     const payment_method_data =
@@ -66,6 +76,19 @@ export async function POST(req: Request) {
       capture: true,
       confirmation: { type: "redirect", return_url },
       description: description.slice(0, 128),
+      receipt: {
+        customer: { email: customerEmail },
+        items: [
+          {
+            description: `Билет: ${event.title}${ticket?.name ? ` — ${ticket.name}` : ""}`.slice(0, 128),
+            quantity: "1.00",
+            amount: { value, currency: "RUB" },
+            vat_code: 1, // без НДС
+            payment_subject: "service",
+            payment_mode: "full_payment",
+          },
+        ],
+      },
       metadata: {
         event_slug: event.slug,
         ticket_id: ticket?.id ?? null,

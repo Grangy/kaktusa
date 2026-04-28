@@ -34,6 +34,7 @@ export function YooKassaCheckout({ event }: { event: Event }) {
   const [method, setMethod] = useState<MethodId>("yookassa");
   const [status, setStatus] = useState<"idle" | "processing" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
+  const [email, setEmail] = useState<string>("");
 
   const title = event.title;
   const amount = ticket ? pickDisplayPrice(ticket.price) : pickDisplayPrice(event.price);
@@ -43,10 +44,13 @@ export function YooKassaCheckout({ event }: { event: Event }) {
     setStatus("processing");
     setError(null);
     try {
+      if (!email.trim() || !email.includes("@")) {
+        throw new Error("Укажите email для чека");
+      }
       const res = await fetch("/api/payments/yookassa/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: event.slug, ticketId: ticket?.id ?? null, method }),
+        body: JSON.stringify({ slug: event.slug, ticketId: ticket?.id ?? null, method, customerEmail: email.trim() }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data?.confirmationUrl) {
@@ -124,6 +128,20 @@ export function YooKassaCheckout({ event }: { event: Event }) {
             );
           })}
         </div>
+      </div>
+
+      <div className="mt-6">
+        <p className="text-white/70 text-xs uppercase tracking-wider mb-2">Email для чека</p>
+        <input
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          inputMode="email"
+          autoComplete="email"
+          placeholder="name@example.com"
+          className="w-full px-4 py-3 rounded-2xl bg-black/50 border border-white/15 text-white placeholder:text-white/40 focus:outline-none focus:border-[var(--accent)]"
+          disabled={status === "processing"}
+        />
+        <p className="text-white/40 text-xs mt-2">Нужен для формирования чека (54‑ФЗ).</p>
       </div>
 
       {error && (

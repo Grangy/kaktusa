@@ -312,18 +312,22 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
 
 export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
   const row = await prisma.paymentSettings.findUnique({ where: { id: "payments" } });
+  const envShopId = process.env.SHOPID?.trim() || null;
+  const envKey = process.env.YOUKASSA?.trim() || null;
+  const envEnabled = !!(envShopId && envKey);
   if (!row) {
     return {
-      enabled: false,
-      yookassaShopId: null,
+      enabled: envEnabled,
+      yookassaShopId: envShopId,
       yookassaSecretKey: null,
-      yookassaSecretKeyMasked: null,
+      yookassaSecretKeyMasked: envKey ? "••••••••" : null,
     };
   }
-  const hasKey = !!(row.yookassaSecretKey && row.yookassaSecretKey.trim().length > 6);
+  const key = row.yookassaSecretKey?.trim() || envKey;
+  const hasKey = !!(key && key.length > 6);
   return {
-    enabled: row.enabled,
-    yookassaShopId: row.yookassaShopId ?? null,
+    enabled: row.enabled || envEnabled,
+    yookassaShopId: row.yookassaShopId?.trim() || envShopId,
     // не возвращаем ключ клиенту
     yookassaSecretKey: null,
     yookassaSecretKeyMasked: hasKey ? "••••••••" : null,
@@ -332,10 +336,13 @@ export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
 
 export async function getPaymentSettingsPrivate(): Promise<{ enabled: boolean; shopId: string | null; secretKey: string | null }> {
   const row = await prisma.paymentSettings.findUnique({ where: { id: "payments" } });
+  const envShopId = process.env.SHOPID?.trim() || null;
+  const envKey = process.env.YOUKASSA?.trim() || null;
+  const envEnabled = !!(envShopId && envKey);
   return {
-    enabled: row?.enabled ?? false,
-    shopId: row?.yookassaShopId ?? null,
-    secretKey: row?.yookassaSecretKey ?? null,
+    enabled: (row?.enabled ?? false) || envEnabled,
+    shopId: row?.yookassaShopId?.trim() || envShopId,
+    secretKey: row?.yookassaSecretKey?.trim() || envKey,
   };
 }
 
