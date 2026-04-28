@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug, getPaymentSettingsPrivate, getTicketOrderById, markTicketOrderCanceled, markTicketOrderSucceeded } from "@/lib/data";
 import QRCode from "qrcode";
-import nodemailer from "nodemailer";
+import { sendMailWithTimeout } from "@/lib/smtp";
 
 export const runtime = "nodejs";
 
@@ -34,13 +34,12 @@ async function sendTicketEmail(opts: { to: string; subject: string; html: string
   const pass = settings.smtpPass?.trim();
   const from = settings.smtpFrom?.trim() || "kaktusa.ru <no-reply@kaktusa.ru>";
   if (!host || !user || !pass) throw new Error("SMTP is not configured");
-  const transporter = nodemailer.createTransport({
-    host,
-    port,
-    secure: port === 465,
-    auth: { user, pass },
+  await sendMailWithTimeout({
+    smtp: { host, port, user, pass, from },
+    to: opts.to,
+    subject: opts.subject,
+    html: opts.html,
   });
-  await transporter.sendMail({ from, to: opts.to, subject: opts.subject, html: opts.html });
 }
 
 export async function GET(req: Request) {

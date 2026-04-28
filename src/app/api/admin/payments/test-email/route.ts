@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { getPaymentSettingsPrivate } from "@/lib/data";
-import nodemailer from "nodemailer";
+import { sendMailWithTimeout } from "@/lib/smtp";
 
 export const runtime = "nodejs";
 
@@ -24,15 +24,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "SMTP не настроен (host/user/pass)" }, { status: 400 });
     }
 
-    const transporter = nodemailer.createTransport({
-      host,
-      port,
-      secure: port === 465,
-      auth: { user, pass },
-    });
-
-    const info = await transporter.sendMail({
-      from,
+    const info = await sendMailWithTimeout({
+      smtp: { host, port, user, pass, from },
       to,
       subject: "Тест SMTP — kaktusa.ru",
       html: `<div style="font-family:Arial,Helvetica,sans-serif">
