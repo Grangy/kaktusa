@@ -25,6 +25,33 @@ type CardEvent = {
   hasTicketSales?: boolean;
 };
 
+function parseMoneyToNumber(raw: string): number | null {
+  const s = (raw ?? "").toString().replace(/[^\d.,]/g, "").replace(/\s+/g, "").trim();
+  if (!s) return null;
+  const normalized = s.includes(",") ? s.replace(",", ".") : s;
+  const parts = normalized.split(".");
+  let numStr = normalized;
+  if (parts.length > 2) {
+    const last = parts.pop()!;
+    numStr = parts.join("") + "." + last;
+  }
+  const n = Number(numStr);
+  if (!isFinite(n) || n <= 0) return null;
+  return n;
+}
+
+function formatMinPrice(e: Event): string | undefined {
+  const fromTickets = (e.tickets ?? [])
+    .map((t) => parseMoneyToNumber(t.price))
+    .filter((n): n is number => typeof n === "number");
+  const min = fromTickets.length ? Math.min(...fromTickets) : null;
+  if (min != null) {
+    const formatted = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(min);
+    return `От ${formatted} ₽`;
+  }
+  return e.price ?? undefined;
+}
+
 const DEFAULT_UPCOMING: CardEvent = {
   id: "bloom",
   type: "upcoming",
@@ -59,7 +86,9 @@ const DEFAULT_PAST = [
 
 function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
   const hasTicketSales =
-    type === "upcoming" && !e.buyTicketDisabled && (!!e.buyTicketUrl?.trim() || e.testPaymentEnabled === true);
+    type === "upcoming" &&
+    !e.buyTicketDisabled &&
+    (!!e.buyTicketUrl?.trim() || e.testPaymentEnabled === true || e.realPaymentEnabled === true);
   return {
     id: e.id,
     type,
@@ -67,7 +96,7 @@ function toCard(e: Event, type: "upcoming" | "past"): CardEvent {
     date: e.dateDisplay,
     location: e.location,
     locationShort: e.locationShort ?? e.venueCity?.split(",")[0]?.trim() ?? e.location,
-    price: type === "upcoming" ? (e.price ?? "От 3 000 ₽") : undefined,
+    price: type === "upcoming" ? (formatMinPrice(e) ?? "От 3 000 ₽") : undefined,
     subtitle: e.subtitle ?? undefined,
     image: e.heroImage,
     tag: type === "upcoming" ? (e.tag ?? "Ближайшее") : "Прошло",

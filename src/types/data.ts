@@ -38,6 +38,8 @@ export interface Event {
   buyTicketDisabled?: boolean;
   /** Тестовая оплата на странице /pay (эмуляция) */
   testPaymentEnabled?: boolean;
+  /** Реальная оплата YooKassa на странице /pay */
+  realPaymentEnabled?: boolean;
   age?: string;
   dressCode?: string;
   rules?: string;

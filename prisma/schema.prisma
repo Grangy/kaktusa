@@ -36,6 +36,7 @@ model Event {
   buyTicketUrl     String?
   buyTicketDisabled Boolean @default(false)
   testPaymentEnabled Boolean @default(false)
+  realPaymentEnabled Boolean @default(false)
   age              String?
   dressCode        String?
   rules            String?

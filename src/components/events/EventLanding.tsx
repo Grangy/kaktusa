@@ -18,6 +18,34 @@ const DEFAULT_TICKETS = [
 
 const EVENT_CONTAINER = "max-w-4xl w-full mx-auto";
 
+function parseMoneyToNumber(raw: string): number | null {
+  const s = (raw ?? "").toString().replace(/[^\d.,]/g, "").replace(/\s+/g, "").trim();
+  if (!s) return null;
+  const normalized = s.includes(",") ? s.replace(",", ".") : s;
+  const parts = normalized.split(".");
+  let numStr = normalized;
+  if (parts.length > 2) {
+    const last = parts.pop()!;
+    numStr = parts.join("") + "." + last;
+  }
+  const n = Number(numStr);
+  if (!isFinite(n) || n <= 0) return null;
+  return n;
+}
+
+function formatMinPrice(event?: Event | null): string | null {
+  const fromTickets = (event?.tickets ?? [])
+    .map((t) => parseMoneyToNumber(t.price))
+    .filter((n): n is number => typeof n === "number");
+  const min = fromTickets.length ? Math.min(...fromTickets) : null;
+  if (min != null) {
+    const formatted = new Intl.NumberFormat("ru-RU", { maximumFractionDigits: 0 }).format(min);
+    return `От ${formatted} ₽`;
+  }
+  const fallback = (event?.price ?? "").trim();
+  return fallback ? fallback : null;
+}
+
 function useCountdown(targetDate: Date) {
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
@@ -65,7 +93,7 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
   const venueTitle = event?.venueTitle ?? "Foster Night Club";
   const venueAddress = event?.venueAddress ?? "Mriya Resort";
   const venueCity = event?.venueCity ?? "Крым, Россия";
-  const price = event?.price ?? "От 3 000 ₽";
+  const price = formatMinPrice(event) ?? "От 3 000 ₽";
   const artists = event?.artists?.length ? event.artists : DEFAULT_ARTISTS;
   const allTickets = event?.tickets?.length ? event.tickets : DEFAULT_TICKETS;
   const tickets = allTickets.filter((t) => t.id !== "promo" && !t.name?.includes("4 билета + 1"));
@@ -78,7 +106,8 @@ export default function EventLanding({ event, pastEvents = [] }: { event?: Event
   const buyTicketUrl = event?.buyTicketUrl?.trim() ?? "";
   const buyTicketDisabled = event?.buyTicketDisabled === true;
   const testPaymentEnabled = event?.testPaymentEnabled === true;
-  const showTicketsSection = !buyTicketDisabled && (buyTicketUrl.length > 0 || testPaymentEnabled);
+  const realPaymentEnabled = event?.realPaymentEnabled === true;
+  const showTicketsSection = !buyTicketDisabled && (buyTicketUrl.length > 0 || testPaymentEnabled || realPaymentEnabled);
   const payHrefBase = event?.slug ? `/events/${event.slug}/pay` : "";
   const age = event?.age ?? "18+";
   const dressCode = event?.dressCode ?? "Яркие оттенки в образе и макияже, необычные фактуры";

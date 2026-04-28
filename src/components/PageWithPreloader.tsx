@@ -80,7 +80,9 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
   const firstUpcomingHasTicketSales =
     firstUpcoming != null &&
     !firstUpcoming.buyTicketDisabled &&
-    (!!firstUpcoming.buyTicketUrl?.trim() || firstUpcoming.testPaymentEnabled === true);
+    (!!firstUpcoming.buyTicketUrl?.trim() ||
+      firstUpcoming.testPaymentEnabled === true ||
+      firstUpcoming.realPaymentEnabled === true);
   const ticketCta =
     firstUpcoming != null
       ? {

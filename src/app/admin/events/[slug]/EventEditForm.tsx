@@ -39,6 +39,7 @@ const defaultEvent: Partial<Event> = {
   buyTicketUrl: "",
   buyTicketDisabled: false,
   testPaymentEnabled: false,
+  realPaymentEnabled: false,
   age: "",
   dressCode: "",
   rules: "",
@@ -435,6 +436,17 @@ export function EventEditForm({
           className={inputClass()}
         />
       </div>
+      {form.type === "upcoming" && (
+        <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
+          <input
+            type="checkbox"
+            checked={form.realPaymentEnabled ?? false}
+            onChange={(e) => update({ realPaymentEnabled: e.target.checked })}
+            className="w-4 h-4 accent-[var(--accent)] shrink-0"
+          />
+          <span>Реальная оплата (YooKassa) на странице оплаты</span>
+        </label>
+      )}
       {form.type === "upcoming" && (
         <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
           <input
