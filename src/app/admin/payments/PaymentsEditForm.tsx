@@ -15,6 +15,8 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
   const toast = useToast();
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [testEmailTo, setTestEmailTo] = useState<string>("m.dolia2017@yandex.ru");
+  const [testingEmail, setTestingEmail] = useState(false);
 
   // В UI никогда не показываем сохранённый ключ.
   const [enabled, setEnabled] = useState<boolean>(initial.enabled);
@@ -62,6 +64,28 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
       toast("error", msg);
     } finally {
       setSaving(false);
+    }
+  }
+
+  async function handleTestEmail() {
+    if (testingEmail) return;
+    setTestingEmail(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/payments/test-email", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ to: testEmailTo.trim() }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Не удалось отправить тестовое письмо");
+      toast("success", "Тестовое письмо отправлено (проверьте входящие/спам)");
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : "Ошибка";
+      setError(msg);
+      toast("error", msg);
+    } finally {
+      setTestingEmail(false);
     }
   }
 
@@ -216,6 +240,31 @@ export function PaymentsEditForm({ initial }: { initial: PaymentSettingsContent 
             placeholder='kaktusa.ru <m.dolia2017@yandex.ru>'
             autoComplete="off"
           />
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-black/30 p-4">
+          <p className="text-white/60 text-xs uppercase tracking-wider mb-3">Тестовое письмо</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <input
+              value={testEmailTo}
+              onChange={(e) => setTestEmailTo(e.target.value)}
+              className={inputClass}
+              placeholder="email@domain.ru"
+              autoComplete="off"
+              inputMode="email"
+              disabled={saving || testingEmail}
+            />
+            <button
+              type="button"
+              disabled={saving || testingEmail}
+              onClick={handleTestEmail}
+              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg border border-white/15 text-white/80 hover:bg-white/10 transition-colors disabled:opacity-50 min-w-[170px]"
+            >
+              {testingEmail ? <Loader2 size={18} className="animate-spin" /> : null}
+              {testingEmail ? "Отправляем…" : "Отправить тест"}
+            </button>
+          </div>
+          <p className="text-white/40 text-xs mt-2">Если не пришло — проверьте “Спам”. Ошибка покажется сверху.</p>
         </div>
       </div>
 
