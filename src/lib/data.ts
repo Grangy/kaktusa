@@ -479,6 +479,10 @@ export async function getTicketOrderById(id: string) {
   return await prisma.ticketOrder.findUnique({ where: { id } });
 }
 
+export async function setTicketOrderPhone(id: string, phone: string): Promise<void> {
+  await prisma.ticketOrder.update({ where: { id }, data: { phone } });
+}
+
 export async function markTicketOrderSucceeded(opts: { id: string; ticketNumber: string; qrToken: string }) {
   return await prisma.ticketOrder.update({
     where: { id: opts.id },

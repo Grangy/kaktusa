@@ -103,6 +103,7 @@ model TicketOrder {
   ticketId     String?
   ticketName   String?
   email        String
+  phone        String?
   amountValue  String   // "100.00"
   currency     String   @default("RUB")
   method       String?  // "card" | "sbp" | "yookassa"

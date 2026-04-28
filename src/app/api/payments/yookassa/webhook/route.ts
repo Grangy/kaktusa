@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { getPaymentSettings, getPaymentSettingsPrivate, getTicketOrderByPaymentId, markTicketOrderCanceled, markTicketOrderSucceeded } from "@/lib/data";
 import { getEventBySlug } from "@/lib/data";
 import QRCode from "qrcode";
-import { sendMailWithTimeout } from "@/lib/smtp";
 
 export const runtime = "nodejs";
 
@@ -22,22 +21,6 @@ function generateTicketNumber(eventSlug: string) {
 
 function generateQrToken() {
   return (globalThis.crypto?.randomUUID ? globalThis.crypto.randomUUID() : `${Date.now()}-${Math.random()}`).replace(/[^a-zA-Z0-9_-]/g, "");
-}
-
-async function sendTicketEmail(opts: { to: string; subject: string; html: string }) {
-  const settings = await getPaymentSettingsPrivate();
-  const host = settings.smtpHost?.trim();
-  const port = settings.smtpPort ?? 587;
-  const user = settings.smtpUser?.trim();
-  const pass = settings.smtpPass?.trim();
-  const from = settings.smtpFrom?.trim() || "kaktusa.ru <no-reply@kaktusa.ru>";
-  if (!host || !user || !pass) throw new Error("SMTP is not configured");
-  await sendMailWithTimeout({
-    smtp: { host, port, user, pass, from },
-    to: opts.to,
-    subject: opts.subject,
-    html: opts.html,
-  });
 }
 
 export async function POST(req: Request) {
@@ -121,12 +104,6 @@ export async function POST(req: Request) {
         </div>
       </div>
     `;
-
-    await sendTicketEmail({
-      to: updated.email,
-      subject: `Билет ?КАКТУСА — ${ev?.title ?? updated.eventSlug}`,
-      html,
-    });
 
     return NextResponse.json({ ok: true });
   } catch (e) {

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { getEventBySlug, getPaymentSettingsPrivate, getTicketOrderById, markTicketOrderCanceled, markTicketOrderSucceeded } from "@/lib/data";
 import QRCode from "qrcode";
-import { sendMailWithTimeout } from "@/lib/smtp";
 
 export const runtime = "nodejs";
 
@@ -26,22 +25,6 @@ function generateQrToken() {
   );
 }
 
-async function sendTicketEmail(opts: { to: string; subject: string; html: string }) {
-  const settings = await getPaymentSettingsPrivate();
-  const host = settings.smtpHost?.trim();
-  const port = settings.smtpPort ?? 587;
-  const user = settings.smtpUser?.trim();
-  const pass = settings.smtpPass?.trim();
-  const from = settings.smtpFrom?.trim() || "kaktusa.ru <no-reply@kaktusa.ru>";
-  if (!host || !user || !pass) throw new Error("SMTP is not configured");
-  await sendMailWithTimeout({
-    smtp: { host, port, user, pass, from },
-    to: opts.to,
-    subject: opts.subject,
-    html: opts.html,
-  });
-}
-
 export async function GET(req: Request) {
   try {
     const url = new URL(req.url);
@@ -51,7 +34,10 @@ export async function GET(req: Request) {
     const order = await getTicketOrderById(orderId);
     if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
-    if (order.status === "succeeded") return NextResponse.json({ ok: true, status: "succeeded" });
+    if (order.status === "succeeded") {
+      const verifyUrl = order.qrToken ? `${SITE_URL}/ticket/${encodeURIComponent(order.qrToken)}` : null;
+      return NextResponse.json({ ok: true, status: "succeeded", verifyUrl, phoneRequired: !order.phone });
+    }
     if (order.status === "canceled") return NextResponse.json({ ok: true, status: "canceled" });
     if (!order.paymentId) return NextResponse.json({ ok: true, status: "pending" });
 
@@ -116,14 +102,8 @@ export async function GET(req: Request) {
         </div>
       </div>
     `;
-
-    await sendTicketEmail({
-      to: updated.email,
-      subject: `Билет ?КАКТУСА — ${ev?.title ?? updated.eventSlug}`,
-      html,
-    });
-
-    return NextResponse.json({ ok: true, status: "succeeded" });
+    // Email отключён: SMTP заблокирован на VPS. Билет доступен на сайте, а телефон соберём при возврате и отправим в Telegram.
+    return NextResponse.json({ ok: true, status: "succeeded", verifyUrl, phoneRequired: !order.phone });
   } catch (e) {
     console.error(e);
     return NextResponse.json({ error: "Failed to verify payment" }, { status: 500 });
