@@ -6,8 +6,7 @@ module.exports = {
   apps: [
     {
       name: "kaktusa",
-      script: "node_modules/next/dist/bin/next",
-      args: "start -p 3000",
+      script: ".next/standalone/server.js",
       cwd: "/var/www/kaktusa",
       instances: 1,
       exec_mode: "fork",
