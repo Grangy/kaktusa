@@ -89,7 +89,7 @@ async function main() {
   stepStart = Date.now();
   console.log("=== 3/4 PM2 restart ===");
   await run(
-    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && pm2 restart ecosystem.config.cjs && pm2 save"`
+    `ssh ${SSH_OPTS} ${USER}@${SERVER} "cd ${REMOTE} && pm2 delete kaktusa 2>/dev/null || true; pm2 start ecosystem.config.cjs && pm2 save"`
   );
   audit.push({ name: "3. PM2 restart", s: ((Date.now() - stepStart) / 1000).toFixed(1) });
 
