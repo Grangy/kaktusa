@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import { auth } from "@/auth";
 import Link from "next/link";
-import { LayoutDashboard, Calendar, FileText, Tag, MessageCircle, ExternalLink } from "lucide-react";
+import { LayoutDashboard, Calendar, FileText, Tag, MessageCircle, ExternalLink, CreditCard } from "lucide-react";
 import { AdminToastProvider } from "@/components/admin/ToastProvider";
 import { RevalidateCacheButton } from "@/components/admin/RevalidateCacheButton";
 
@@ -66,6 +66,13 @@ export default async function AdminLayout({
               >
                 <MessageCircle size={18} className="shrink-0" />
                 Чат
+              </Link>
+              <Link
+                href="/admin/payments"
+                className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-white/80 hover:bg-white/10 hover:text-white transition-colors text-sm"
+              >
+                <CreditCard size={18} className="shrink-0" />
+                Оплата
               </Link>
               <a
                 href="/"

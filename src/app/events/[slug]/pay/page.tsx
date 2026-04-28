@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getEventBySlug } from "@/lib/data";
-import { TestPaymentEmulator } from "@/components/payments/TestPaymentEmulator";
+import { getEventBySlug, getPaymentSettings } from "@/lib/data";
+import { YooKassaCheckout } from "@/components/payments/YooKassaCheckout";
 
 export const dynamic = "force-dynamic";
 
@@ -9,14 +9,15 @@ type Props = { params: Promise<{ slug: string }> };
 
 export default async function EventPayPage({ params }: Props) {
   const { slug } = await params;
-  const event = await getEventBySlug(slug);
+  const [event, payments] = await Promise.all([getEventBySlug(slug), getPaymentSettings()]);
   if (!event) notFound();
   if (event.type !== "upcoming") notFound();
 
-  if (event.testPaymentEnabled) {
+  const paymentsConfigured = payments.enabled && !!payments.yookassaShopId && !!payments.yookassaSecretKeyMasked;
+  if (paymentsConfigured) {
     return (
       <main className="min-h-screen px-6 md:px-12 pt-28 pb-28">
-        <TestPaymentEmulator event={event} />
+        <YooKassaCheckout event={event} />
       </main>
     );
   }
@@ -28,7 +29,10 @@ export default async function EventPayPage({ params }: Props) {
           Оплата билета
         </h1>
         <p className="text-white/70 mb-6">
-          Для мероприятия <span className="text-white">{event.title}</span> оплата скоро появится на сайте — готовим интеграцию.
+          Для мероприятия <span className="text-white">{event.title}</span> оплата ещё не настроена.
+        </p>
+        <p className="text-white/50 text-sm mb-6">
+          Админке: откройте <span className="text-white/70">/admin/payments</span> и включите YooKassa (shopId + секретный ключ).
         </p>
 
         <div className="space-y-3">

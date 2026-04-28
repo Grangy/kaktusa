@@ -81,6 +81,14 @@ model ChatSettings {
   updatedAt       DateTime @updatedAt
 }
 
+model PaymentSettings {
+  id                String   @id @default("payments")
+  enabled           Boolean  @default(false)
+  yookassaShopId    String?
+  yookassaSecretKey String?
+  updatedAt         DateTime @updatedAt
+}
+
 model ChatMessage {
   id                String   @id @default(cuid())
   sessionId         String

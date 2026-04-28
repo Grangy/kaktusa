@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { prisma } from "@/lib/db";
-import type { Event, MainContent, MetaContent, ChatSettingsContent, ChatMessageItem } from "@/types/data";
+import type { Event, MainContent, MetaContent, ChatSettingsContent, ChatMessageItem, PaymentSettingsContent } from "@/types/data";
 import type { TicketOption } from "@/types/data";
 
 function rowToEvent(row: {
@@ -304,6 +304,54 @@ export async function writeChatSettings(s: ChatSettingsContent): Promise<void> {
       geminiPrompt: s.geminiPrompt ?? null,
       geminiApiKeys: s.geminiApiKeys ?? null,
       welcomeMessage: s.welcomeMessage ?? null,
+    },
+  });
+}
+
+// ——— Payments (YooKassa) ———
+
+export async function getPaymentSettings(): Promise<PaymentSettingsContent> {
+  const row = await prisma.paymentSettings.findUnique({ where: { id: "payments" } });
+  if (!row) {
+    return {
+      enabled: false,
+      yookassaShopId: null,
+      yookassaSecretKey: null,
+      yookassaSecretKeyMasked: null,
+    };
+  }
+  const hasKey = !!(row.yookassaSecretKey && row.yookassaSecretKey.trim().length > 6);
+  return {
+    enabled: row.enabled,
+    yookassaShopId: row.yookassaShopId ?? null,
+    // не возвращаем ключ клиенту
+    yookassaSecretKey: null,
+    yookassaSecretKeyMasked: hasKey ? "••••••••" : null,
+  };
+}
+
+export async function getPaymentSettingsPrivate(): Promise<{ enabled: boolean; shopId: string | null; secretKey: string | null }> {
+  const row = await prisma.paymentSettings.findUnique({ where: { id: "payments" } });
+  return {
+    enabled: row?.enabled ?? false,
+    shopId: row?.yookassaShopId ?? null,
+    secretKey: row?.yookassaSecretKey ?? null,
+  };
+}
+
+export async function writePaymentSettings(p: { enabled: boolean; yookassaShopId: string | null; yookassaSecretKey: string | null }): Promise<void> {
+  await prisma.paymentSettings.upsert({
+    where: { id: "payments" },
+    create: {
+      id: "payments",
+      enabled: p.enabled,
+      yookassaShopId: p.yookassaShopId,
+      yookassaSecretKey: p.yookassaSecretKey,
+    },
+    update: {
+      enabled: p.enabled,
+      yookassaShopId: p.yookassaShopId,
+      yookassaSecretKey: p.yookassaSecretKey,
     },
   });
 }

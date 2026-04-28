@@ -107,6 +107,15 @@ export interface ChatSettingsContent {
   welcomeMessage?: string | null;
 }
 
+export interface PaymentSettingsContent {
+  enabled: boolean;
+  yookassaShopId?: string | null;
+  /** Секретный ключ YooKassa. Не логировать/не показывать в UI полностью. */
+  yookassaSecretKey?: string | null;
+  /** Маска/индикатор для UI */
+  yookassaSecretKeyMasked?: string | null;
+}
+
 export interface ChatMessageItem {
   id: string;
   sessionId: string;
