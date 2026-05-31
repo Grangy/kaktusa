@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import { Send } from "lucide-react";
+import SocialLinks from "./SocialLinks";
 import { useLogo } from "@/contexts/LogoContext";
 
 interface FooterProps {
@@ -72,18 +72,7 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
             <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-3 mt-6">
               Соцсети
             </h4>
-            <div className="flex flex-wrap gap-4">
-              <a
-                href="https://t.me/kaktusa_project"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 text-white/60 text-sm hover:text-[var(--accent)] transition-colors"
-                aria-label="Telegram"
-              >
-                <Send size={18} className="shrink-0" />
-                Telegram
-              </a>
-            </div>
+            <SocialLinks variant="footer" className="flex-col items-start gap-3" />
           </motion.div>
         </div>
 

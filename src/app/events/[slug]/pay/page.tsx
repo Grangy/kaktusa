@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getEventBySlug, getPaymentSettings } from "@/lib/data";
 import { YooKassaCheckout } from "@/components/payments/YooKassaCheckout";
 import { PaymentReturnWatcher } from "@/components/payments/PaymentReturnWatcher";
+import { SOCIAL } from "@/lib/social";
 
 export const dynamic = "force-dynamic";
 
@@ -39,12 +40,20 @@ export default async function EventPayPage({ params }: Props) {
 
         <div className="space-y-3">
           <a
-            href="https://t.me/kaktusa_project"
+            href={SOCIAL.telegram}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center px-6 py-3 rounded-xl border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/15 transition-colors w-full"
           >
             Написать в Telegram
+          </a>
+          <a
+            href={SOCIAL.vk}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center px-6 py-3 rounded-xl border border-white/20 text-white/80 font-display text-sm font-semibold uppercase hover:bg-white/10 transition-colors w-full"
+          >
+            Группа ВКонтакте
           </a>
 
           <Link

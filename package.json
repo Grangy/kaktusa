@@ -26,7 +26,8 @@
     "audit:photos": "node scripts/audit-photos.mjs",
     "test:video-compress": "node scripts/test-video-compress.mjs",
     "test:gemini": "node scripts/test-gemini.mjs",
-    "sync:prod": "node scripts/sync-from-prod.mjs"
+    "sync:prod": "node scripts/sync-from-prod.mjs",
+    "export:tickets-xlsx": "node scripts/export-tickets-xlsx.mjs"
   },
   "dependencies": {
     "@auth/core": "^0.41.0",
@@ -46,7 +47,8 @@
     "qrcode": "^1.5.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "sharp": "^0.33.5"
+    "sharp": "^0.33.5",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@prisma/client": "^6.19.2",

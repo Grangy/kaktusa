@@ -91,7 +91,14 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
             : `/events/${firstUpcoming.slug}`,
           label: firstUpcomingHasTicketSales ? "Купить билет" : "Подробнее",
         }
-      : { href: "/events/bloom-of-energy#tickets", label: "Купить билет" };
+      : undefined;
+
+  const aboutTicketHref: string | null =
+    firstUpcoming != null
+      ? firstUpcomingHasTicketSales
+        ? `/events/${firstUpcoming.slug}#tickets`
+        : `/events/${firstUpcoming.slug}`
+      : null;
 
   return (
     <>
@@ -106,7 +113,7 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
           isReady={isReady}
         />
         <EventsCarousel events={events ?? undefined} />
-        <AboutSection about={main?.about} logo={main?.hero?.logoScrolled} />
+        <AboutSection about={main?.about} logo={main?.hero?.logoScrolled} ticketCtaHref={aboutTicketHref} />
         <GallerySection photos={main?.gallery?.photos} />
         <ReviewsSection reviews={main?.reviews} />
         <Footer logo={main?.hero?.logoScrolled} />

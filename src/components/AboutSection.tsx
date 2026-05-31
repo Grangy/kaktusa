@@ -14,12 +14,15 @@ const DEFAULT_LINES = [
 interface AboutSectionProps {
   about?: { heading: string; lines: string[]; ctaHref: string } | null;
   logo?: string;
+  /** null = не показывать кнопку; undefined = взять ctaHref из about в БД */
+  ticketCtaHref?: string | null;
 }
 
-export default function AboutSection({ about, logo = "/logo.png" }: AboutSectionProps) {
+export default function AboutSection({ about, logo = "/logo.png", ticketCtaHref }: AboutSectionProps) {
   const heading = about?.heading ?? "О НАС";
   const lines = about?.lines?.length ? about.lines : DEFAULT_LINES;
-  const ctaHref = about?.ctaHref ?? "/events/bloom-of-energy#tickets";
+  const ctaHref =
+    ticketCtaHref === undefined ? about?.ctaHref : ticketCtaHref || undefined;
   const sectionRef = useRef<HTMLElement>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -76,20 +79,22 @@ export default function AboutSection({ about, logo = "/logo.png" }: AboutSection
             ))}
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-            className="relative pt-10 flex justify-center"
-          >
-            <TransitionLink
-              href={ctaHref}
-              className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
+          {ctaHref && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="relative pt-10 flex justify-center"
             >
-              <Ticket size={16} /> Купить билет
-            </TransitionLink>
-          </motion.div>
+              <TransitionLink
+                href={ctaHref}
+                className="inline-flex items-center gap-2 px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
+              >
+                <Ticket size={16} /> Купить билет
+              </TransitionLink>
+            </motion.div>
+          )}
         </motion.div>
       </motion.div>
     </section>

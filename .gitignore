@@ -20,6 +20,9 @@
 # production
 /build
 
+# one-off exports (xlsx reports)
+/exports/
+
 # misc
 .DS_Store
 *.pem

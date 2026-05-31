@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import TransitionLink from "./TransitionLink";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send } from "lucide-react";
+import { X } from "lucide-react";
+import SocialLinks from "./SocialLinks";
 import Image from "next/image";
 import { useLogo } from "@/contexts/LogoContext";
 import { getOptimizedPhotoUrl } from "@/lib/photoUrl";
@@ -14,7 +15,7 @@ const LOGO_SWITCH_DURATION = 1; // плавная смена
 
 const MENU_ITEMS: { label: string; path: string }[] = [
   { label: "Главная", path: "/" },
-  { label: "Мероприятия", path: "/events/bloom-of-energy" },
+  { label: "Мероприятия", path: "/#upcoming" },
   { label: "Прошедшие мероприятия", path: "/#past" },
   { label: "О нас", path: "/#about-us" },
   { label: "Галерея", path: "/#gallery" },
@@ -113,10 +114,8 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
 
         <div className="flex items-center gap-4">
           {/* Desktop: соцсети справа */}
-          <div className="hidden md:flex items-center gap-4">
-            <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="text-white/70 hover:text-[var(--accent)] transition-colors" aria-label="Telegram">
-              <Send size={18} />
-            </a>
+          <div className="hidden md:flex items-center">
+            <SocialLinks variant="header" />
           </div>
 
           <button
@@ -176,10 +175,8 @@ export default function Header({ logoHero: logoHeroProp, logoScrolled: logoScrol
               </button>
             ))}
             {/* Mobile: соцсети под меню */}
-            <div className="flex md:hidden gap-6 pt-4">
-              <a href="https://t.me/kaktusa_project" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-white/70 hover:text-[var(--accent)] transition-colors">
-                <Send size={20} /> Telegram
-              </a>
+            <div className="pt-4">
+              <SocialLinks variant="menu" />
             </div>
           </motion.nav>
         )}

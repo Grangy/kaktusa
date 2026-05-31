@@ -51,11 +51,9 @@ interface HeroSectionProps {
   isReady?: boolean;
 }
 
-const DEFAULT_TICKET_CTA = { href: "/events/bloom-of-energy#tickets", label: "Купить билет" };
-
 export default function HeroSection({
   hero,
-  ticketCta = DEFAULT_TICKET_CTA,
+  ticketCta,
   onVideoLoaded,
   onVideoPlaying,
   isReady,
@@ -251,21 +249,23 @@ export default function HeroSection({
             <p className="text-white/70 text-sm md:text-base">{hero?.heroVenueEn ?? "Night club Foster"}</p>
           </motion.div>
         )}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={isReady ? { opacity: 1 } : { opacity: 0 }}
-          transition={{ duration: 0.4, delay: 1.5 }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.98 }}
-        >
-          <TransitionLink
-            href={ticketCta.href}
-            prefetch
-            className="inline-block px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
+        {ticketCta && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={isReady ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ duration: 0.4, delay: 1.5 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.98 }}
           >
-            {ticketCta.label}
-          </TransitionLink>
-        </motion.div>
+            <TransitionLink
+              href={ticketCta.href}
+              prefetch
+              className="inline-block px-10 py-4 rounded-2xl border-2 border-white/30 font-display text-sm uppercase text-white bg-white/5 backdrop-blur-md hover:bg-white/15 hover:border-white/50 transition-all duration-300"
+            >
+              {ticketCta.label}
+            </TransitionLink>
+          </motion.div>
+        )}
       </div>
 
       {/* Scroll indicator: 3 arrows racing style */}

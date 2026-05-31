@@ -52,22 +52,6 @@ function formatMinPrice(e: Event): string | undefined {
   return e.price ?? undefined;
 }
 
-const DEFAULT_UPCOMING: CardEvent = {
-  id: "bloom",
-  type: "upcoming",
-  title: "BLOOM OF ENERGY",
-  date: "28 марта 2026",
-  location: "Foster Night Club, Mriya Resort",
-  locationShort: "Крым",
-  price: "От 3 000 ₽",
-  image: "/avisha/IMG_2657.PNG",
-  tag: "Ближайшее",
-  tagStyle: "bg-purple-500/90 text-white",
-  link: "/events/bloom-of-energy",
-  linkText: "Купить билет",
-  hasTicketSales: true,
-};
-
 const DEFAULT_PAST = [
   {
     id: "bal",
@@ -113,12 +97,12 @@ interface EventsCarouselProps {
 
 export default function EventsCarousel({ events }: EventsCarouselProps) {
   const cards = useMemo(() => {
-    if (!events?.length) return [DEFAULT_UPCOMING, ...DEFAULT_PAST];
+    if (!events?.length) return [...DEFAULT_PAST];
     const upcomingList = events.filter((e) => e.type === "upcoming").sort((a, b) => a.date.localeCompare(b.date));
     const pastList = events.filter((e) => e.type === "past").sort((a, b) => b.date.localeCompare(a.date));
     const upcoming = upcomingList.map((e) => toCard(e, "upcoming"));
     const past = pastList.map((e) => toCard(e, "past"));
-    return upcoming.length ? [...upcoming, ...past] : [DEFAULT_UPCOMING, ...past];
+    return [...upcoming, ...past];
   }, [events]);
 
   const scrollRef = useRef<HTMLDivElement>(null);
