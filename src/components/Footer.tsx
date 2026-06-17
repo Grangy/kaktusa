@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import Image from "next/image";
 import SocialLinks from "./SocialLinks";
 import { useLogo } from "@/contexts/LogoContext";
+import { LEGAL_PATHS } from "@/lib/legal";
+import { OperatorRequisites } from "@/components/legal/OperatorRequisites";
 
 interface FooterProps {
   logo?: string;
@@ -66,10 +68,19 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
             <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-4">
               Реквизиты
             </h4>
-            <p className="text-white/60 text-sm">ИП Рожков Александр Олегович</p>
-            <p className="text-white/60 text-sm mt-1">ОГРНИП 325920000002004</p>
-            <p className="text-white/60 text-sm mt-1">ИНН 920357011816</p>
+            <OperatorRequisites />
             <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-3 mt-6">
+              Документы
+            </h4>
+            <nav className="space-y-2 mb-6">
+              <TransitionLink href={LEGAL_PATHS.privacy} className="block py-1 text-white/60 text-sm hover:text-[var(--accent)] transition-colors">
+                Политика конфиденциальности
+              </TransitionLink>
+              <TransitionLink href={LEGAL_PATHS.terms} className="block py-1 text-white/60 text-sm hover:text-[var(--accent)] transition-colors">
+                Пользовательское соглашение
+              </TransitionLink>
+            </nav>
+            <h4 className="font-display text-sm font-semibold tracking-wide text-white/80 uppercase mb-3">
               Соцсети
             </h4>
             <SocialLinks variant="footer" className="flex-col items-start gap-3" />
@@ -80,14 +91,20 @@ export default function Footer({ logo: logoProp }: FooterProps = {}) {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 pt-8 border-t border-white/10"
+          className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 pt-8 border-t border-white/10"
         >
           <p className="text-white/40 text-xs tracking-wider text-center md:text-left">
-            © 2025 ?КАКТУСА. Все права защищены.
+            © {new Date().getFullYear()} ?КАКТУСА. Все права защищены.
           </p>
-          <p className="text-white/40 text-xs text-center md:text-right shrink-0">
-            FC/DC 18+
-          </p>
+          <div className="flex flex-wrap items-center justify-center md:justify-end gap-x-4 gap-y-1 text-white/40 text-xs">
+            <TransitionLink href={LEGAL_PATHS.privacy} className="hover:text-[var(--accent)] transition-colors">
+              Конфиденциальность
+            </TransitionLink>
+            <TransitionLink href={LEGAL_PATHS.terms} className="hover:text-[var(--accent)] transition-colors">
+              Соглашение
+            </TransitionLink>
+            <span className="shrink-0">FC/DC 18+</span>
+          </div>
         </motion.div>
       </div>
     </footer>

@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { CreditCard, QrCode, Wallet, ShieldCheck, CircleX, Loader2 } from "lucide-react";
 import type { Event } from "@/types/data";
+import { LegalConsent } from "@/components/legal/LegalConsent";
 
 type MethodId = "card" | "sbp" | "yookassa";
 
@@ -35,6 +36,7 @@ export function YooKassaCheckout({ event }: { event: Event }) {
   const [status, setStatus] = useState<"idle" | "processing" | "error">("idle");
   const [error, setError] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
+  const [consent, setConsent] = useState(false);
 
   const title = event.title;
   const amount = ticket ? pickDisplayPrice(ticket.price) : pickDisplayPrice(event.price);
@@ -44,6 +46,9 @@ export function YooKassaCheckout({ event }: { event: Event }) {
     setStatus("processing");
     setError(null);
     try {
+      if (!consent) {
+        throw new Error("Подтвердите согласие с пользовательским соглашением и политикой конфиденциальности");
+      }
       if (!email.trim() || !email.includes("@")) {
         throw new Error("Укажите email для чека");
       }
@@ -156,6 +161,8 @@ export function YooKassaCheckout({ event }: { event: Event }) {
         <p className="text-white/40 text-xs mt-2">Нужен для формирования чека (54‑ФЗ).</p>
       </div>
 
+      <LegalConsent checked={consent} onChange={setConsent} className="mt-5" />
+
       {error && (
         <div className="mt-6 rounded-2xl border border-red-500/30 bg-red-500/5 p-5 flex items-start gap-3">
           <CircleX size={20} className="shrink-0 text-red-400" />
@@ -169,10 +176,10 @@ export function YooKassaCheckout({ event }: { event: Event }) {
       <div className="mt-6 grid grid-cols-1 md:grid-cols-2 gap-3">
         <button
           type="button"
-          disabled={status === "processing"}
+          disabled={status === "processing" || !consent}
           onClick={startPayment}
           className={`inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl border-2 border-[var(--accent)] text-[var(--accent)] font-display text-sm font-semibold uppercase hover:bg-[var(--accent)]/15 transition-colors w-full ${
-            status === "processing" ? "opacity-70 cursor-not-allowed" : ""
+            status === "processing" || !consent ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
           {status === "processing" ? <Loader2 size={18} className="animate-spin" /> : <ShieldCheck size={18} />}

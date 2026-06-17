@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, ShieldCheck, CircleX } from "lucide-react";
+import { LegalConsent } from "@/components/legal/LegalConsent";
 
 type State = {
   status: "idle" | "checking" | "succeeded" | "pending" | "canceled" | "error";
@@ -29,6 +30,7 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
 
   const [state, setState] = useState<State>({ status: "idle" });
   const [phone, setPhone] = useState<string>("");
+  const [consent, setConsent] = useState(false);
   const [sendingPhone, setSendingPhone] = useState(false);
 
   useEffect(() => {
@@ -82,6 +84,10 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
 
   async function submitPhone() {
     if (sendingPhone) return;
+    if (!consent) {
+      setState((s) => ({ ...s, message: "Подтвердите согласие с документами сайта" }));
+      return;
+    }
     setSendingPhone(true);
     setState((s) => ({ ...s, message: undefined }));
     try {
@@ -149,9 +155,10 @@ export function PaymentReturnWatcher({ slug }: { slug: string }) {
                           inputMode="tel"
                           disabled={sendingPhone}
                         />
+                        <LegalConsent checked={consent} onChange={setConsent} compact className="mt-2" />
                         <button
                           type="button"
-                          disabled={sendingPhone}
+                          disabled={sendingPhone || !consent || !phone.trim()}
                           onClick={submitPhone}
                           className="w-full inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[var(--accent)]/60 bg-[var(--accent)]/10 text-white hover:bg-[var(--accent)]/15 transition-colors disabled:opacity-50"
                         >

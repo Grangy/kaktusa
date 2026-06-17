@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { MessageCircle, X, Send } from "lucide-react";
+import { LegalConsent } from "@/components/legal/LegalConsent";
+import { LEGAL_CONSENT_STORAGE_KEY } from "@/lib/legal";
 
 const CHAT_SESSION_KEY = "kaktusa_chat_session";
 
@@ -89,12 +91,18 @@ export function MiniChat() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
+  const [consent, setConsent] = useState(false);
   const [sessionId, setSessionId] = useState("");
   const listRef = useRef<HTMLDivElement>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
     setSessionId(getSessionId());
+    try {
+      setConsent(localStorage.getItem(LEGAL_CONSENT_STORAGE_KEY) === "1");
+    } catch {
+      setConsent(false);
+    }
   }, []);
 
   const fetchConfig = useCallback(async () => {
@@ -140,6 +148,7 @@ export function MiniChat() {
   const sendMessage = () => {
     const text = input.trim();
     if (!text || !sessionId || !config?.available || sending) return;
+    if (!consent) return;
     setInput("");
     setMessages((prev) => [
       ...prev,
@@ -264,7 +273,19 @@ export function MiniChat() {
                   </>
                 )}
               </div>
-              <div className="p-3 border-t border-white/10 flex gap-2 shrink-0">
+              <div className="p-3 border-t border-white/10 shrink-0 space-y-3">
+                <LegalConsent
+                  checked={consent}
+                  onChange={(v) => {
+                    setConsent(v);
+                    try {
+                      if (v) localStorage.setItem(LEGAL_CONSENT_STORAGE_KEY, "1");
+                      else localStorage.removeItem(LEGAL_CONSENT_STORAGE_KEY);
+                    } catch {}
+                  }}
+                  compact
+                />
+                <div className="flex gap-2">
                 <input
                   type="text"
                   value={input}
@@ -277,12 +298,13 @@ export function MiniChat() {
                 <button
                   type="button"
                   onClick={sendMessage}
-                  disabled={!input.trim() || sending}
+                  disabled={!input.trim() || sending || !consent}
                   className="p-2.5 rounded-xl bg-[var(--accent)] text-black disabled:opacity-40 disabled:cursor-not-allowed hover:enabled:opacity-90 transition-opacity"
                   aria-label="Отправить"
                 >
                   <Send size={18} />
                 </button>
+                </div>
               </div>
             </>
           )}
