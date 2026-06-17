@@ -191,20 +191,22 @@ export default function EventsCarousel({ events }: EventsCarouselProps) {
                     </div>
                   </div>
                 </TransitionLink>
+                {event.type === "upcoming" && event.hasTicketSales && (
                 <TransitionLink
-                  href={
-                    event.type === "upcoming" && event.hasTicketSales
-                      ? `${event.link}#tickets`
-                      : event.link
-                  }
-                  className={`absolute bottom-5 right-3 z-20 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 ${
-                    event.type === "upcoming"
-                      ? "border-2 border-[var(--accent)] text-[var(--accent)] bg-black/30 backdrop-blur-sm hover:bg-[var(--accent)]/20"
-                      : "border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50"
-                  }`}
+                  href={`${event.link}#tickets`}
+                  className="absolute bottom-5 right-3 z-20 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 border-2 border-[var(--accent)] text-[var(--accent)] bg-black/30 backdrop-blur-sm hover:bg-[var(--accent)]/20"
                 >
                   {event.linkText}
                 </TransitionLink>
+                )}
+                {event.type === "past" && (
+                <TransitionLink
+                  href={event.link}
+                  className="absolute bottom-5 right-3 z-20 inline-flex items-center justify-center py-2 px-4 rounded-xl text-[11px] font-semibold uppercase tracking-wider transition-all duration-200 border border-white/40 bg-black/20 backdrop-blur-sm text-white hover:bg-white/15 hover:border-white/50"
+                >
+                  {event.linkText}
+                </TransitionLink>
+                )}
               </div>
             </motion.article>
           ))}

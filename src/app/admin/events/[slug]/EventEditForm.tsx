@@ -437,6 +437,22 @@ export function EventEditForm({
         />
       </div>
       {form.type === "upcoming" && (
+        <label className="flex items-start gap-3 text-white/90 text-sm cursor-pointer select-none rounded-xl border border-white/15 bg-white/[0.03] p-4">
+          <input
+            type="checkbox"
+            checked={form.buyTicketDisabled ?? false}
+            onChange={(e) => update({ buyTicketDisabled: e.target.checked })}
+            className="w-4 h-4 accent-[var(--accent)] shrink-0 mt-0.5"
+          />
+          <span>
+            <span className="font-medium text-white">Убрать кнопку «Купить»</span>
+            <span className="block text-white/55 text-xs mt-1">
+              На главной и на странице мероприятия не будет кнопок покупки — только информация об ивенте.
+            </span>
+          </span>
+        </label>
+      )}
+      {form.type === "upcoming" && (
         <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
           <input
             type="checkbox"
@@ -445,17 +461,6 @@ export function EventEditForm({
             className="w-4 h-4 accent-[var(--accent)] shrink-0"
           />
           <span>Реальная оплата (YooKassa) на странице оплаты</span>
-        </label>
-      )}
-      {form.type === "upcoming" && (
-        <label className="flex items-center gap-3 text-white/90 text-sm cursor-pointer select-none">
-          <input
-            type="checkbox"
-            checked={form.buyTicketDisabled ?? false}
-            onChange={(e) => update({ buyTicketDisabled: e.target.checked })}
-            className="w-4 h-4 accent-[var(--accent)] shrink-0"
-          />
-          <span>Не показывать кнопки «Купить билет» (страница ивента и карусель на главной)</span>
         </label>
       )}
       {form.type === "upcoming" && (

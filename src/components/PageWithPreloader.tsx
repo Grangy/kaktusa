@@ -83,22 +83,16 @@ export default function PageWithPreloader({ main, events }: PageWithPreloaderPro
     (!!firstUpcoming.buyTicketUrl?.trim() ||
       firstUpcoming.testPaymentEnabled === true ||
       firstUpcoming.realPaymentEnabled === true);
-  const ticketCta =
-    firstUpcoming != null
-      ? {
-          href: firstUpcomingHasTicketSales
-            ? `/events/${firstUpcoming.slug}#tickets`
-            : `/events/${firstUpcoming.slug}`,
-          label: firstUpcomingHasTicketSales ? "Купить билет" : "Подробнее",
-        }
-      : undefined;
+  const ticketCta = firstUpcomingHasTicketSales
+    ? {
+        href: `/events/${firstUpcoming!.slug}#tickets`,
+        label: "Купить билет",
+      }
+    : undefined;
 
-  const aboutTicketHref: string | null =
-    firstUpcoming != null
-      ? firstUpcomingHasTicketSales
-        ? `/events/${firstUpcoming.slug}#tickets`
-        : `/events/${firstUpcoming.slug}`
-      : null;
+  const aboutTicketHref: string | null = firstUpcomingHasTicketSales
+    ? `/events/${firstUpcoming!.slug}#tickets`
+    : null;
 
   return (
     <>
