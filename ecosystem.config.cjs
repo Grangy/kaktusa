@@ -17,6 +17,7 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         HOSTNAME: "0.0.0.0",
+        PORT: "3200",
         DATABASE_URL: "file:/var/www/kaktusa/prisma/dev.db",
         AUTH_TRUST_HOST: "true",
         AUTH_URL: "https://kaktusa.ru",
